@@ -106,12 +106,11 @@ const updateCat = async () => {
   if (data) {
     console.log(data)
     editMode.value = false
+    fetchCat()
   }
 }
 onBeforeMount(() => {
   fetchCat()
 })
-onUpdated(() => {
-  fetchCat()
-})
+onUpdated(() => {})
 </script>

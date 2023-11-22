@@ -1,0 +1,210 @@
+@import './normalize.css';
+
+/* -------------- fonts -------------------- */
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Raleway';
+  src: url('./fonts/Raleway-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Raleway-italic';
+  src: url('./fonts/Raleway-Italic-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Baskerville';
+  src: url('./fonts/LibreBaskerville-Regular.ttf');
+}
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Baskerville-italic';
+  src: url('./fonts/LibreBaskerville-Italic.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+
+  font-family: 'Baskerville-bold';
+  src: url('./fonts/LibreBaskerville-Bold.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+
+  font-family: 'Roboto-Slab';
+  src: url('./fonts/RobotoSlab-VariableFont_wght.ttf');
+}
+/* ----------------------- colors ----------- */
+
+:root {
+  --picton-blue: hsla(200, 67%, 60%, 1);
+  --picton-blue-darker: hsla(200, 67%, 40%, 1);
+  --picton-blue-lighter: hsla(200, 67%, 70%, 1);
+  --moonstone: hsla(192, 49%, 50%, 1);
+  --moonstone-light: hsla(192, 49%, 99%, 1);
+  --saffron: hsla(47, 81%, 56%, 1);
+  --jonquil: #f8cf18;
+  --yinmn-blue: hsla(217, 48%, 39%, 1);
+  --polynesian-blue: hsl(217, 68%, 34%);
+  --jasper: hsla(5, 61%, 53%, 1);
+  --amaranth-purple: hsl(351, 52%, 43%);
+
+  --primary: var(--picton-blue);
+  --secondary: var(--moonstone);
+  --secondary-light: var(--moonstone-light);
+  --primary-darker: var(--picton-blue-darker);
+  --primary-lighter: var(--picton-blue-lighter);
+  --accent: var(--jonquil);
+  --alert: var(--jasper);
+  --alert-dark: var(--amaranth-purple);
+  --dark: var(--polynesian-blue);
+
+  --background-clr: rgb(255, 255, 255);
+  --text: black;
+  --text-off: rgb(29, 29, 29);
+  --text-on-dark: white;
+  --text-on-dark-off: rgb(223, 223, 223);
+  --text-header: var(--dark);
+
+  /* --primary: hsl(198, 67%, 60%);
+  --primary-darker: #3e93b8;
+  --primary-lighter: hsl(198, 67%, 70%);
+  --positive: #40dbb5;
+  --negative: #db4b62;
+  --negative1: hsl(355, 74%, 50%);
+  --secondary: hsl(192, 49%, 50%);
+  --secondary-dark: #235266; */
+
+  /* --a: #6fd1ab;
+  --b: #6fd1ab;
+  --c: #6ec98a;
+  --d-x: #937ccc;
+  --d: #3e93b8;
+  --d-comp: #a1cc68;
+  --d-dark: #3e3557;
+  --d-light: hsl(198, 67%, 60%);
+  --text-normal: black;
+  --text-on-dark: white;
+  --background-clr: white; */
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --a: #6fd1ab;
+    --b: #6fd1ab;
+    --c: #6ec98a;
+    --d: #937ccc;
+    --d-comp: #a1cc68;
+    --d-dark: #3e3557;
+    --d-light: #b498fa;
+    --text-normal: black;
+    --text-on-dark: white;
+    --text-normal: white;
+    --background-clr: #181818;
+  }
+} */
+/*  ----- other custom values ----*/
+
+* {
+  --border-radius: 5px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+a {
+  color: black;
+  text-underline-offset: 3px;
+}
+
+:root {
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Raleway';
+  background-color: var(--background-clr);
+  color: var(--text-normal);
+}
+h1,
+h2 {
+  font-family: 'Roboto-Slab';
+  letter-spacing: -0.25px;
+  font-weight: 500;
+}
+
+h1 {
+  color: var(--text-dark);
+}
+p {
+  line-height: 1.5rem;
+}
+
+button,
+input[type='submit'] {
+  border: 0px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.459);
+  background-color: var(--primary);
+  color: black;
+  border-radius: var(--border-radius);
+
+  transition: all 200ms ease;
+
+  font-weight: 500;
+  font-family: 'Roboto-Slab';
+}
+
+button:hover,
+input[type='submit']:hover {
+  background-color: var(--primary-lighter);
+  color: var(--text-off);
+}
+button:active,
+input[type='submit']:active {
+  background-color: var(--primary-darker);
+  color: var(--text-off);
+}
+
+@media screen and (min-width: 600px) {
+  :root {
+    font-size: 15px;
+  }
+}
+@media screen and (min-width: 1000px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+/* 
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+} */

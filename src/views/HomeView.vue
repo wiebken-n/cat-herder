@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref, onUpdated } from 'vue'
+import { onBeforeMount, ref, watchEffect } from 'vue'
 // import UserAccount from './components/UserAccount.vue'
 // import UserAuth from './components/UserAuth.vue'
 
@@ -8,9 +8,7 @@ import { useRouter } from 'vue-router'
 // import { useUserStore } from '../stores/useUserStore'
 
 // const userStore = useUserStore()
-
 const router = useRouter()
-
 const session = ref()
 const fetchError = ref(null)
 const cats = ref({})
@@ -34,9 +32,6 @@ onBeforeMount(() => {
   supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
   })
-})
-onUpdated(() => {
-  fetchCats()
 })
 
 const fetchCats = async () => {
@@ -81,12 +76,19 @@ const submitData = async () => {
   if (error) {
     console.log(error)
     formError.value = error
+    return
   }
   if (data) {
     console.log(data)
     formError.value = ''
   }
+  fetchCats()
 }
+
+watchEffect((orderBy) => {
+  console.log(orderBy)
+  fetchCats()
+})
 // console.log(supabase)
 </script>
 
@@ -141,7 +143,6 @@ const submitData = async () => {
     <UserAuth v-else /> -->
   </div>
 </template>
-
 <!-- <script setup>
 import TheWelcome from '../components/TheWelcome.vue'
 </script>
