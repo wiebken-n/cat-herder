@@ -4,6 +4,7 @@
       <svg @click="rollOutMenu" alt="burger-menu-icon" class="burger" data-cy="burger">
         <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
       </svg>
+      <!-- "`/plantspecies/view/${species.id}`" -->
     </div>
     <transition>
       <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
@@ -54,11 +55,16 @@
   right: 10px;
   top: 10px;
   z-index: 1;
-  transition: color 200ms ease;
+  transition: all 200ms ease;
+  scale: 1;
 }
+
 .burger:hover {
-  color: var(--secondary);
+  scale: 1.05;
+  transform-origin: center;
+  color: var(--alert-dark);
 }
+
 .nav-wrapper {
   width: 100%;
   position: absolute;
@@ -110,6 +116,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const menuActive = ref(false)
+
 const rollOutMenu = function () {
   console.log('menu!')
   menuActive.value = !menuActive.value

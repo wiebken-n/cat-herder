@@ -41,11 +41,11 @@ onMounted(() => {
 <template>
   <div class="container">
     <div v-if="landingPageShow">
-      <LandingPage @toLogin="landingPageShow = false" />
+      <LandingPage class="landingpage" @toLogin="landingPageShow = false" />
     </div>
     <div v-else>
       <NavComponent class="nav-component" data-cy="nav-component" />
-      <RouterView v-if="session" :session="session" />
+      <RouterView class="routerview" v-if="session" :session="session" />
       <UserAuth v-else />
     </div>
   </div>
@@ -54,5 +54,9 @@ onMounted(() => {
 <style scoped>
 .nav-component {
   position: absolute;
+}
+.routerview,
+.landingpage {
+  padding-top: 1rem;
 }
 </style>
