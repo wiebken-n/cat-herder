@@ -5,6 +5,9 @@ import { onBeforeMount, ref, watchEffect } from 'vue'
 
 import { supabase } from '@/supabase'
 import { useRouter } from 'vue-router'
+
+import { useCatsStore } from '../stores/useCatsStore'
+const catsStore = useCatsStore()
 // import { useUserStore } from '../stores/useUserStore'
 
 // const userStore = useUserStore()
@@ -12,7 +15,7 @@ const router = useRouter()
 const session = ref()
 const fetchError = ref(null)
 const cats = ref({})
-
+const user_id = ref('')
 const inputName = ref('')
 const inputAge = ref()
 const inputDescription = ref('')
@@ -23,14 +26,16 @@ const orderBy = ref('created_at')
 // const fetchPutError = ref(null)
 
 onBeforeMount(() => {
-  fetchCats()
-
   supabase.auth.getSession().then(({ data }) => {
     session.value = data.session
+    console.log(data.session)
+    user_id.value = data.session.user.id
+    catsStore.fetchCats()
   })
 
   supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
+    catsStore.fetchCats
   })
 })
 
@@ -52,6 +57,7 @@ const fetchCats = async () => {
 }
 
 function getCatData(cat) {
+  catsStore.state.currentCat.id = cat.id
   router.push({ name: 'catdata', params: { id: cat.id } })
 }
 
@@ -87,7 +93,7 @@ const submitData = async () => {
 
 watchEffect((orderBy) => {
   console.log(orderBy)
-  fetchCats()
+  catsStore.fetchCats()
 })
 // console.log(supabase)
 </script>
@@ -96,18 +102,19 @@ watchEffect((orderBy) => {
   <div class="container" style="padding: 50px 0 100px 0">
     <div>
       order by:
-      <select name="select-order" id="select-order" v-model="orderBy">
+      <select name="select-order" id="select-order" v-model="catsStore.state.orderBy">
         <option value="created_at">created_at</option>
         <option value="name">name</option>
         <option value="age">age</option>
       </select>
     </div>
     <div class="data-output">
-      <div v-for="cat in cats" :key="cat.id">
+      <div v-for="cat in catsStore.state.cats" :key="cat.id">
         <!-- {{ cat }} -->
         <p>{{ cat.name }}</p>
         <p>{{ cat.age }}</p>
         <p>{{ cat.description }}</p>
+        <p>is cat of user: {{ cat.user_id === user_id }}</p>
         <button @click="getCatData(cat)">Clicky</button>
         <p>-----------------------------------</p>
       </div>
