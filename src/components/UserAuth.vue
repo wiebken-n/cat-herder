@@ -29,7 +29,7 @@ const handleLogin = async () => {
     <svg class="icon">
       <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
     </svg>
-    <h1 class="header">CatGuardian</h1>
+    <h1 class="header">CatHerder</h1>
     <h2>Die App rund um die Versorgung Deiner Katze</h2>
     <form class="signup-form" @submit.prevent="handleLogin">
       <p class="description">
@@ -47,22 +47,6 @@ const handleLogin = async () => {
         />
       </div>
     </form>
-    <!-- <div>
-      <h1>CatGuardian - Die App um deine Katze bestmöglich zu versorgen</h1>
-      <h2>So true!</h2>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec urna metus. Sed aliquet
-        rhoncus neque, id aliquet justo maximus in. Morbi a velit diam. Mauris non enim orci. Sed
-        bibendum magna eget augue commodo lacinia. Pellentesque blandit magna eget sem tristique,
-        vitae pellentesque turpis condimentum. Integer dictum, dui sed semper volutpat, nisi augue
-        pellentesque ante, eget fringilla arcu dolor sed nibh. Donec sagittis imperdiet odio,
-        fermentum dictum nisl sodales eu. Donec id ultrices lacus. Vestibulum ullamcorper pharetra
-        hendrerit. Curabitur ut tincidunt nisl, sit amet pharetra erat. Curabitur in nulla nunc.
-        Phasellus blandit, massa sed dapibus accumsan, nunc urna dapibus lacus, id scelerisque lorem
-        elit ac leo. Aliquam feugiat accumsan interdum. Fusce eros mauris, placerat vel porttitor
-        non, laoreet vitae est. Sed non ipsum enim.
-      </p>
-    </div> -->
   </div>
 </template>
 
