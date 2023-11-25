@@ -7,6 +7,7 @@ import { supabase } from '@/supabase'
 import { useUserStore } from './stores/useUserStore'
 import NavComponent from './components/NavComponent.vue'
 import LandingPage from './components/LandingPage.vue'
+import LogoComponent from './components/LogoComponent.vue'
 
 const userStore = useUserStore()
 
@@ -44,6 +45,12 @@ onMounted(() => {
       <LandingPage class="landingpage" @toLogin="landingPageShow = false" />
     </div>
     <div v-else>
+      <LogoComponent
+        class="logo-component"
+        data-cy="logo-component"
+        v-if="session"
+        :session="session"
+      />
       <NavComponent
         class="nav-component"
         data-cy="nav-component"
@@ -59,9 +66,20 @@ onMounted(() => {
 <style scoped>
 .nav-component {
   position: absolute;
+  z-index: 2;
+  width: max-content;
+  right: 0px;
+}
+.logo-component {
+  position: absolute;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  left: 7px;
+  top: 10px;
 }
 .routerview,
 .landingpage {
-  padding-top: 1rem;
+  padding-top: 3rem;
 }
 </style>

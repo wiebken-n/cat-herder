@@ -37,10 +37,10 @@
   visibility: visible;
   width: 15rem;
   height: 20rem;
-
   border-radius: 0 0 0 var(--border-radius);
   position: relative;
   background-color: var(--accent);
+  opacity: 0.95;
 }
 .content-wrapper {
   width: 100%;

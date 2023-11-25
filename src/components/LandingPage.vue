@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrapper">
     <svg class="icon logo" data-cy="logo">
-      <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
+      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg>
     <h1 class="headline" data-cy="headline">Cat Herder</h1>
     <p class="intro-text" data-cy="intro-text">

@@ -44,7 +44,7 @@
   --picton-blue-darker: hsla(200, 67%, 40%, 1);
   --picton-blue-lighter: hsla(200, 67%, 70%, 1);
   --moonstone: hsla(192, 49%, 50%, 1);
-  --moonstone-light: hsla(192, 49%, 99%, 1);
+  --moonstone-light: hsla(192, 49%, 60%, 1);
   --saffron: hsla(47, 81%, 56%, 1);
   --jonquil: #f8cf18;
   --yinmn-blue: hsla(217, 48%, 39%, 1);
@@ -62,6 +62,7 @@
   --alert-dark: var(--amaranth-purple);
   --dark: var(--polynesian-blue);
 
+  --hover-shadow: rgba(0, 0, 0, 0.404);
   --background-clr: rgb(255, 255, 255);
   --text: black;
   --text-off: rgb(29, 29, 29);
