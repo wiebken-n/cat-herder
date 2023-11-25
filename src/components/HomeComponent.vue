@@ -31,6 +31,20 @@
         <p class="cat-age">8</p>
         <p class="cat-herders">Herders</p>
       </article>
+
+      <Button
+        label="Füge eine Katze hinzu"
+        class="btn-add-cat"
+        @click="router.push('/add-cat')"
+        outlined
+      >
+        <template #default>
+          <p>Füge eine Katze hinzu</p>
+          <svg class="icon logo" width="1.5em" height="1.5em" data-cy="logo">
+            <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor" />
+          </svg>
+        </template>
+      </Button>
     </article>
     <article class="cat-overview content-wrapper-herded-cats" data-cy="cat-overview">
       <h2 class="cat-overview-headline" data-cy="cat-overview-headline">
@@ -66,8 +80,11 @@
 
 <script setup>
 import { useUserStore } from '../stores/useUserStore'
+import { useRouter } from 'vue-router'
 const userStore = useUserStore()
+const router = useRouter()
 </script>
+
 <style scoped>
 .content-wrapper {
   display: grid;
@@ -82,9 +99,8 @@ const userStore = useUserStore()
 }
 
 .cat-overview {
-  background-color: rgb(219, 219, 219);
+  background-color: rgb(235, 235, 235);
   display: grid;
-  grid-template-columns: 90%;
   gap: 1rem;
   padding: 1.5rem;
   padding-top: 0.75rem;
@@ -137,6 +153,13 @@ const userStore = useUserStore()
 .content-wrapper-herded-cats {
   margin-top: 3rem;
 }
+.btn-add-cat {
+  display: flex;
+
+  justify-content: space-around;
+  width: auto;
+}
+
 @media screen and (min-width: 600px) {
   .cat-overview {
     grid-template-columns: 1fr 1fr;

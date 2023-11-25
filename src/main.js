@@ -16,6 +16,10 @@ import 'primevue/resources/themes/lara-light-blue/theme.css'
 // import Slider from 'primevue/slider'
 // import Knob from 'primevue/knob'
 import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
+import Calendar from 'primevue/calendar'
+import FileUpload from 'primevue/fileupload'
 
 /* <<<<<<<<<<<< Prime Vue Component imports */
 
@@ -29,6 +33,10 @@ app.use(PrimeVue)
 // app.component('Slider', Slider)
 // app.component('Knob', Knob)
 app.component('Button', Button)
+app.component('InputText', InputText)
+app.component('Textarea', Textarea)
+app.component('Calendar', Calendar)
+app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */
 

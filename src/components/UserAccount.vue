@@ -33,6 +33,7 @@ async function getProfile() {
       username.value = data.username
       website.value = data.website
       avatar_url.value = data.avatar_url
+      console.log(avatar_url.value)
       userId.value = data.id
     }
   } catch (error) {

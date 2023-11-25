@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/CatsView.vue')
     },
     {
+      path: '/add-cat',
+      name: 'add-cat',
+      component: () => import('../views/AddCatView.vue')
+    },
+    {
       path: '/catdata/:id',
       name: 'catdata',
       component: () => import('../views/CatDataView.vue')
