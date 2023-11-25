@@ -10,13 +10,13 @@
     <h1>{{ catsStore.state.currentCat.age }}</h1>
     <h1>{{ catsStore.state.currentCat.description }}</h1>
 
-    <button @click="editMode = true">Edit</button>
-    <button @click="deleteCat()">Delete</button>
+    <Button @click="editMode = true">Edit</Button>
+    <Button @click="deleteCat()">Delete</Button>
     <p>{{ formError }}</p>
 
     <div v-for="food of foodData.description" :key="food.id">{{ food.description }}</div>
     <div><input type="text" name="new-food" id="new-food" v-model="foodData.newFood" /></div>
-    <div><button @click="addFood()">add food</button></div>
+    <div><Button @click="addFood()">add food</Button></div>
   </div>
   <div v-if="editMode">
     <h2>{{ catId }}</h2>
@@ -34,10 +34,10 @@
     <!-- <h1>{{ catData.name }}</h1>
     <h1>{{ catData.age }}</h1>
     <h1>{{ catData.description }}</h1> -->
-    <button @click="updateCat()">Update</button>
+    <Button @click="updateCat()">Update</Button>
   </div>
   <div>
-    <button @click="router.push('/')">back to home</button>
+    <Button @click="router.push('/')">back to home</Button>
   </div>
 </template>
 

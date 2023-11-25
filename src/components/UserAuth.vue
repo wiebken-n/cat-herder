@@ -29,6 +29,7 @@ const handleLogin = async () => {
     <svg class="icon">
       <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
     </svg>
+    <h1>User Auth</h1>
     <h1 class="header">CatHerder</h1>
     <h2>Die App rund um die Versorgung Deiner Katze</h2>
     <form class="signup-form" @submit.prevent="handleLogin">

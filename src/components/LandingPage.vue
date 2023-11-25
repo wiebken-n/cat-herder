@@ -9,7 +9,7 @@
       consectetur varius nibh, id porttitor magna interdum a. Phasellus laoreet tortor a sapien
       semper, id egestas ipsum imperdiet. Aliquam a enim nec mi fermentum sollicitudin.
     </p>
-    <button class="btn-login" data-cy="btn-login" @click="$emit('toLogin')">Log in</button>
+    <Button label="Log in" class="btn-login" data-cy="btn-login" @click="$emit('toLogin')" />
   </div>
 </template>
 
@@ -17,9 +17,21 @@
 // import { ref } from 'vue'
 // import { useRouter } from 'vue-router'
 // const router = useRouter()
+// const value = ref(0)
 </script>
 
 <style scoped>
+.slider {
+  display: flex;
+  align-items: center;
+  align-items: center;
+  height: 0.5rem;
+  width: 10rem;
+}
+.p-slider-handle {
+  align-self: center;
+  justify-self: center;
+}
 .content-wrapper {
   display: grid;
   justify-items: center;

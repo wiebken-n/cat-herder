@@ -44,7 +44,12 @@ onMounted(() => {
       <LandingPage class="landingpage" @toLogin="landingPageShow = false" />
     </div>
     <div v-else>
-      <NavComponent class="nav-component" data-cy="nav-component" />
+      <NavComponent
+        class="nav-component"
+        data-cy="nav-component"
+        v-if="session"
+        :session="session"
+      />
       <RouterView class="routerview" v-if="session" :session="session" />
       <UserAuth v-else />
     </div>
