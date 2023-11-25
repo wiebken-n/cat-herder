@@ -1,5 +1,6 @@
 <template>
-  <div class="content-wrapper">
+  <!-- <div class="content-wrapper">
+    <h1>Landing Page</h1>
     <svg class="icon logo" data-cy="logo">
       <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
     </svg>
@@ -9,14 +10,22 @@
       consectetur varius nibh, id porttitor magna interdum a. Phasellus laoreet tortor a sapien
       semper, id egestas ipsum imperdiet. Aliquam a enim nec mi fermentum sollicitudin.
     </p>
-    <button class="btn-login" data-cy="btn-login" @click="router.push('/login')">Log in</button>
-  </div>
+    <Button
+      label="Log in"
+      class="btn-login"
+      data-cy="btn-login"
+      @click="router.push('/login')"
+      raised
+    />
+  </div> -->
+  <LandingPage></LandingPage>
 </template>
 
 <script setup>
 // import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+// import { useRouter } from 'vue-router'
+import LandingPage from '../components/LandingPage.vue'
+// const router = useRouter()
 </script>
 
 <style scoped>

@@ -115,7 +115,7 @@ watchEffect((orderBy) => {
         <p>{{ cat.age }}</p>
         <p>{{ cat.description }}</p>
         <p>is cat of user: {{ cat.user_id === user_id }}</p>
-        <button @click="getCatData(cat)">Clicky</button>
+        <Button @click="getCatData(cat)" label="Go to Cat" outlined />
         <p>-----------------------------------</p>
       </div>
     </div>
@@ -141,7 +141,14 @@ watchEffect((orderBy) => {
           <label for="cat-description">cat-description</label>
         </div>
         <div>
-          <button @click.prevent="submitData">Submit Cat Data</button>
+          <Button @click.prevent="submitData" label="submit cat data" class="btn" raised>
+            <template #default>
+              <svg class="icon logo" width="1em" height="1em" data-cy="logo">
+                <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
+              </svg>
+              <p>Submit</p></template
+            >
+          </Button>
         </div>
         <p>{{ formError }}</p>
       </form>
@@ -159,3 +166,10 @@ import TheWelcome from '../components/TheWelcome.vue'
     <TheWelcome />
   </main>../stores/useUserStore
 </template> -->
+
+<style scoped>
+.btn {
+  display: flex;
+  gap: 0.5rem;
+}
+</style>

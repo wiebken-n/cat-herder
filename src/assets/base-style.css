@@ -146,21 +146,19 @@ h1 {
 p {
   line-height: 1.5rem;
 }
-
+/* 
 button,
 input[type='submit'] {
   border: 0px;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.459);
-  background-color: var(--primary);
-  color: black;
   border-radius: var(--border-radius);
-
   transition: all 200ms ease;
-
   font-weight: 500;
-  font-family: 'Roboto-Slab';
   padding: 0.5rem;
   padding-inline: 1rem;
+  font-family: 'Roboto-Slab';
+  background-color: var(--primary);
+  color: black;
 }
 
 button:hover,
@@ -172,7 +170,7 @@ button:active,
 input[type='submit']:active {
   background-color: var(--primary-darker);
   color: var(--text-off);
-}
+} */
 
 @media screen and (min-width: 600px) {
   :root {
