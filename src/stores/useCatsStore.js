@@ -9,6 +9,11 @@ export const useCatsStore = defineStore('cats', () => {
     currentCat: {
       id: '',
       name: '',
+      birthday: '',
+      food_info: '',
+      health_info: '',
+      behaviour_info: '',
+
       age: '',
       description: ''
     },
@@ -53,9 +58,37 @@ export const useCatsStore = defineStore('cats', () => {
       (state.currentCat.description = data.description)
   }
 
+  function getAge(birthday) {
+    // calculates age in years or month and returns that number + the according "label"
+    if (birthday.length <= 0) {
+      return
+    }
+    let birthMonth = birthday.getMonth()
+    let currentDate = new Date()
+    let currentMonth = currentDate.getMonth()
+    let difference = currentDate - birthday
+    let age = new Date(difference)
+    let ageYears = Math.ceil(age.getFullYear() - 1970)
+    console.log(age.getFullYear() - 1970)
+    let ageMonth = 0
+    if (ageYears < 1) {
+      ageMonth = currentMonth - birthMonth
+      console.log(currentMonth + '; ' + birthMonth)
+      if (currentMonth < birthMonth) {
+        ageMonth = 12 - birthMonth + currentMonth
+        console.log(ageMonth + 'xxx')
+      }
+      let monthText = ageMonth > 1 || ageMonth === 0 ? 'Monate' : 'Monat'
+      return ageMonth + ' ' + monthText
+    }
+    let yearText = ageYears > 1 || ageYears === 0 ? 'Jahre' : 'Jahr'
+    return ageYears + ' ' + yearText
+  }
+
   return {
     state,
     fetchCats,
-    fetchCat
+    fetchCat,
+    getAge
   }
 })
