@@ -21,6 +21,18 @@ const handleLogin = async () => {
     loading.value = false
   }
 }
+
+// async function handleLogin() {
+//   const { data, error } = await supabase.auth.signUp({
+//     email: email.value,
+//     password: password.value,
+//     options: {
+//       emailRedirectTo: 'https//example.com/welcome'
+//     }
+//   })
+//   console.log(data)
+//   console.log(error)
+// }
 </script>
 
 <template>
@@ -38,7 +50,6 @@ const handleLogin = async () => {
       </p>
       <div class="form-input">
         <input class="inputField" required type="email" placeholder="Your email" v-model="email" />
-
         <input
           type="submit"
           class="button block btn-submit"

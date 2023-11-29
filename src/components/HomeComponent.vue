@@ -81,8 +81,56 @@
 <script setup>
 import { useUserStore } from '../stores/useUserStore'
 import { useRouter } from 'vue-router'
+import { onBeforeMount, ref, watchEffect } from 'vue'
+import { supabase } from '@/supabase'
+import { useCatsStore } from '../stores/useCatsStore'
+
 const userStore = useUserStore()
 const router = useRouter()
+
+const catsStore = useCatsStore()
+
+const session = ref()
+const fetchError = ref(null)
+const user_id = ref('')
+const inputName = ref('')
+const inputAge = ref()
+const inputDescription = ref('')
+
+const formError = ref('')
+
+const orderBy = ref('created_at')
+
+onBeforeMount(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    session.value = data.session
+    console.log(data.session)
+    user_id.value = data.session.user.id
+    catsStore.fetchCats()
+  })
+
+  supabase.auth.onAuthStateChange((_, _session) => {
+    session.value = _session
+    catsStore.fetchCats
+  })
+})
+
+const fetchCats = async () => {
+  const { data, error } = await supabase
+    .from('cats')
+    .select()
+    // .eq('user_id', userStore.state.userId)
+    .order(orderBy.value, { ascending: false })
+  if (error) {
+    fetchError.value = 'could not fetch cats'
+    console.log(error)
+    catsStore.state.cats = {}
+  }
+  if (data) {
+    catsStore.state.cats = data
+    fetchError.value = null
+  }
+}
 </script>
 
 <style scoped>
@@ -91,6 +139,7 @@ const router = useRouter()
   justify-items: center;
   padding-inline: 1rem;
   background-color: white;
+  height: min-content;
 }
 .user-greeting {
   text-align: center;

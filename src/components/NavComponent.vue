@@ -11,7 +11,7 @@
         <div class="nav-wrapper" :class="{ navactive: menuActive }">
           <ul>
             <li @click="goToPage('/')">Home</li>
-            <li @click="goToPage('/cats')">Meine Katzen</li>
+            <li @click="goToPage('/add-cat')">Neue Katze</li>
             <li @click="goToPage('/user')">Cat Herder</li>
             <li @click="goToPage('/user')">Einstellungen</li>
             <li @click="goToPage('/')">Impressum</li>
@@ -63,6 +63,7 @@
   scale: 1.05;
   transform-origin: center;
   color: var(--alert-dark);
+  cursor: pointer;
 }
 
 .nav-wrapper {
@@ -80,6 +81,7 @@
   color: var(--text);
   visibility: visible;
 }
+
 ul,
 li {
   list-style: none;
@@ -87,10 +89,13 @@ li {
   margin: 0;
   padding-left: 10px;
   font-size: 1.25rem;
-  line-height: 2rem;
+  line-height: 2.5rem;
   font-family: 'Roboto-Slab';
   border-bottom: 0px transparent solid;
   transition: all 300ms ease-in-out;
+}
+ul {
+  padding-top: 1.5rem;
 }
 li {
   width: 80%;
@@ -98,6 +103,7 @@ li {
 li:hover {
   color: var(--dark);
   border-bottom: 10px var(--secondary) solid;
+  cursor: pointer;
 }
 
 .v-enter-active,
