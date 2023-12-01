@@ -164,12 +164,38 @@ onBeforeMount(async () => {
   box-shadow: 2px 2px 5px 0 var(--hover-shadow);
   scale: 1.02;
 }
+
+.cat-info:hover > .cat-avatar {
+  scale: 1.1;
+  animation: tilt-shaking 0.25s 2 ease-in-out;
+}
+
+@keyframes tilt-shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2.5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-2.5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 .cat-avatar {
   width: 4rem;
   height: 4rem;
   grid-column: 1;
   grid-row: 1 / 4;
   margin-inline: 0.25rem;
+  scale: 1;
+  transition: all 200ms ease-in-out;
 }
 .cat-name {
   grid-column: 2;
