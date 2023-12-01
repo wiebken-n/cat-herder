@@ -2,37 +2,45 @@
   <div class="content-wrapper">
     <header class="header">
       <h1 class="user-greeting" data-cy="user-greeting">
-        Willkommen {{ userStore.state.userName }}!
+        Willkommen {{ userStore.state.username }}!
       </h1>
     </header>
     <article class="cat-overview content-wrapper-owned-cats" data-cy="cat-overview">
       <h2 class="cat-overview-headline" data-cy="cat-overview-headline">Meine Katzen:</h2>
-      <article class="cat-info" data-cy="cat-info">
+      <article
+        v-for="cat of catsStore.state.cats"
+        class="cat-info"
+        data-cy="cat-info"
+        :key="cat.id"
+        @click="router.push({ name: 'cat', params: { id: cat.id } })"
+      >
         <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
-        <p class="cat-herders">Herders</p>
-      </article>
-      <article class="cat-info" data-cy="cat-info">
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
-        <p class="cat-herders">Herders</p>
-      </article>
-      <article class="cat-info" data-cy="cat-info">
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
+        <p class="cat-name">{{ cat.name }}</p>
+        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }}</p>
+
         <p class="cat-herders">Herders</p>
       </article>
 
-      <Button
+      <!-- <article class="cat-info" data-cy="cat-info">
+        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+        </svg>
+        <p class="cat-name">my Cat</p>
+        <p class="cat-age">8</p>
+        <p class="cat-herders">Herders</p>
+      </article>
+      <article class="cat-info" data-cy="cat-info">
+        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+        </svg>
+        <p class="cat-name">my Cat</p>
+        <p class="cat-age">8</p>
+        <p class="cat-herders">Herders</p>
+      </article> -->
+
+      <PrimeButton
         label="Füge eine Katze hinzu"
         class="btn-add-cat"
         @click="router.push('/add-cat')"
@@ -44,7 +52,7 @@
             <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor" />
           </svg>
         </template>
-      </Button>
+      </PrimeButton>
     </article>
     <article class="cat-overview content-wrapper-herded-cats" data-cy="cat-overview">
       <h2 class="cat-overview-headline" data-cy="cat-overview-headline">
@@ -81,7 +89,7 @@
 <script setup>
 import { useUserStore } from '../stores/useUserStore'
 import { useRouter } from 'vue-router'
-import { onBeforeMount, ref, watchEffect } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { supabase } from '@/supabase'
 import { useCatsStore } from '../stores/useCatsStore'
 
@@ -91,46 +99,23 @@ const router = useRouter()
 const catsStore = useCatsStore()
 
 const session = ref()
-const fetchError = ref(null)
 const user_id = ref('')
-const inputName = ref('')
-const inputAge = ref()
-const inputDescription = ref('')
 
-const formError = ref('')
-
-const orderBy = ref('created_at')
-
-onBeforeMount(() => {
-  supabase.auth.getSession().then(({ data }) => {
+onBeforeMount(async () => {
+  await supabase.auth.getSession().then(({ data }) => {
     session.value = data.session
     console.log(data.session)
     user_id.value = data.session.user.id
     catsStore.fetchCats()
   })
 
-  supabase.auth.onAuthStateChange((_, _session) => {
+  await supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
-    catsStore.fetchCats
   })
-})
 
-const fetchCats = async () => {
-  const { data, error } = await supabase
-    .from('cats')
-    .select()
-    // .eq('user_id', userStore.state.userId)
-    .order(orderBy.value, { ascending: false })
-  if (error) {
-    fetchError.value = 'could not fetch cats'
-    console.log(error)
-    catsStore.state.cats = {}
-  }
-  if (data) {
-    catsStore.state.cats = data
-    fetchError.value = null
-  }
-}
+  catsStore.fetchCats
+  userStore.getProfile(session)
+})
 </script>
 
 <style scoped>
@@ -174,6 +159,10 @@ const fetchCats = async () => {
   padding: 0.5rem;
   scale: 1;
   transition: all 200ms ease-in-out;
+}
+
+.cat-info > * {
+  margin: 0.125rem 0;
 }
 .cat-info:hover {
   background-color: var(--secondary-light);

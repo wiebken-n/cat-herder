@@ -12,12 +12,12 @@
             <use xlink:href="@/assets/icons.svg#heart" fill="currentcolor"></use>
           </svg>
         </div>
-        <InputText
+        <PrimeInputText
           id="input-cat-name"
           class="input-cat-name input"
           data-cy="input-cat-name"
           v-model="catsStore.state.currentCat.name"
-        ></InputText>
+        />
       </article>
       <article>
         <div>
@@ -26,7 +26,7 @@
             <use xlink:href="@/assets/icons.svg#birthday-cake" fill="currentcolor"></use>
           </svg>
         </div>
-        <Calendar
+        <PrimeCalendar
           class="input"
           id="input-cat-birthday"
           v-model="catsStore.state.currentCat.birthday"
@@ -42,11 +42,11 @@
             <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
           </svg>
         </div>
-        <Textarea
+        <PrimeTextArea
           v-model="catsStore.state.currentCat.food_info"
           id="input-cat-food"
           class="input-cat-food input input-area"
-        ></Textarea>
+        ></PrimeTextArea>
       </article>
       <article>
         <div>
@@ -57,11 +57,11 @@
             <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
           </svg>
         </div>
-        <Textarea
+        <PrimeTextArea
           id="input-cat-health"
           class="input-cat-health input input-area"
           v-model="catsStore.state.currentCat.health_info"
-        ></Textarea>
+        ></PrimeTextArea>
       </article>
       <article>
         <div>
@@ -72,26 +72,92 @@
             <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
           </svg>
         </div>
-        <Textarea
+        <PrimeTextArea
           id="input-cat-behaviour"
           class="input-cat-behaviour input input-area"
           v-model="catsStore.state.currentCat.behaviour_info"
-        ></Textarea>
+        ></PrimeTextArea>
       </article>
-
-      <Button class="btn-submit" label="Füge deine Katze hinzu"></Button>
+      <PrimeButton @click="addCat" class="btn-submit" label="Füge deine Katze hinzu"></PrimeButton>
     </form>
   </div>
-  <h2>age: {{ catsStore.getAge(catsStore.state.currentCat.birthday) }}</h2>
 </template>
 
 <script setup>
-// import { ref } from 'vue'
+import { ref } from 'vue'
 // import CatAvatar from '../components/CatAvatar.vue'
 import { useCatsStore } from '../stores/useCatsStore'
-
+import { supabase } from '../supabase'
+const formError = ref('')
 const catsStore = useCatsStore()
 
+const addCat = async () => {
+  let name = catsStore.state.currentCat.name
+  let birthday = catsStore.state.currentCat.birthday
+  console.log(name, birthday)
+  const { data, error } = await supabase.from('cats').insert([{ name, birthday }]).select()
+
+  if (error) {
+    console.log(error)
+    formError.value = error
+    return
+  }
+  if (data) {
+    catsStore.state.currentCat.id = data[0].id
+    console.log(data)
+    formError.value = ''
+    addFood(data[0].id)
+    addHealth(data[0].id)
+    addBehaviour(data[0].id)
+  }
+}
+
+const addFood = async (catId) => {
+  let food_info = catsStore.state.currentCat.food_info
+  let cat_id = catId
+  const { data, error } = await supabase.from('food').insert([{ cat_id, food_info }]).select()
+  if (error) {
+    console.log(error)
+    formError.value = error
+    return
+  }
+  if (data) {
+    console.log(data)
+    formError.value = ''
+  }
+}
+
+const addHealth = async (catId) => {
+  let health_info = catsStore.state.currentCat.health_info
+  let cat_id = catId
+  const { data, error } = await supabase.from('health').insert([{ cat_id, health_info }]).select()
+  if (error) {
+    console.log(error)
+    formError.value = error
+    return
+  }
+  if (data) {
+    console.log(data)
+    formError.value = ''
+  }
+}
+const addBehaviour = async (catId) => {
+  let behaviour_info = catsStore.state.currentCat.behaviour_info
+  let cat_id = catId
+  const { data, error } = await supabase
+    .from('behaviour')
+    .insert([{ cat_id, behaviour_info }])
+    .select()
+  if (error) {
+    console.log(error)
+    formError.value = error
+    return
+  }
+  if (data) {
+    console.log(data)
+    formError.value = ''
+  }
+}
 // const imgUrl = ref('')
 </script>
 <style scoped>

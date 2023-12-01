@@ -39,34 +39,34 @@ export const useCatsStore = defineStore('cats', () => {
     }
   }
 
-  const fetchCat = async () => {
-    const { data, error } = await supabase
-      .from('cats')
-      .select()
-      .eq('id', state.currentCat.id)
-      .single()
+  const fetchCat = async (id) => {
+    const { data, error } = await supabase.from('cats').select().eq('id', id).single()
+    console.log(id)
     if (error) {
-      console.log(state.currentCat.id)
+      console.log(id)
       router.push('/')
       return
     }
     if (data) {
       console.log(data)
+      state.currentCat.name = data.name
+      state.currentCat.id = data.id
+      state.currentCat.birthday = data.birthday
+      console.log(state.currentCat)
     }
-    ;(state.currentCat.name = data.name),
-      (state.currentCat.age = data.age),
-      (state.currentCat.description = data.description)
   }
 
   function getAge(birthday) {
+    console.log(birthday)
+    let newBirthday = new Date(birthday)
     // calculates age in years or month and returns that number + the according "label"
-    if (birthday.length <= 0) {
+    if (newBirthday.length <= 0) {
       return
     }
-    let birthMonth = birthday.getMonth()
+    let birthMonth = newBirthday.getMonth()
     let currentDate = new Date()
     let currentMonth = currentDate.getMonth()
-    let difference = currentDate - birthday
+    let difference = currentDate - newBirthday
     let age = new Date(difference)
     let ageYears = Math.ceil(age.getFullYear() - 1970)
     console.log(age.getFullYear() - 1970)

@@ -10,7 +10,7 @@
       consectetur varius nibh, id porttitor magna interdum a. Phasellus laoreet tortor a sapien
       semper, id egestas ipsum imperdiet. Aliquam a enim nec mi fermentum sollicitudin.
     </p>
-    <Button
+    <PrimeButton
       label="Log in"
       class="btn-login"
       data-cy="btn-login"

@@ -32,6 +32,11 @@ const router = createRouter({
       path: '/user',
       name: 'userdata',
       component: () => import('@/views/UserAuthView.vue')
+    },
+    {
+      path: '/cat/:id',
+      name: 'cat',
+      component: () => import('@/views/CatView.vue')
     }
   ]
 })

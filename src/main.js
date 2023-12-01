@@ -1,8 +1,6 @@
 /* eslint-disable vue/no-reserved-component-names */
 /* eslint-disable vue/multi-word-component-names */
 
-import './assets/base-style.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
@@ -15,11 +13,13 @@ import 'primevue/resources/themes/lara-light-blue/theme.css'
 
 // import Slider from 'primevue/slider'
 // import Knob from 'primevue/knob'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Calendar from 'primevue/calendar'
-import FileUpload from 'primevue/fileupload'
+import PrimeButton from 'primevue/button'
+import PrimeInputText from 'primevue/inputtext'
+import PrimeTextArea from 'primevue/textarea'
+import PrimeCalendar from 'primevue/calendar'
+// import FileUpload from 'primevue/fileupload'
+
+import './assets/base-style.css'
 
 /* <<<<<<<<<<<< Prime Vue Component imports */
 
@@ -32,11 +32,11 @@ app.use(PrimeVue)
 
 // app.component('Slider', Slider)
 // app.component('Knob', Knob)
-app.component('Button', Button)
-app.component('InputText', InputText)
-app.component('Textarea', Textarea)
-app.component('Calendar', Calendar)
-app.component('FileUpload', FileUpload)
+app.component('PrimeButton', PrimeButton)
+app.component('PrimeInputText', PrimeInputText)
+app.component('PrimeTextArea', PrimeTextArea)
+app.component('PrimeCalendar', PrimeCalendar)
+// app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */
 

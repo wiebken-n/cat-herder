@@ -1,50 +1,24 @@
 <script setup>
 import { supabase } from '../supabase'
-import { onMounted, ref, toRefs, computed } from 'vue'
+import { onBeforeMount, ref, toRefs, computed } from 'vue'
 import { useUserStore } from '../stores/useUserStore'
 
 const userStore = useUserStore()
+
+onBeforeMount(() => {
+  userStore.getProfile(session)
+})
 
 const props = defineProps(['session'])
 const { session } = toRefs(props)
 
 const loading = ref(true)
 
-onMounted(() => {
-  getProfile()
-})
-
 const btnValue = computed(() => {
-  if (loading.value) {
+  if (userStore.fetchState.loading) {
     return 'Loading'
   } else return 'Update'
 })
-
-async function getProfile() {
-  try {
-    loading.value = true
-    const { user } = session.value
-
-    const { data, error, status } = await supabase
-      .from('profiles')
-      .select(`username, avatar_url, full_name`)
-      .eq('id', user.id)
-      .single()
-
-    if (error && status !== 406) throw error
-
-    if (data) {
-      ;(userStore.state.username = data.username),
-        (userStore.state.avatar_url = data.avatar_url),
-        (userStore.state.full_name = data.full_name)
-    }
-  } catch (error) {
-    alert(error.message)
-  } finally {
-    loading.value = false
-    userStore.state.usernameOld = userStore.state.username
-  }
-}
 
 async function updateProfile() {
   try {
@@ -91,29 +65,46 @@ async function signOut() {
     </header>
     <form class="form-widget" @submit.prevent="updateProfile">
       <span class="p-float-label">
-        <InputText class="input-field" id="email" v-model="session.user.email" disabled />
-        <label class="float-label_label" for="email">Email</label>
+        <PrimeInputText class="input-field" id="email" v-model="session.user.email" disabled />
+        <label
+          :class="{ labelUp: session.user.email.length > 0 }"
+          class="float-label_label"
+          for="email"
+          >Email</label
+        >
       </span>
       <span class="p-float-label input-username">
-        <InputText class="input-field" id="username" v-model="userStore.state.username" />
-        <label class="float-label_label" for="username">Username</label>
+        <PrimeInputText class="input-field" id="username" v-model="userStore.state.username" />
+        <label
+          class="float-label_label"
+          :class="{ labelUp: userStore.state.username.length > 0 }"
+          for="username"
+          >Username</label
+        >
       </span>
       <span class="p-float-label">
-        <InputText class="input-field" id="full-name" v-model="userStore.state.full_name" />
+        <PrimeInputText class="input-field" id="full-name" v-model="userStore.state.full_name" />
         <label
-          :class="{ floatLabelActive: userStore.state.full_name.length <= 0 }"
           for="full-name"
           class="float-label_label"
+          :class="{ labelUp: userStore.state.full_name.length > 0 }"
           >Full Name</label
         >
       </span>
       <div class="button-wrapper">
-        <Button type="submit" class="button primary block" :disabled="loading"
-          ><p>{{ btnValue }}</p></Button
+        <PrimeButton
+          type="submit"
+          class="button primary block"
+          :disabled="userStore.fetchState.loading"
+          ><p>{{ btnValue }}</p></PrimeButton
         >
 
-        <Button class="button block" @click="signOut" :disabled="loading" outlined
-          ><p>Sign Out</p></Button
+        <PrimeButton
+          class="button block"
+          @click="signOut"
+          :disabled="userStore.fetchState.loading"
+          outlined
+          ><p>Sign Out</p></PrimeButton
         >
       </div>
     </form>
@@ -145,17 +136,32 @@ form > * {
 }
 .input-field {
   width: 100%;
+  height: 3rem;
 }
 .float-label_label {
+  color: var(--text);
   font-size: 1rem;
-  transform: translateY(-0.55rem);
+  padding-inline: 0.5rem;
 }
 
-.floatLabelActive {
-  font-weight: 500;
-  /* color: var(--primary); */
-  font-style: italic;
+.input-field:focus + .float-label_label {
+  background-color: var(--background-clr);
+  transform: translateY(+0.55rem);
 }
+
+.labelUp {
+  color: var(--text-off);
+  background-color: var(--background-clr);
+  transform: translateY(+0.55rem);
+}
+
+/* .floatLabelActive {
+  font-weight: 500;
+
+  font-style: italic;
+  transform: translateY(-0.55rem);
+} */
+
 .button {
   width: 100%;
   text-align: center;

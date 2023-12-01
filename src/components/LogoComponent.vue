@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <svg class="icon logo" @click="router.push('./')" data-cy="logo">
+    <svg class="icon logo" @click="router.push('/')" data-cy="logo">
       <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg>
   </div>

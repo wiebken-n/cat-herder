@@ -77,14 +77,14 @@ watch(path, () => {
       </svg>
     </div>
     <div>
-      <Button class="button-upload" outlined>
+      <PrimeButton class="button-upload" outlined>
         <label class="primary block" for="single">
           {{ uploading ? 'Lade hoch ...' : 'Füge ein Bild hinzu' }}
         </label>
         <svg width="2rem" height="1rem" class="icon">
           <use xlink:href="@/assets/icons.svg#upload" fill="currentcolor"></use>
         </svg>
-      </Button>
+      </PrimeButton>
 
       <input
         style="visibility: hidden; position: absolute"

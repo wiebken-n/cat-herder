@@ -10,13 +10,13 @@
     <h1>{{ catsStore.state.currentCat.age }}</h1>
     <h1>{{ catsStore.state.currentCat.description }}</h1>
 
-    <Button @click="editMode = true">Edit</Button>
-    <Button @click="deleteCat()">Delete</Button>
+    <PrimeButton @click="editMode = true">Edit</PrimeButton>
+    <PrimeButton @click="deleteCat()">Delete</PrimeButton>
     <p>{{ formError }}</p>
 
     <div v-for="food of foodData.description" :key="food.id">{{ food.description }}</div>
     <div><input type="text" name="new-food" id="new-food" v-model="foodData.newFood" /></div>
-    <div><Button @click="addFood()">add food</Button></div>
+    <div><PrimeButton @click="addFood()">add food</PrimeButton></div>
   </div>
   <div v-if="editMode">
     <h2>{{ catId }}</h2>
@@ -34,10 +34,10 @@
     <!-- <h1>{{ catData.name }}</h1>
     <h1>{{ catData.age }}</h1>
     <h1>{{ catData.description }}</h1> -->
-    <Button @click="updateCat()">Update</Button>
+    <PrimeButton @click="updateCat()">Update</PrimeButton>
   </div>
   <div>
-    <Button @click="router.push('/')">back to home</Button>
+    <PrimeButton @click="router.push('/')">back to home</PrimeButton>
   </div>
 </template>
 
@@ -173,9 +173,9 @@ const updateCat = async () => {
     fetchCat()
   }
 }
-onBeforeMount(() => {
-  catsStore.fetchCat()
-  fetchFood()
+onBeforeMount(async () => {
+  await catsStore.fetchCat()
+  await fetchFood()
 })
 onUpdated(() => {})
 </script>
