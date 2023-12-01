@@ -9,6 +9,7 @@ export const useCatsStore = defineStore('cats', () => {
     currentCat: {
       id: '',
       name: '',
+      avatar: '',
       birthday: '',
       food_info: '',
       health_info: '',
@@ -52,6 +53,7 @@ export const useCatsStore = defineStore('cats', () => {
       state.currentCat.name = data.name
       state.currentCat.id = data.id
       state.currentCat.birthday = data.birthday
+      state.currentCat.avatar = data.avatar
       console.log(state.currentCat)
     }
   }

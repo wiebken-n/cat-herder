@@ -2,9 +2,39 @@
   <div class="content-wrapper">
     <header><h1 class="headline" data-cy="headline">Füge Deine Katze hinzu</h1></header>
     <form>
-      <!-- <article class="input-picture-wrapper">
-        <CatAvatar size="4" @imgurl="(e) => (imgUrl = e)"></CatAvatar>
-      </article> -->
+      <article class="input-avatar-wrapper">
+        <div class="image-container">
+          <svg
+            v-if="!catsStore.state.currentCat.avatar"
+            alt="cat avatar"
+            class="cat-avatar cat-image-show"
+            data-cy="cat-avatar"
+            @click="pickAvatarVisible = true"
+          >
+            <use
+              class="svg-img"
+              xlink:href="@/assets/icons.svg#cat-sitting"
+              fill="currentcolor"
+            ></use>
+          </svg>
+          <img
+            v-else
+            class="cat-image-show"
+            :src="`./src/assets/images/cat-avatar_` + catsStore.state.currentCat.avatar + `.webp`"
+            alt="cat avatar"
+            @click="pickAvatarVisible = true"
+          />
+        </div>
+
+        <PrimeButton
+          class="button-avatar-selection"
+          label="Wähle einen Avatar aus"
+          icon="pi pi-external-link"
+          @click="pickAvatarVisible = true"
+          outlined
+        />
+      </article>
+
       <article class="input-name-wrapper">
         <div>
           <label class="label" for="input-cat-name"> Wie heißt deine Katze?</label>
@@ -81,6 +111,25 @@
       <PrimeButton @click="addCat" class="btn-submit" label="Füge deine Katze hinzu"></PrimeButton>
     </form>
   </div>
+  <PrimeDialog
+    v-model:visible="pickAvatarVisible"
+    modal
+    header="Wähle einen Avatarbild aus"
+    :style="{ width: '50rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  >
+    <div class="avatars-container">
+      <div class="avatar-wrapper" v-for="number of avatarNumbers" :key="number">
+        <button class="pick-avatar-button" @click="selectAvatar(number)">
+          <img
+            class="cat-image"
+            :src="`./src/assets/images/cat-avatar_` + number + `.webp`"
+            :alt="'Katzenavatar Nr. ' + number"
+          />
+        </button>
+      </div>
+    </div>
+  </PrimeDialog>
 </template>
 
 <script setup>
@@ -90,12 +139,29 @@ import { useCatsStore } from '../stores/useCatsStore'
 import { supabase } from '../supabase'
 const formError = ref('')
 const catsStore = useCatsStore()
+const pickAvatarVisible = ref(false)
+const avatarNumbers = []
+// const selectedAvatar = ref('')
+
+createAvatarNumbers()
+function createAvatarNumbers() {
+  for (let i = 1; i < 10; i++) {
+    avatarNumbers.push(i)
+  }
+  console.log(avatarNumbers)
+}
+
+function selectAvatar(number) {
+  catsStore.state.currentCat.avatar = number
+  pickAvatarVisible.value = false
+}
 
 const addCat = async () => {
   let name = catsStore.state.currentCat.name
   let birthday = catsStore.state.currentCat.birthday
+  let avatar = catsStore.state.currentCat.avatar
   console.log(name, birthday)
-  const { data, error } = await supabase.from('cats').insert([{ name, birthday }]).select()
+  const { data, error } = await supabase.from('cats').insert([{ name, birthday, avatar }]).select()
 
   if (error) {
     console.log(error)
@@ -182,6 +248,7 @@ form {
   display: grid;
   gap: 2rem;
   padding-bottom: 2rem;
+  position: relative;
 }
 form > article {
   width: 70vw;
@@ -222,5 +289,51 @@ article > div {
   form > article > * {
     width: 500px;
   }
+}
+
+.avatars-container {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.image-container {
+  display: grid;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+.cat-image,
+.cat-image-show {
+  background-color: transparent;
+  border-radius: 100px;
+  width: 100px;
+  height: auto;
+  transition: all 200ms ease-in-out;
+}
+.cat-avatar {
+  color: var(--text-on-dark);
+  background-color: var(--primary-lighter);
+  height: 100px;
+  width: 100px;
+  /* padding: 1rem; */
+  border-radius: 90%;
+}
+.svg-img {
+  scale: 0.5;
+  transform: translate(50%, 50%);
+}
+
+.pick-avatar-button {
+  background-color: transparent;
+  border: 0 transparent solid;
+}
+.cat-image:hover {
+  box-shadow: 0 0 20px 2px var(--primary);
+}
+.cat-image:active {
+  box-shadow: 0 0 20px 2px var(--secondary);
 }
 </style>

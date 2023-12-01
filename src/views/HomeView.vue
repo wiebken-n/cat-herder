@@ -14,9 +14,16 @@
         :key="cat.id"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+        <img
+          v-if="cat.avatar"
+          class="cat-avatar"
+          :src="`./src/assets/images/cat-avatar_` + cat.avatar + `.webp`"
+          alt=""
+        />
+        <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
+
         <p class="cat-name">{{ cat.name }}</p>
         <p class="cat-age">{{ catsStore.getAge(cat.birthday) }}</p>
 
@@ -162,10 +169,12 @@ onBeforeMount(async () => {
   height: 4rem;
   grid-column: 1;
   grid-row: 1 / 4;
+  margin-inline: 0.25rem;
 }
 .cat-name {
   grid-column: 2;
   grid-row: 1;
+  font-weight: 550;
 }
 .cat-age {
   grid-column: 2;
