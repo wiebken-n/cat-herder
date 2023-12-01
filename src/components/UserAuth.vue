@@ -21,18 +21,6 @@ const handleLogin = async () => {
     loading.value = false
   }
 }
-
-// async function handleLogin() {
-//   const { data, error } = await supabase.auth.signUp({
-//     email: email.value,
-//     password: password.value,
-//     options: {
-//       emailRedirectTo: 'https//example.com/welcome'
-//     }
-//   })
-//   console.log(data)
-//   console.log(error)
-// }
 </script>
 
 <template>

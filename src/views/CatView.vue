@@ -24,5 +24,7 @@ catsStore.state.currentCat.id = route.params.id
 onBeforeMount(() => {
   console.log(route.params.id)
   catsStore.fetchCat(route.params.id)
+  console.log('Route: ')
+  console.log(route.params)
 })
 </script>

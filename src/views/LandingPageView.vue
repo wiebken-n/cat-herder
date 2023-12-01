@@ -1,8 +1,7 @@
 <template>
-  <!-- <div class="content-wrapper">
-    <h1>Landing Page</h1>
+  <div class="content-wrapper">
     <svg class="icon logo" data-cy="logo">
-      <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
+      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg>
     <h1 class="headline" data-cy="headline">Cat Herder</h1>
     <p class="intro-text" data-cy="intro-text">
@@ -10,25 +9,29 @@
       consectetur varius nibh, id porttitor magna interdum a. Phasellus laoreet tortor a sapien
       semper, id egestas ipsum imperdiet. Aliquam a enim nec mi fermentum sollicitudin.
     </p>
-    <PrimeButton
-      label="Log in"
-      class="btn-login"
-      data-cy="btn-login"
-      @click="router.push('/login')"
-      raised
-    />
-  </div> -->
-  <LandingPage></LandingPage>
+    <PrimeButton label="Log in" class="btn-login" data-cy="btn-login" @click="$emit('toLogin')" />
+  </div>
 </template>
 
 <script setup>
 // import { ref } from 'vue'
 // import { useRouter } from 'vue-router'
-import LandingPage from '../components/LandingPage.vue'
 // const router = useRouter()
+// const value = ref(0)
 </script>
 
 <style scoped>
+.slider {
+  display: flex;
+  align-items: center;
+  align-items: center;
+  height: 0.5rem;
+  width: 10rem;
+}
+.p-slider-handle {
+  align-self: center;
+  justify-self: center;
+}
 .content-wrapper {
   display: grid;
   justify-items: center;

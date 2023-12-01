@@ -1,7 +1,7 @@
 <template>
-  <div class="content-wrapper">
+  <div class="content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
-      <svg @click="rollOutMenu" alt="burger-menu-icon" class="burger" data-cy="burger">
+      <svg @click="activateMenu" alt="burger-menu-icon" class="burger" data-cy="burger">
         <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
       </svg>
       <!-- "`/plantspecies/view/${species.id}`" -->
@@ -31,7 +31,7 @@
   position: relative;
   visibility: hidden;
   background-color: transparent;
-  transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in;
 }
 .menuactive {
   visibility: visible;
@@ -123,11 +123,15 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const menuActive = ref(false)
 
-const rollOutMenu = function () {
+const activateMenu = function () {
   console.log('menu!')
   menuActive.value = !menuActive.value
 }
-
+const deactivateMenu = function () {
+  setTimeout(() => {
+    menuActive.value = false
+  }, '1000')
+}
 const goToPage = function (path) {
   router.push(path)
   menuActive.value = !menuActive.value

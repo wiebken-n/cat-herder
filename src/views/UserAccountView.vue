@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import { supabase } from '../supabase'
 import { onBeforeMount, ref, toRefs, computed } from 'vue'
 import { useUserStore } from '../stores/useUserStore'
@@ -61,15 +61,13 @@ async function signOut() {
 <template>
   <div class="content-wrapper">
     <header>
-      <h1>Hier kannst du deine Nutzerdaten ändern, {{ userStore.state.usernameOld }}</h1>
+      <h1 v-if="!userStore.state.usernameOld">Bitte ergänze deine Daten!</h1>
+      <h1 v-else>Hier kannst du deine Nutzerdaten ändern, {{ userStore.state.usernameOld }}</h1>
     </header>
     <form class="form-widget" @submit.prevent="updateProfile">
       <span class="p-float-label">
         <PrimeInputText class="input-field" id="email" v-model="session.user.email" disabled />
-        <label
-          :class="{ labelUp: session.user.email.length > 0 }"
-          class="float-label_label"
-          for="email"
+        <label :class="{ labelUp: session.user.email }" class="float-label_label" for="email"
           >Email</label
         >
       </span>
@@ -77,7 +75,7 @@ async function signOut() {
         <PrimeInputText class="input-field" id="username" v-model="userStore.state.username" />
         <label
           class="float-label_label"
-          :class="{ labelUp: userStore.state.username.length > 0 }"
+          :class="{ labelUp: userStore.state.username }"
           for="username"
           >Username</label
         >
@@ -87,7 +85,7 @@ async function signOut() {
         <label
           for="full-name"
           class="float-label_label"
-          :class="{ labelUp: userStore.state.full_name.length > 0 }"
+          :class="{ labelUp: userStore.state.full_name }"
           >Full Name</label
         >
       </span>
@@ -146,21 +144,15 @@ form > * {
 
 .input-field:focus + .float-label_label {
   background-color: var(--background-clr);
-  transform: translateY(+0.55rem);
+  transform: translateY(0.55rem);
+  color: var(--primary);
 }
 
 .labelUp {
   color: var(--text-off);
   background-color: var(--background-clr);
-  transform: translateY(+0.55rem);
+  transform: translateY(0.55rem);
 }
-
-/* .floatLabelActive {
-  font-weight: 500;
-
-  font-style: italic;
-  transform: translateY(-0.55rem);
-} */
 
 .button {
   width: 100%;
@@ -187,4 +179,4 @@ p {
 }
 @media screen and (min-width: 1200px) {
 }
-</style> -->
+</style>
