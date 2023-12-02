@@ -4,15 +4,22 @@ import { supabase } from '../supabase'
 
 const loading = ref(false)
 const email = ref('')
+const linkSend = ref(false)
 
 const handleLogin = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOtp({
-      email: email.value
+      email: email.value,
+      options: {
+        data: {
+          username: 'testuser'
+        }
+      }
     })
     if (error) throw error
     alert('Check your email for the login link!')
+    linkSend.value = true
   } catch (error) {
     if (error instanceof Error) {
       alert(error.message)
@@ -24,14 +31,12 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="content-wrapper">
-    <img alt="" name="svguse:/icons.svg#catshield" src="" />
+  <div v-if="!linkSend" class="content-wrapper">
     <svg class="icon">
-      <use xlink:href="@/assets/icons.svg#catshield" fill="currentcolor" />
+      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg>
-    <h1>User Auth</h1>
     <h1 class="header">CatHerder</h1>
-    <h2>Die App rund um die Versorgung Deiner Katze</h2>
+
     <form class="signup-form" @submit.prevent="handleLogin">
       <p class="description">
         Gib unten deine E-Mail Adresse ein um einen Login-Link zugeschickt zu bekommen
@@ -47,6 +52,15 @@ const handleLogin = async () => {
         />
       </div>
     </form>
+  </div>
+  <div v-else class="content-wrapper">
+    <svg class="icon">
+      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
+    </svg>
+    <h1 class="header">CatHerder</h1>
+    <p class="description">
+      Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
+    </p>
   </div>
 </template>
 

@@ -18,6 +18,7 @@ import PrimeInputText from 'primevue/inputtext'
 import PrimeTextArea from 'primevue/textarea'
 import PrimeCalendar from 'primevue/calendar'
 import PrimeDialog from 'primevue/dialog'
+import PrimeMenubar from 'primevue/menubar'
 
 // import FileUpload from 'primevue/fileupload'
 
@@ -39,6 +40,7 @@ app.component('PrimeInputText', PrimeInputText)
 app.component('PrimeTextArea', PrimeTextArea)
 app.component('PrimeCalendar', PrimeCalendar)
 app.component('PrimeDialog', PrimeDialog)
+app.component('PrimeMenubar', PrimeMenubar)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */

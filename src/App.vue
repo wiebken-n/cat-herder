@@ -13,7 +13,6 @@ const userStore = useUserStore()
 
 const session = ref('')
 const userId = ref('')
-const landingPageShow = ref(true)
 
 onMounted(() => {
   // console.log('before fetch: ')
@@ -41,8 +40,8 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <div v-if="landingPageShow">
-      <LandingPageView class="landingpage" @toLogin="landingPageShow = false" />
+    <div v-if="!session" :session="session">
+      <LandingPageView />
     </div>
     <div v-else>
       <LogoComponent
@@ -65,10 +64,12 @@ onMounted(() => {
 
 <style scoped>
 .nav-component {
+  position: sticky;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   width: max-content;
   right: 0px;
+  top: 0px;
 }
 .logo-component {
   position: absolute;
@@ -78,8 +79,14 @@ onMounted(() => {
   left: 7px;
   top: 10px;
 }
-.routerview,
-.landingpage {
+.container {
+  position: relative;
   padding-top: 3rem;
+}
+
+@media screen and (min-width: 1000px) {
+  .container {
+    padding-top: 5rem;
+  }
 }
 </style>

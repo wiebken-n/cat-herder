@@ -15,8 +15,8 @@ const router = useRouter()
 }
 .logo {
   color: var(--dark);
-  height: 2rem;
-  width: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
   scale: 1;
   transition: all 200ms ease-in-out;
 }

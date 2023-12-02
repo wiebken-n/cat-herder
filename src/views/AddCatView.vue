@@ -134,14 +134,12 @@
 
 <script setup>
 import { ref } from 'vue'
-// import CatAvatar from '../components/CatAvatar.vue'
 import { useCatsStore } from '../stores/useCatsStore'
 import { supabase } from '../supabase'
 const formError = ref('')
 const catsStore = useCatsStore()
 const pickAvatarVisible = ref(false)
 const avatarNumbers = []
-// const selectedAvatar = ref('')
 
 createAvatarNumbers()
 function createAvatarNumbers() {
@@ -175,6 +173,13 @@ const addCat = async () => {
     addFood(data[0].id)
     addHealth(data[0].id)
     addBehaviour(data[0].id)
+
+    catsStore.state.currentCat.name = ''
+    catsStore.state.currentCat.avatar = ''
+    catsStore.state.currentCat.birthday = ''
+    catsStore.state.currentCat.food_info = ''
+    catsStore.state.currentCat.health_info = ''
+    catsStore.state.currentCat.behaviour_info = ''
   }
 }
 
@@ -240,7 +245,9 @@ header {
   text-align: left;
 }
 .headline {
-  align-self: start;
+  text-align: center;
+  font-size: 1.75rem;
+  padding-bottom: 1rem;
 }
 
 form {

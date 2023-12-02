@@ -144,6 +144,7 @@ h2 {
 }
 
 h1 {
+  font-size: 1.75rem;
   color: var(--text-dark);
 }
 p {

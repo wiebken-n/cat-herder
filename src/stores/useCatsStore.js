@@ -13,10 +13,10 @@ export const useCatsStore = defineStore('cats', () => {
       birthday: '',
       food_info: '',
       health_info: '',
-      behaviour_info: '',
+      behaviour_info: ''
 
-      age: '',
-      description: ''
+      // age: '',
+      // description: ''
     },
     orderBy: 'created_at',
     fetchError: ''

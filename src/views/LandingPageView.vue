@@ -9,15 +9,23 @@
       consectetur varius nibh, id porttitor magna interdum a. Phasellus laoreet tortor a sapien
       semper, id egestas ipsum imperdiet. Aliquam a enim nec mi fermentum sollicitudin.
     </p>
-    <PrimeButton label="Log in" class="btn-login" data-cy="btn-login" @click="$emit('toLogin')" />
+    <PrimeButton label="Open" class="btn-open-modal" icon="pi pi-user" @click="visible = true" />
   </div>
+  <PrimeDialog
+    v-model:visible="visible"
+    modal
+    header=" "
+    :style="{ width: '50rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  >
+    <UserAuth></UserAuth>
+  </PrimeDialog>
 </template>
 
 <script setup>
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
-// const router = useRouter()
-// const value = ref(0)
+import { ref } from 'vue'
+import UserAuth from '../components/UserAuth.vue'
+const visible = ref(false)
 </script>
 
 <style scoped>
@@ -47,7 +55,7 @@
   text-align: left;
   padding-block: 3rem;
 }
-.btn-login {
+.btn-open-modal {
   height: 2.5rem;
   width: 70%;
 }
@@ -59,5 +67,11 @@
   .btn-login {
     width: 10rem;
   }
+}
+
+.dialog-content-wrapper {
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  background-color: var(--background-clr);
 }
 </style>

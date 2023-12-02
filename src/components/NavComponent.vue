@@ -4,7 +4,6 @@
       <svg @click="activateMenu" alt="burger-menu-icon" class="burger" data-cy="burger">
         <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
       </svg>
-      <!-- "`/plantspecies/view/${species.id}`" -->
     </div>
     <transition>
       <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
@@ -50,8 +49,8 @@
 }
 .burger {
   position: absolute;
-  height: 2rem;
-  width: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
   right: 10px;
   top: 10px;
   z-index: 1;

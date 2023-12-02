@@ -1,8 +1,10 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../supabase'
+import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('users', () => {
+  const router = useRouter()
   const state = reactive({
     userId: '',
     username: '',
@@ -40,6 +42,11 @@ export const useUserStore = defineStore('users', () => {
     } finally {
       fetchState.loading = false
       state.usernameOld = state.username
+
+      // sends user to user account site if they have not added an username
+      if (state.username === null) {
+        router.push('./user')
+      }
     }
   }
 

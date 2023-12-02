@@ -106,10 +106,6 @@ onBeforeMount(async () => {
   catsStore.fetchCats
   userStore.getProfile(session)
 
-  // sends user to user account site
-  if (!userStore.state.username) {
-    router.push('./user')
-  }
 })
 </script>
 
@@ -123,7 +119,7 @@ onBeforeMount(async () => {
 }
 .user-greeting {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   padding-bottom: 1rem;
 }
 
