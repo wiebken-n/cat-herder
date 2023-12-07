@@ -40,7 +40,7 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <div v-if="!session" :session="session">
+    <div v-if="!session" >
       <LandingPageView />
     </div>
     <div v-else>
@@ -64,7 +64,7 @@ onMounted(() => {
 
 <style scoped>
 .nav-component {
-  position: sticky;
+  /*position: sticky;*/
   position: absolute;
   z-index: 1;
   width: max-content;

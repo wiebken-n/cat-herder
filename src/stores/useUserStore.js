@@ -19,7 +19,6 @@ export const useUserStore = defineStore('users', () => {
   })
 
   async function getProfile(session) {
-    console.log(fetchState)
     try {
       fetchState.loading = true
       const { user } = session.value

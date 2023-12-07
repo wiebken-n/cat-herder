@@ -94,7 +94,6 @@ const user_id = ref('')
 onBeforeMount(async () => {
   await supabase.auth.getSession().then(({ data }) => {
     session.value = data.session
-    console.log(data.session)
     user_id.value = data.session.user.id
     catsStore.fetchCats()
   })
@@ -105,7 +104,6 @@ onBeforeMount(async () => {
 
   catsStore.fetchCats
   userStore.getProfile(session)
-
 })
 </script>
 
@@ -211,12 +209,16 @@ onBeforeMount(async () => {
   margin-top: 3rem;
 }
 .btn-add-cat {
+  width: 270px;
   display: flex;
-
-  justify-content: space-around;
-  width: auto;
+  justify-content: space-evenly;
+  scale: 1;
+  transition: all 200ms ease-in-out;
 }
 
+.btn-add-cat:hover {
+  scale: 1.02;
+}
 @media screen and (min-width: 600px) {
   .cat-overview {
     grid-template-columns: 1fr 1fr;

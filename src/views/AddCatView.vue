@@ -110,26 +110,26 @@
       </article>
       <PrimeButton @click="addCat" class="btn-submit" label="Füge deine Katze hinzu"></PrimeButton>
     </form>
-  </div>
-  <PrimeDialog
-    v-model:visible="pickAvatarVisible"
-    modal
-    header="Wähle einen Avatarbild aus"
-    :style="{ width: '50rem' }"
-    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <div class="avatars-container">
-      <div class="avatar-wrapper" v-for="number of avatarNumbers" :key="number">
-        <button class="pick-avatar-button" @click="selectAvatar(number)">
-          <img
-            class="cat-image"
-            :src="`./src/assets/images/cat-avatar_` + number + `.webp`"
-            :alt="'Katzenavatar Nr. ' + number"
-          />
-        </button>
+    <PrimeDialog
+      v-model:visible="pickAvatarVisible"
+      modal
+      header="Wähle einen Avatarbild aus"
+      :style="{ width: '50rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+    >
+      <div class="avatars-container">
+        <div class="avatar-wrapper" v-for="number of avatarNumbers" :key="number">
+          <button class="pick-avatar-button" @click="selectAvatar(number)">
+            <img
+              class="cat-image"
+              :src="`./src/assets/images/cat-avatar_` + number + `.webp`"
+              :alt="'Katzenavatar Nr. ' + number"
+            />
+          </button>
+        </div>
       </div>
-    </div>
-  </PrimeDialog>
+    </PrimeDialog>
+  </div>
 </template>
 
 <script setup>

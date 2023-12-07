@@ -36,7 +36,6 @@ export const useCatsStore = defineStore('cats', () => {
     if (data) {
       state.cats = data
       state.fetchError = null
-      console.log(state.cats)
     }
   }
 
@@ -44,22 +43,59 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase.from('cats').select().eq('id', id).single()
     console.log(id)
     if (error) {
-      console.log(id)
       router.push('/')
       return
     }
     if (data) {
-      console.log(data)
       state.currentCat.name = data.name
       state.currentCat.id = data.id
       state.currentCat.birthday = data.birthday
       state.currentCat.avatar = data.avatar
-      console.log(state.currentCat)
+    }
+  }
+
+  const fetchFoodInfo = async (id) => {
+    const { data, error } = await supabase.from('food').select().eq('cat_id', id).single()
+    console.log(id)
+    if (error) {
+      state.fetchError = error
+      console.log(error)
+      return
+    }
+    if (data) {
+      state.currentCat.food_info = data.food_info
+      console.log(data)
+    }
+  }
+  const fetchHealthInfo = async (id) => {
+    const { data, error } = await supabase.from('health').select().eq('cat_id', id).single()
+    console.log(id)
+    if (error) {
+      state.fetchError = error
+      console.log(error)
+      return
+    }
+    if (data) {
+      state.currentCat.health_info = data.health_info
+      console.log(data)
+    }
+  }
+
+  const fetchBehaviourInfo = async (id) => {
+    const { data, error } = await supabase.from('behaviour').select().eq('cat_id', id).single()
+    console.log(id)
+    if (error) {
+      state.fetchError = error
+      console.log(error)
+      return
+    }
+    if (data) {
+      state.currentCat.behaviour_info = data.behaviour_info
+      console.log(data)
     }
   }
 
   function getAge(birthday) {
-    console.log(birthday)
     let newBirthday = new Date(birthday)
     // calculates age in years or month and returns that number + the according "label"
     if (newBirthday.length <= 0) {
@@ -71,14 +107,11 @@ export const useCatsStore = defineStore('cats', () => {
     let difference = currentDate - newBirthday
     let age = new Date(difference)
     let ageYears = Math.ceil(age.getFullYear() - 1970)
-    console.log(age.getFullYear() - 1970)
     let ageMonth = 0
     if (ageYears < 1) {
       ageMonth = currentMonth - birthMonth
-      console.log(currentMonth + '; ' + birthMonth)
       if (currentMonth < birthMonth) {
         ageMonth = 12 - birthMonth + currentMonth
-        console.log(ageMonth + 'xxx')
       }
       let monthText = ageMonth > 1 || ageMonth === 0 ? 'Monate' : 'Monat'
       return ageMonth + ' ' + monthText
@@ -91,6 +124,9 @@ export const useCatsStore = defineStore('cats', () => {
     state,
     fetchCats,
     fetchCat,
+    fetchFoodInfo,
+    fetchHealthInfo,
+    fetchBehaviourInfo,
     getAge
   }
 })
