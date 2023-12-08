@@ -48,6 +48,28 @@
       <h2 class="cat-overview-headline" data-cy="cat-overview-headline">
         Von mir betreute Katzen:
       </h2>
+      <article
+        v-for="cat of catsStore.state.herdedCats"
+        class="cat-info"
+        data-cy="cat-info"
+        :key="cat.id"
+        @click="router.push({ name: 'cat', params: { id: cat.id } })"
+      >
+        <img
+          v-if="cat.avatar"
+          class="cat-avatar"
+          :src="`./src/assets/images/cat-avatar_` + cat.avatar + `.webp`"
+          alt=""
+        />
+        <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+        </svg>
+
+        <p class="cat-name">{{ cat.name }}</p>
+        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }}</p>
+
+        <p class="cat-herders">Herders</p>
+      </article>
       <article class="cat-info" data-cy="cat-info">
         <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
@@ -96,13 +118,15 @@ onBeforeMount(async () => {
     session.value = data.session
     user_id.value = data.session.user.id
     catsStore.fetchCats()
+    catsStore.fetchHerdedCats()
   })
 
   await supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
   })
 
-  catsStore.fetchCats
+  catsStore.fetchCats()
+  catsStore.fetchHerdedCats()
   userStore.getProfile(session)
 })
 </script>

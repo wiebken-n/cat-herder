@@ -141,6 +141,14 @@ const catsStore = useCatsStore()
 const pickAvatarVisible = ref(false)
 const avatarNumbers = []
 
+catsStore.state.currentCat.id = ''
+catsStore.state.currentCat.name = ''
+catsStore.state.currentCat.avatar = ''
+catsStore.state.currentCat.birthday = ''
+catsStore.state.currentCat.food_info = ''
+catsStore.state.currentCat.health_info = ''
+catsStore.state.currentCat.behaviour_info = ''
+
 createAvatarNumbers()
 function createAvatarNumbers() {
   for (let i = 1; i < 10; i++) {

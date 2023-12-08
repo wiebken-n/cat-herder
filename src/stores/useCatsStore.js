@@ -2,10 +2,13 @@ import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '@/supabase'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/useUserStore'
+const userStore = useUserStore()
 const router = useRouter()
 export const useCatsStore = defineStore('cats', () => {
   const state = reactive({
     cats: {},
+    herdedCats: {},
     currentCat: {
       id: '',
       name: '',
@@ -26,7 +29,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select()
-      // .eq('user_id', userStore.state.userId)
+      .eq('user_id', userStore.state.userId)
       .order(state.orderBy, { ascending: false })
     if (error) {
       state.fetchError = 'could not fetch cats'
@@ -35,6 +38,23 @@ export const useCatsStore = defineStore('cats', () => {
     }
     if (data) {
       state.cats = data
+      state.fetchError = null
+    }
+  }
+  const fetchHerdedCats = async () => {
+    const { data, error } = await supabase
+      .from('cats')
+      .select()
+      .neq('user_id', userStore.state.userId)
+      .order(state.orderBy, { ascending: false })
+    if (error) {
+      state.fetchError = 'could not fetch cats'
+      console.log(error)
+      state.herdedCats = {}
+    }
+    if (data) {
+      console.log(data)
+      state.herdedCats = data
       state.fetchError = null
     }
   }
@@ -123,6 +143,7 @@ export const useCatsStore = defineStore('cats', () => {
   return {
     state,
     fetchCats,
+    fetchHerdedCats,
     fetchCat,
     fetchFoodInfo,
     fetchHealthInfo,
