@@ -56,6 +56,8 @@ async function signOut() {
     loading.value = false
   }
 }
+
+
 </script>
 
 <template>

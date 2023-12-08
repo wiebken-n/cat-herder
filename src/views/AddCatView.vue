@@ -37,10 +37,10 @@
 
       <article class="input-name-wrapper">
         <div>
-          <label class="label" for="input-cat-name"> Wie heißt deine Katze?</label>
-          <svg width="1rem" height="1rem" class="icon">
+          <svg class="icon">
             <use xlink:href="@/assets/icons.svg#heart" fill="currentcolor"></use>
           </svg>
+          <label class="label" for="input-cat-name"> Wie heißt deine Katze?</label>
         </div>
         <PrimeInputText
           id="input-cat-name"
@@ -51,10 +51,10 @@
       </article>
       <article>
         <div>
-          <label class="label" for="input-cat-birthday"> Wann wurde deine Katze geboren?</label>
-          <svg width="1rem" height="1rem" class="icon">
+          <svg class="icon">
             <use xlink:href="@/assets/icons.svg#birthday-cake" fill="currentcolor"></use>
           </svg>
+          <label class="label" for="input-cat-birthday"> Wann wurde deine Katze geboren?</label>
         </div>
         <PrimeCalendar
           class="input"
@@ -67,10 +67,10 @@
       </article>
       <article>
         <div>
-          <label class="label" for="input-cat-food ">Welches Futter bekommt deine Katze?</label>
-          <svg width="1rem" height="1rem" class="icon">
+          <svg class="icon">
             <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
           </svg>
+          <label class="label" for="input-cat-food ">Welches Futter bekommt deine Katze?</label>
         </div>
         <PrimeTextArea
           v-model="catsStore.state.currentCat.food_info"
@@ -80,12 +80,12 @@
       </article>
       <article>
         <div>
+          <svg class="icon">
+            <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
+          </svg>
           <label class="label" for="input-cat-health"
             >Welche gesundheitlichen Besonderheiten hat deine Katze?</label
           >
-          <svg width="1rem" height="1rem" class="icon">
-            <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
-          </svg>
         </div>
         <PrimeTextArea
           id="input-cat-health"
@@ -95,12 +95,12 @@
       </article>
       <article>
         <div>
+          <svg class="icon">
+            <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
+          </svg>
           <label class="label" for="input-cat-behaviour"
             >Welche Verhaltensbesonderheiten hat deine Katze?</label
           >
-          <svg width="1rem" height="1rem" class="icon">
-            <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
-          </svg>
         </div>
         <PrimeTextArea
           id="input-cat-behaviour"
@@ -264,14 +264,18 @@ form > article {
 }
 
 article > div {
+  padding-left: 0.25rem;
   display: flex;
-  gap: 0.8rem;
+  gap: 1rem;
+  align-items: center;
 }
 
 .btn-submit {
   width: 70vw;
 }
 .icon {
+  width: 1.25rem;
+  height: 1.25rem;
   color: var(--dark);
 }
 .input-area {

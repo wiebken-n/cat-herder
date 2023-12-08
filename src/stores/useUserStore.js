@@ -48,10 +48,21 @@ export const useUserStore = defineStore('users', () => {
       }
     }
   }
-
+  async function fetchUser(userId) {
+    let { data, error } = await supabase.from('profiles').select().eq('id', userId)
+    console.log(userId)
+    if (error) {
+      console.log(error)
+    }
+    if (data) {
+      console.log(data)
+    }
+    return data
+  }
   return {
     state,
     fetchState,
-    getProfile
+    getProfile,
+    fetchUser
   }
 })

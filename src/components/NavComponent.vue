@@ -11,7 +11,7 @@
           <ul>
             <li @click="goToPage('/')">Home</li>
             <li @click="goToPage('/add-cat')">Neue Katze</li>
-            <li @click="goToPage('/user')">Cat Herder</li>
+            <li @click="goToPage('/herder')">Cat Herder</li>
             <li @click="goToPage('/user')">Einstellungen</li>
             <li @click="goToPage('/')">Impressum</li>
           </ul>
