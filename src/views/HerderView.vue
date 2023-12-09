@@ -7,38 +7,10 @@
     </form>
     <article class="user-info-wrapper">
       <Toast position="top-center" />
-      <div
-        @click="acceptRequest(user)"
-        class="user-info-element"
-        v-for="user of userSearchResults.value"
-        :key="user"
-      >
-        <svg class="user-icon">
-          <use
-            v-if="checkConnectionStatus(user) === 'no connection'"
-            xlink:href="@/assets/icons.svg#user"
-            fill="currentcolor"
-          ></use>
-          <use
-            v-if="
-              checkConnectionStatus(user) === 'pending incoming' ||
-              checkConnectionStatus(user) === 'pending outgoing'
-            "
-            xlink:href="@/assets/icons.svg#user-pending"
-            fill="currentcolor"
-          ></use>
-          <use
-            v-if="checkConnectionStatus(user) === 'connected'"
-            xlink:href="@/assets/icons.svg#user-added"
-            fill="currentcolor"
-          ></use>
-        </svg>
-        <h2>{{ user.username }}</h2>
-        <p>{{ checkConnectionStatus(user) }}</p>
+      <div class="user-info-element" v-for="user of userSearchResults.value" :key="user.id">
+        <HerderData :user="user" :connectionStatus="checkConnectionStatus(user)" />
       </div>
     </article>
-    <PrimeButton @click="addUser()">Add user</PrimeButton>
-    <PrimeButton @click="fetchPassiveRequests()"></PrimeButton>
   </div>
 </template>
 <script setup>
@@ -46,6 +18,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
+import HerderData from '../components/HerderData.vue'
+
 const toast = useToast()
 
 const userStore = useUserStore()
@@ -86,35 +60,6 @@ async function searchUser() {
   }
 }
 
-async function addUser(userId) {
-  const { data, error } = await supabase
-    .from('user_connections')
-    .insert([{ user_passive: userId }])
-    .select()
-
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-  }
-}
-
-async function acceptRequest(user) {
-  const userId = user.id
-  const { data, error } = await supabase
-    .from('user_connections')
-    .update({ connected: true })
-    .eq('user_active', userId)
-
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-  }
-}
-
 async function fetchPassiveRequests() {
   let { data, error } = await supabase
     .from('user_connections')
@@ -128,30 +73,6 @@ async function fetchPassiveRequests() {
     passiveRequests.value = data
   }
 }
-
-function checkConnectionStatus(user) {
-  const status = ref('no connection')
-  // check if that user has send a request to current user
-  for (const entry of passiveRequests.value) {
-    if (user.id === entry.user_active) {
-      status.value = 'pending incoming'
-    }
-  }
-  // check if that user has been send a request by current user
-  for (const entry of activeRequests.value) {
-    if (user.id === entry.user_passive) {
-      status.value = 'pending outgoing'
-    }
-  }
-
-  for (const entry of connections.value) {
-    if (user.id === entry.user_active || user.id === entry.user_passive) {
-      status.value = 'connected'
-    }
-  }
-  return status.value
-}
-
 async function fetchActiveRequests() {
   let { data, error } = await supabase
     .from('user_connections')
@@ -176,14 +97,134 @@ async function fetchConnections() {
 
   if (data) {
     connections.value = data
-    if (data.length > 0) {
-      // const userData = await userStore.fetchUser(data[0].user_active)
-    }
   }
   if (error) {
     console.log(error)
   }
 }
+// async function sendRequest(user) {
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .insert([{ user_passive: user.id }])
+//     .select()
+
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+// }
+
+// async function acceptRequest(user) {
+//   const userId = user.id
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .update({ connected: true })
+//     .eq('user_active', userId)
+
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+// }
+
+// async function deleteRequest(user) {
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .delete()
+//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
+
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+// }
+
+function checkConnectionStatus(user) {
+  const status = ref('no connection')
+  // check if that user has send a request to current user
+  for (const entry of passiveRequests.value) {
+    if (user.id === entry.user_active) {
+      status.value = 'pending incoming'
+    }
+  }
+  // check if that user has been send a request by current user
+  for (const entry of activeRequests.value) {
+    if (user.id === entry.user_passive) {
+      status.value = 'pending outgoing'
+    }
+  }
+
+  for (const entry of connections.value) {
+    if (user.id === entry.user_active || user.id === entry.user_passive) {
+      status.value = 'connected'
+    }
+  }
+  return status.value
+}
+
+// -------- doesn't work for using in for loop @template (fetch to slow -> renders before promise resolved) ------
+
+// async function fetchConnectionStatus(user) {
+//   let { data, error } = await supabase
+//     .from('user_connections')
+//     .select()
+//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
+//     .single()
+
+//   const status = ref('')
+//   console.log(user)
+//   if (data) {
+//     console.log(data)
+//     if (data.connected) {
+//       status.value = 'connection established'
+//       // return 'connection established'
+//     }
+//     if (!data.connected) {
+//       if (data.user_active === user.id) {
+//         status.value = 'incoming request'
+//         // return 'incoming request'
+//         // } else return 'outgoing request'
+//         status.value = 'outgoing request'
+//       }
+//     }
+//   }
+//   if (error) {
+//     status.value = 'no connection'
+//     // return 'no connection'
+//   }
+//   console.log(status.value)
+//   return status
+// }
+
+// async function fetchPendingConnectionStatus(user) {
+//   console.log(user)
+//   let { data, error } = await supabase
+//     .from('user_connections')
+//     .select()
+//     .eq('connected', false)
+//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
+//     .single()
+
+//   if (data) {
+//     console.log(data)
+//     if (data.user_active === user.id) {
+//       return 'incoming request'
+//     }
+//     if (data.user_passive === user.id) {
+//       return 'outgoing request'
+//     }
+//   }
+
+//   if (error) {
+//     console.log(error)
+//   }
+// }
 
 onMounted(async () => {
   await fetchPassiveRequests()
