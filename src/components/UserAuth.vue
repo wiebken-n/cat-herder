@@ -10,12 +10,7 @@ const handleLogin = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOtp({
-      email: email.value,
-      options: {
-        data: {
-          username: 'testuser'
-        }
-      }
+      email: email.value
     })
     if (error) throw error
     alert('Check your email for the login link!')
@@ -86,8 +81,8 @@ const handleLogin = async () => {
 .form-input > * {
   height: 3rem;
 }
-.header {
-}
+/* .header {
+} */
 
 h1 {
   color: var(--dark);

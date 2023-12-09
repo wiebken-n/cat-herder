@@ -70,7 +70,7 @@
 
         <p class="cat-herders">Herders</p>
       </article>
-      <article class="cat-info" data-cy="cat-info">
+      <!-- <article class="cat-info" data-cy="cat-info">
         <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
@@ -93,7 +93,7 @@
         <p class="cat-name">my Cat</p>
         <p class="cat-age">8</p>
         <p class="cat-herders">Owner</p>
-      </article>
+      </article> -->
     </article>
   </div>
 </template>
@@ -138,6 +138,7 @@ onBeforeMount(async () => {
   padding-inline: 1rem;
   background-color: white;
   height: min-content;
+  padding-bottom: 2rem;
 }
 .user-greeting {
   text-align: center;

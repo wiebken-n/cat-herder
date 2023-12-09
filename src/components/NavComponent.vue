@@ -123,7 +123,6 @@ const router = useRouter()
 const menuActive = ref(false)
 
 const activateMenu = function () {
-  console.log('menu!')
   menuActive.value = !menuActive.value
 }
 const deactivateMenu = function () {

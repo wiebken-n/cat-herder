@@ -10,6 +10,7 @@ export const useCatsStore = defineStore('cats', () => {
     cats: {},
     herdedCats: {},
     currentCat: {
+      userId: '',
       id: '',
       name: '',
       avatar: '',
@@ -53,7 +54,6 @@ export const useCatsStore = defineStore('cats', () => {
       state.herdedCats = {}
     }
     if (data) {
-      console.log(data)
       state.herdedCats = data
       state.fetchError = null
     }
@@ -61,7 +61,6 @@ export const useCatsStore = defineStore('cats', () => {
 
   const fetchCat = async (id) => {
     const { data, error } = await supabase.from('cats').select().eq('id', id).single()
-    console.log(id)
     if (error) {
       router.push('/')
       return
@@ -71,12 +70,12 @@ export const useCatsStore = defineStore('cats', () => {
       state.currentCat.id = data.id
       state.currentCat.birthday = data.birthday
       state.currentCat.avatar = data.avatar
+      state.currentCat.userId = data.user_id
     }
   }
 
-  const fetchFoodInfo = async (id) => {
-    const { data, error } = await supabase.from('food').select().eq('cat_id', id).single()
-    console.log(id)
+  const fetchCatInfo = async (id) => {
+    const { data, error } = await supabase.from('cats_info').select().eq('cat_id', id).single()
     if (error) {
       state.fetchError = error
       console.log(error)
@@ -84,12 +83,23 @@ export const useCatsStore = defineStore('cats', () => {
     }
     if (data) {
       state.currentCat.food_info = data.food_info
-      console.log(data)
+      state.currentCat.health_info = data.health_info
+      state.currentCat.behaviour_info = data.behaviour_info
+    }
+  }
+  const fetchFoodInfo = async (id) => {
+    const { data, error } = await supabase.from('food').select().eq('cat_id', id).single()
+    if (error) {
+      state.fetchError = error
+      console.log(error)
+      return
+    }
+    if (data) {
+      state.currentCat.food_info = data.food_info
     }
   }
   const fetchHealthInfo = async (id) => {
     const { data, error } = await supabase.from('health').select().eq('cat_id', id).single()
-    console.log(id)
     if (error) {
       state.fetchError = error
       console.log(error)
@@ -97,13 +107,11 @@ export const useCatsStore = defineStore('cats', () => {
     }
     if (data) {
       state.currentCat.health_info = data.health_info
-      console.log(data)
     }
   }
 
   const fetchBehaviourInfo = async (id) => {
     const { data, error } = await supabase.from('behaviour').select().eq('cat_id', id).single()
-    console.log(id)
     if (error) {
       state.fetchError = error
       console.log(error)
@@ -111,7 +119,6 @@ export const useCatsStore = defineStore('cats', () => {
     }
     if (data) {
       state.currentCat.behaviour_info = data.behaviour_info
-      console.log(data)
     }
   }
 
@@ -145,6 +152,7 @@ export const useCatsStore = defineStore('cats', () => {
     fetchCats,
     fetchHerdedCats,
     fetchCat,
+    fetchCatInfo,
     fetchFoodInfo,
     fetchHealthInfo,
     fetchBehaviourInfo,

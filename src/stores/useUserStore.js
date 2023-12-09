@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
+import { onBeforeMount } from 'vue'
 
 export const useUserStore = defineStore('users', () => {
   const router = useRouter()
@@ -10,7 +11,9 @@ export const useUserStore = defineStore('users', () => {
     username: '',
     usernameOld: '',
     avatar_url: '',
-    full_name: ''
+    full_name: '',
+    herderConnections: '',
+    herders: ''
   })
   const fetchState = reactive({
     loading: false,
@@ -50,19 +53,55 @@ export const useUserStore = defineStore('users', () => {
   }
   async function fetchUser(userId) {
     let { data, error } = await supabase.from('profiles').select().eq('id', userId)
-    console.log(userId)
     if (error) {
       console.log(error)
     }
     if (data) {
-      console.log(data)
+      return data
     }
-    return data
   }
+
+  async function fetchHerders() {
+    let { data, error } = await supabase.from('user_connections').select().eq('connected', true)
+
+    if (data) {
+      const cacheArray = []
+      for (let item of data) {
+        cacheArray.push(item.user_passive)
+        cacheArray.push(item.user_active)
+      }
+      state.herderConnections = cacheArray.filter((id) => id !== state.userId && id !== null)
+      fetchHerderProfiles()
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  async function fetchHerderProfiles() {
+    let { data, error } = await supabase.from('profiles').select().in('id', state.herderConnections)
+
+    if (data) {
+      state.herders = data
+
+      if (data.length > 0) {
+        // const userData = await userStore.fetchUser(data[0].user_active)
+      }
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  onBeforeMount(() => {
+    fetchHerders()
+  })
   return {
     state,
     fetchState,
     getProfile,
-    fetchUser
+    fetchUser,
+    fetchHerders,
+    fetchHerderProfiles
   }
 })

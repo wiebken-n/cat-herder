@@ -136,6 +136,9 @@
 import { ref } from 'vue'
 import { useCatsStore } from '../stores/useCatsStore'
 import { supabase } from '../supabase'
+import { onUnmounted } from 'vue'
+import router from '../router'
+
 const formError = ref('')
 const catsStore = useCatsStore()
 const pickAvatarVisible = ref(false)
@@ -154,7 +157,6 @@ function createAvatarNumbers() {
   for (let i = 1; i < 10; i++) {
     avatarNumbers.push(i)
   }
-  console.log(avatarNumbers)
 }
 
 function selectAvatar(number) {
@@ -166,8 +168,11 @@ const addCat = async () => {
   let name = catsStore.state.currentCat.name
   let birthday = catsStore.state.currentCat.birthday
   let avatar = catsStore.state.currentCat.avatar
-  console.log(name, birthday)
-  const { data, error } = await supabase.from('cats').insert([{ name, birthday, avatar }]).select()
+  const { data, error } = await supabase
+    .from('cats')
+    .insert([{ name, birthday, avatar }])
+    .select()
+    .single()
 
   if (error) {
     console.log(error)
@@ -175,69 +180,55 @@ const addCat = async () => {
     return
   }
   if (data) {
-    catsStore.state.currentCat.id = data[0].id
-    console.log(data)
+    catsStore.state.currentCat.id = data.id
     formError.value = ''
-    addFood(data[0].id)
-    addHealth(data[0].id)
-    addBehaviour(data[0].id)
-
-    catsStore.state.currentCat.name = ''
-    catsStore.state.currentCat.avatar = ''
-    catsStore.state.currentCat.birthday = ''
-    catsStore.state.currentCat.food_info = ''
-    catsStore.state.currentCat.health_info = ''
-    catsStore.state.currentCat.behaviour_info = ''
+    addCatInfo(data.id)
+    // catsStore.state.currentCat.name = ''
+    // catsStore.state.currentCat.avatar = ''
+    // catsStore.state.currentCat.birthday = ''
+    // catsStore.state.currentCat.food_info = ''
+    // catsStore.state.currentCat.health_info = ''
+    // catsStore.state.currentCat.behaviour_info = ''
+    router.push({ name: 'cat', params: { id: catsStore.state.currentCat.id } })
   }
 }
 
-const addFood = async (catId) => {
+const addCatInfo = async (catId) => {
   let food_info = catsStore.state.currentCat.food_info
-  let cat_id = catId
-  const { data, error } = await supabase.from('food').insert([{ cat_id, food_info }]).select()
-  if (error) {
-    console.log(error)
-    formError.value = error
-    return
-  }
-  if (data) {
-    console.log(data)
-    formError.value = ''
-  }
-}
-
-const addHealth = async (catId) => {
   let health_info = catsStore.state.currentCat.health_info
-  let cat_id = catId
-  const { data, error } = await supabase.from('health').insert([{ cat_id, health_info }]).select()
-  if (error) {
-    console.log(error)
-    formError.value = error
-    return
-  }
-  if (data) {
-    console.log(data)
-    formError.value = ''
-  }
-}
-const addBehaviour = async (catId) => {
   let behaviour_info = catsStore.state.currentCat.behaviour_info
   let cat_id = catId
   const { data, error } = await supabase
-    .from('behaviour')
-    .insert([{ cat_id, behaviour_info }])
+    .from('cats_info')
+    .insert([
+      {
+        cat_id: cat_id,
+        food_info: food_info,
+        health_info: health_info,
+        behaviour_info: behaviour_info
+      }
+    ])
     .select()
+    .single()
   if (error) {
     console.log(error)
     formError.value = error
     return
   }
   if (data) {
-    console.log(data)
     formError.value = ''
   }
 }
-// const imgUrl = ref('')
+
+onUnmounted(() => {
+  catsStore.state.currentCat.id = ''
+  catsStore.state.currentCat.name = ''
+  catsStore.state.currentCat.avatar = ''
+  catsStore.state.currentCat.birthday = ''
+  catsStore.state.currentCat.food_info = ''
+  catsStore.state.currentCat.health_info = ''
+  catsStore.state.currentCat.behaviour_info = ''
+})
 </script>
 <style scoped>
 .content-wrapper {

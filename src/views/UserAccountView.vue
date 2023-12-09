@@ -5,6 +5,7 @@ import { useUserStore } from '../stores/useUserStore'
 
 const userStore = useUserStore()
 
+const error = ref('')
 onBeforeMount(() => {
   userStore.getProfile(session)
 })
@@ -21,6 +22,14 @@ const btnValue = computed(() => {
 })
 
 async function updateProfile() {
+  if (userStore.state.username.includes(' ')) {
+    error.value = 'Dein Nutzername darf keine Leerzeichen enthalten!'
+    return
+  }
+  if (userStore.state.username.length < 3) {
+    error.value = 'Dein Nutzername muss mindestens 3 Zeichen lang sein!'
+    return
+  }
   try {
     loading.value = true
     const { user } = session.value
@@ -56,8 +65,6 @@ async function signOut() {
     loading.value = false
   }
 }
-
-
 </script>
 
 <template>
@@ -74,7 +81,7 @@ async function signOut() {
         >
       </span>
       <span class="p-float-label input-username">
-        <PrimeInputText class="input-field" id="username" v-model="userStore.state.username" />
+        <PrimeInputText class="input-field" id="username" v-model.trim="userStore.state.username" />
         <label
           class="float-label_label"
           :class="{ labelUp: userStore.state.username }"
@@ -107,6 +114,7 @@ async function signOut() {
           ><p>Sign Out</p></PrimeButton
         >
       </div>
+      <h2>{{ error }}</h2>
     </form>
   </div>
 </template>

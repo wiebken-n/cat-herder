@@ -12,6 +12,21 @@ import CatsView from './CatsView.vue';
         <h2>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</h2>
       </div>
     </header>
+    <div v-if="ownerId === userStore.state.userId">
+      Herders:
+      <PrimeTag
+        class="user-tag"
+        v-for="herder of userStore.state.herders"
+        :value="herder.username"
+        :key="herder.id"
+        rounded
+      ></PrimeTag>
+      <PrimeTag class="user-tag" value="Füge einen Herder hinzu" rounded></PrimeTag>
+    </div>
+    <div v-else>
+      Owner:
+      <PrimeTag class="user-tag" :value="userStore.state.username" rounded></PrimeTag>
+    </div>
     <div class="cat-content">
       <div class="info-segment">
         <div class="info-segment-header">
@@ -103,12 +118,16 @@ import CatsView from './CatsView.vue';
 
 <script setup>
 import { useCatsStore } from '../stores/useCatsStore'
+
+import { useUserStore } from '../stores/useUserStore'
 import { useRoute } from 'vue-router'
-import { onBeforeMount, reactive } from 'vue'
+import { onBeforeMount, reactive, onUnmounted, ref } from 'vue'
 import { supabase } from '../supabase'
 
 const route = useRoute()
 const catsStore = useCatsStore()
+const userStore = useUserStore()
+
 catsStore.state.currentCat.id = route.params.id
 
 const stateEdit = reactive({
@@ -116,12 +135,11 @@ const stateEdit = reactive({
   health: false,
   behaviour: false
 })
+const owner = reactive({})
 
-// function fetchCat() {
-// let id = catId;
-// const {error, data } =
+const ownerName = ref('')
+const ownerId = ref('')
 
-// }
 async function editFood() {
   if (stateEdit.food) {
     let food_info = catsStore.state.currentCat.food_info
@@ -181,18 +199,50 @@ async function editBehaviour() {
   stateEdit.behaviour = !stateEdit.behaviour
 }
 
-onBeforeMount(() => {
-  console.log(route.params.id)
-  catsStore.fetchCat(route.params.id)
-  catsStore.fetchFoodInfo(route.params.id)
-  catsStore.fetchHealthInfo(route.params.id)
-  catsStore.fetchBehaviourInfo(route.params.id)
-  console.log('Route: ')
-  console.log(route.params)
+async function fetchOwner() {
+  let { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', catsStore.state.currentCat.userId)
+  if (error) {
+    console.log(error)
+  }
+
+  if (data) {
+    owner.value = data
+    ownerName.value = data[0].username
+    ownerId.value = data[0].id
+  }
+}
+
+onUnmounted(() => {
+  catsStore.state.currentCat.id = ''
+  catsStore.state.currentCat.name = ''
+  catsStore.state.currentCat.avatar = ''
+  catsStore.state.currentCat.birthday = ''
+  catsStore.state.currentCat.food_info = ''
+  catsStore.state.currentCat.health_info = ''
+  catsStore.state.currentCat.behaviour_info = ''
+})
+onBeforeMount(async () => {
+  await catsStore.fetchCat(route.params.id)
+  await catsStore.fetchCatInfo(route.params.id)
+
+  await fetchOwner()
 })
 </script>
 
 <style scoped>
+.cat-icon {
+  background: url('@/assets/cat-sitting.svg') no-repeat center center;
+  background-size: contain;
+  width: 16px; /* Adjust the width and height as needed */
+  height: 16px;
+}
+.user-tag {
+  font-size: 1rem;
+  padding-inline: 1rem;
+}
 .content-wrapper {
   padding-inline: 2rem;
   display: grid;

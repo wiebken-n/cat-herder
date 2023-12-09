@@ -1,11 +1,12 @@
 <template>
   <div class="content-wrapper">
     <header><h1>Herders</h1></header>
-    <form class="form-search-user" @submit.prevent action="">
-      <PrimeInputText v-model="userName"></PrimeInputText>
+    <form class="form-search-user" @submit.prevent>
+      <PrimeInputText v-model.trim="userName"></PrimeInputText>
       <PrimeButton @click="searchUser" label="Suche einen Herder"></PrimeButton>
     </form>
     <article class="user-info-wrapper">
+      <Toast position="top-center" />
       <div
         @click="acceptRequest(user)"
         class="user-info-element"
@@ -44,6 +45,9 @@
 import { ref, reactive, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
+
 const userStore = useUserStore()
 
 const userName = ref('')
@@ -53,16 +57,32 @@ const passiveRequests = reactive({})
 const activeRequests = reactive({})
 const connections = reactive({})
 
+// const noUserFound = ref(false)
+
+const noUserFound = () => {
+  toast.add({
+    severity: 'info',
+    summary: 'Achtung',
+    detail: 'Es wurde kein Nutzer gefunden',
+    life: 3000
+  })
+}
+
 async function searchUser() {
   const { data, error } = await supabase
     .from('profiles')
     .select()
     .textSearch('username', userName.value)
+    .neq('id', userStore.state.userId)
+
   if (error) {
     console.log(error)
   }
   if (data) {
     userSearchResults.value = data
+    if (data.length < 1) {
+      noUserFound()
+    }
   }
 }
 
@@ -113,14 +133,12 @@ function checkConnectionStatus(user) {
   const status = ref('no connection')
   // check if that user has send a request to current user
   for (const entry of passiveRequests.value) {
-    // console.log(entry)
     if (user.id === entry.user_active) {
       status.value = 'pending incoming'
     }
   }
   // check if that user has been send a request by current user
   for (const entry of activeRequests.value) {
-    // console.log(entry)
     if (user.id === entry.user_passive) {
       status.value = 'pending outgoing'
     }
@@ -158,7 +176,6 @@ async function fetchConnections() {
 
   if (data) {
     connections.value = data
-    console.log(data)
     if (data.length > 0) {
       // const userData = await userStore.fetchUser(data[0].user_active)
     }
@@ -167,11 +184,11 @@ async function fetchConnections() {
     console.log(error)
   }
 }
+
 onMounted(async () => {
   await fetchPassiveRequests()
   await fetchActiveRequests()
   await fetchConnections()
-  // await checkConnectionStatus('d0771aac-6b6b-4b07-a650-3ddc35c50aad')
 })
 </script>
 <style scoped>
