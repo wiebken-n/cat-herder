@@ -280,7 +280,7 @@ article > div {
 .input-area {
   height: 7rem;
 }
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 700px) {
   header {
     width: 500px;
   }
@@ -296,8 +296,17 @@ article > div {
 }
 
 @media screen and (min-width: 1200px) {
+  header {
+    width: 600px;
+  }
+  form {
+    width: 600px;
+  }
   form > article > * {
-    width: 500px;
+    width: 600px;
+  }
+  .btn-submit {
+    width: 600px;
   }
 }
 

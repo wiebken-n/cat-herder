@@ -325,7 +325,7 @@ h2 {
   right: 8px;
   bottom: 8px;
 }
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 700px) {
   header {
     width: 500px;
   }
@@ -336,6 +336,23 @@ h2 {
   .info-segment-header {
     gap: 0.5rem;
     justify-content: flex-end;
+  }
+}
+@media screen and (min-width: 1000px) {
+  header {
+    width: 700px;
+  }
+  .cat-content {
+    width: 700px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  header {
+    width: 1000px;
+  }
+  .cat-content {
+    grid-template-columns: 1fr 1fr;
+    width: 1000px;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="user-info-element">
     <svg class="user-icon">
       <use
         v-if="props.connectionStatus === 'no connection'"
@@ -20,30 +20,37 @@
         fill="currentcolor"
       ></use>
     </svg>
-    <h2>{{ user.username }}</h2>
-    {{ props.connectionStatus }}
 
-    <div></div>
-    <div>
+    <h2 class="username">{{ user.username }}</h2>
+    <!-- {{ props.connectionStatus }} -->
+
+    <div class="button-wrapper">
       <PrimeButton
+        class="connection-btn"
         v-if="props.connectionStatus === 'no connection'"
         @click="sendRequest(props.user)"
         label="Verbindung anfragen"
       ></PrimeButton>
       <PrimeButton
+        class="connection-btn"
         v-if="props.connectionStatus === 'connected'"
         label="Verbindung trennen"
         @click="deleteRequest(props.user)"
+        outlined
       ></PrimeButton>
       <PrimeButton
+        class="connection-btn"
         v-if="props.connectionStatus === 'pending incoming'"
         @click="acceptRequest(props.user)"
         label="Anfrage annehmen"
+        outlined
       ></PrimeButton>
       <PrimeButton
+        class="connection-btn"
         v-if="props.connectionStatus === 'pending outgoing'"
         label="Anfrage zurücknehmen"
         @click="deleteRequest(props.user)"
+        outlined
       ></PrimeButton>
     </div>
   </div>
@@ -54,12 +61,10 @@
 import { supabase } from '../supabase'
 
 const props = defineProps({
-  //   passiveRequests: Array,
-  //   activeRequests: Array,
-  //   connections: Array,
   user: Object,
   connectionStatus: String
 })
+const emit = defineEmits(['interaction'])
 
 async function sendRequest(user) {
   const { data, error } = await supabase
@@ -73,6 +78,8 @@ async function sendRequest(user) {
   if (data) {
     console.log(data)
   }
+  emit('interaction')
+  return
 }
 
 async function acceptRequest(user) {
@@ -88,6 +95,8 @@ async function acceptRequest(user) {
   if (data) {
     console.log(data)
   }
+  emit('interaction')
+  return
 }
 
 async function deleteRequest(user) {
@@ -102,6 +111,8 @@ async function deleteRequest(user) {
   if (data) {
     console.log(data)
   }
+  emit('interaction')
+  return
 }
 
 // function checkConnectionStatus(user) {
@@ -129,19 +140,36 @@ async function deleteRequest(user) {
 </script>
 
 <style scoped>
-.user-info-wrapper {
-  display: grid;
-  gap: 1rem;
-}
 .user-info-element {
+  background-color: rgb(238, 238, 238);
   border: 2px solid var(--secondary);
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 2rem auto;
+  row-gap: 0.5rem;
   align-items: center;
+  justify-items: center;
   padding: 1rem;
+  width: 100%;
+  position: relative;
+  border-radius: 10px;
 }
 .user-icon {
   height: 2rem;
   width: 2rem;
+}
+.username {
+  font-size: 1.5rem;
+  padding-left: 1.5rem;
+  margin-right: auto;
+  margin-block: 0;
+}
+.button-wrapper {
+  width: 100%;
+  display: flex;
+  position: relative;
+  grid-column: 1 / 3;
+}
+.connection-btn {
+  width: 100%;
 }
 </style>

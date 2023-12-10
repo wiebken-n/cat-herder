@@ -1,19 +1,51 @@
 <template>
   <div class="content-wrapper">
     <header><h1>Herders</h1></header>
-    <div class="user-info-element" v-for="user of allConnectionUsers.value" :key="user.id">
-      <HerderData :user="user" :connectionStatus="checkConnectionStatus(user)" />
-    </div>
-    <form class="form-search-user" @submit.prevent>
-      <PrimeInputText v-model.trim="userName"></PrimeInputText>
-      <PrimeButton @click="searchUser" label="Suche einen Herder"></PrimeButton>
-    </form>
-    <article class="user-info-wrapper">
-      <Toast position="top-center" />
-      <div class="user-info-element" v-for="user of userSearchResults.value" :key="user.id">
-        <HerderData :user="user" :connectionStatus="checkConnectionStatus(user)" />
+    <div class="connected-herders-info">
+      <form class="form-search-user" @submit.prevent>
+        <PrimeInputText v-model="userName" class="usersearch-input"></PrimeInputText>
+        <PrimeButton
+          @click="searchUser()"
+          label="Suche einen Herder"
+          class="usersearch-button"
+        ></PrimeButton>
+      </form>
+
+      <div class="user-info-container">
+        <div class="user-info" v-for="user of allConnectionUsers.value" :key="user">
+          <HerderData
+            :user="user"
+            :connectionStatus="checkConnectionStatus(user)"
+            @interaction="fetchAllConnections"
+          />
+        </div>
       </div>
-    </article>
+
+      <article class="user-info-wrapper">
+        <Toast position="top-center" />
+        <PrimeDialog
+          v-model:visible="usersFound"
+          modal
+          header="Folgende Nutzer wurden gefunden"
+          :style="{ width: '50rem' }"
+          :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+          class="searchresult-dialog"
+        >
+          <div
+            class="user-info-container dialog-content"
+            :class="{ justOneUser: userSearchResults.value.length < 2 }"
+          >
+            <div class="user-info" v-for="user of userSearchResults.value" :key="user">
+              <HerderData
+                :user="user"
+                :connectionStatus="checkConnectionStatus(user)"
+                @interaction="fetchAllConnections"
+              />
+            </div>
+          </div>
+        </PrimeDialog>
+      </article>
+    </div>
   </div>
 </template>
 <script setup>
@@ -21,6 +53,7 @@ import { ref, reactive, onBeforeMount, watch } from 'vue'
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
+
 import HerderData from '../components/HerderData.vue'
 
 const toast = useToast()
@@ -30,6 +63,8 @@ const userStore = useUserStore()
 const userName = ref('')
 
 const loading = ref(0)
+
+const usersFound = ref(false)
 const userSearchResults = reactive({})
 const passiveRequests = reactive({})
 const activeRequests = reactive({})
@@ -60,18 +95,17 @@ async function searchUser() {
     console.log(error)
   }
   if (data) {
+    console.log(data)
     userSearchResults.value = data
     if (data.length < 1) {
       noUserFound()
-    }
+    } else usersFound.value = true
   }
 }
 
 function extractUserIdsFromConnections() {
   const ids = []
   for (let connection of allConnections.value) {
-    console.log(connection)
-
     if (connection.user_passive !== userStore.state.userId && connection.user_passive !== null) {
       ids.push(connection.user_passive)
     }
@@ -79,8 +113,6 @@ function extractUserIdsFromConnections() {
       ids.push(connection.user_active)
   }
   allConnectionIds.value = ids
-  console.log(ids)
-  console.log(allConnectionIds.value)
 }
 async function getUserData() {
   const { data, error } = await supabase.from('profiles').select().in('id', allConnectionIds.value)
@@ -92,6 +124,13 @@ async function getUserData() {
     allConnectionUsers.value = data
   }
 }
+
+async function fetchAllConnections() {
+  await fetchActiveRequests()
+  await fetchConnections()
+  await fetchPassiveRequests()
+}
+
 async function fetchPassiveRequests() {
   let { data, error } = await supabase
     .from('user_connections')
@@ -106,6 +145,7 @@ async function fetchPassiveRequests() {
     loading.value++
   }
 }
+
 async function fetchActiveRequests() {
   let { data, error } = await supabase
     .from('user_connections')
@@ -160,7 +200,6 @@ function checkConnectionStatus(user) {
   return status.value
 }
 watch(loading, () => {
-  console.log(loading.value)
   if (loading.value === 3) {
     setTimeout(() => {
       combineConnectionData()
@@ -169,13 +208,11 @@ watch(loading, () => {
 })
 
 function combineConnectionData() {
-  console.log('y')
+  loading.value = 0
   const combinedConnections = passiveRequests.value
     .concat(activeRequests.value)
     .concat(connections.value)
-  console.log(combinedConnections)
   allConnections.value = combinedConnections
-  console.log(allConnections.value)
 
   extractUserIdsFromConnections()
   getUserData()
@@ -240,10 +277,10 @@ function combineConnectionData() {
 // }
 
 onBeforeMount(async () => {
+  // await fetchAllConnections()
   await fetchPassiveRequests()
   await fetchActiveRequests()
   await fetchConnections()
-  console.log('x')
 })
 </script>
 <style scoped>
@@ -252,31 +289,64 @@ onBeforeMount(async () => {
   display: grid;
   justify-items: center;
   gap: 1rem;
-  text-align: start;
+  text-align: center;
   position: relative;
   padding-bottom: 2rem;
 }
-
-.content-wrapper > * {
+.connected-herders-info {
   width: 70vw;
 }
+.form-search-user {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  display: grid;
+}
+
+.user-info-container {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.usersearch-input {
+  width: 100%;
+}
+.usersearch-button {
+  width: 100%;
+}
+.dialog-content {
+  padding-block: 1rem;
+}
+
 .user-info-wrapper {
   display: grid;
   gap: 1rem;
 }
-.user-info-element {
-  border: 2px solid var(--secondary);
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  align-items: center;
-  padding: 1rem;
-}
-.user-icon {
-  height: 2rem;
-  width: 2rem;
+
+.user-info {
+  width: 100%;
 }
 
-/* .content-wrapper > * > * {
-  width: 100%;
-} */
+@media screen and (min-width: 700px) {
+  .user-info-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .justOneUser {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .justOneUser > * {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 800px) {
+  .form-search-user {
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5rem;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .connected-herders-info {
+    width: 800px;
+  }
+}
 </style>

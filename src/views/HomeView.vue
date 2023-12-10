@@ -135,6 +135,7 @@ onBeforeMount(async () => {
 .content-wrapper {
   display: grid;
   justify-items: center;
+  align-items: start;
   padding-inline: 1rem;
   background-color: white;
   height: min-content;
@@ -255,12 +256,10 @@ onBeforeMount(async () => {
 
 @media screen and (min-width: 1250px) {
   .content-wrapper {
-    display: grid;
-    grid-template-columns: content content;
     grid-template-rows: auto auto auto;
-    align-items: center;
-    justify-items: center;
-    padding-inline: auto;
+    align-items: start;
+    justify-content: center;
+    column-gap: 1.25rem;
   }
 
   .header {
@@ -278,9 +277,9 @@ onBeforeMount(async () => {
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (min-width: 1350px) {
   .content-wrapper {
-    padding-inline: 7vw;
+    column-gap: 3rem;
   }
 }
 </style>
