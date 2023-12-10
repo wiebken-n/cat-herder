@@ -22,6 +22,9 @@ import PrimeMenubar from 'primevue/menubar'
 import PrimeTag from 'primevue/tag'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
+import PrimeDropdown from 'primevue/dropdown'
+import PrimeConfirmDialog from 'primevue/confirmdialog'
 
 // import FileUpload from 'primevue/fileupload'
 
@@ -34,6 +37,7 @@ app.use(createPinia())
 app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
+app.use(ConfirmationService)
 
 /* Prime Vue Components >>>>>>>> */
 
@@ -46,7 +50,8 @@ app.component('PrimeCalendar', PrimeCalendar)
 app.component('PrimeDialog', PrimeDialog)
 app.component('PrimeMenubar', PrimeMenubar)
 app.component('PrimeTag', PrimeTag)
-
+app.component('PrimeDropdown', PrimeDropdown)
+app.component('PrimeConfirmDialog', PrimeConfirmDialog)
 app.component('Toast', Toast)
 // app.component('FileUpload', FileUpload)
 

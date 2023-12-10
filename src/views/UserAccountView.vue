@@ -38,7 +38,7 @@ async function updateProfile() {
       id: user.id,
       username: userStore.state.username,
       avatar_url: userStore.state.avatar_url,
-      full_name: userStore.state.full_name,
+      // full_name: userStore.state.full_name,
       updated_at: new Date()
     }
 
@@ -89,7 +89,7 @@ async function signOut() {
           >Username</label
         >
       </span>
-      <span class="p-float-label">
+      <!-- <span class="p-float-label">
         <PrimeInputText class="input-field" id="full-name" v-model="userStore.state.full_name" />
         <label
           for="full-name"
@@ -97,7 +97,7 @@ async function signOut() {
           :class="{ labelUp: userStore.state.full_name }"
           >Full Name</label
         >
-      </span>
+      </span> -->
       <div class="button-wrapper">
         <PrimeButton
           type="submit"

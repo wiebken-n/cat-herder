@@ -25,9 +25,7 @@
         </svg>
 
         <p class="cat-name">{{ cat.name }}</p>
-        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }}</p>
-
-        <p class="cat-herders">Herders</p>
+        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
       </article>
 
       <PrimeButton
@@ -66,9 +64,7 @@
         </svg>
 
         <p class="cat-name">{{ cat.name }}</p>
-        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }}</p>
-
-        <p class="cat-herders">Herders</p>
+        <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
       </article>
       <!-- <article class="cat-info" data-cy="cat-info">
         <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
@@ -113,6 +109,16 @@ const catsStore = useCatsStore()
 const session = ref()
 const user_id = ref('')
 
+// async function fetchHerderConnections() {
+//   const { data, error } = await supabase.from('herder_connections').select()
+
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+// }
 onBeforeMount(async () => {
   await supabase.auth.getSession().then(({ data }) => {
     session.value = data.session
@@ -125,9 +131,10 @@ onBeforeMount(async () => {
     session.value = _session
   })
 
-  catsStore.fetchCats()
-  catsStore.fetchHerdedCats()
-  userStore.getProfile(session)
+  await catsStore.fetchCats()
+  await catsStore.fetchHerdedCats()
+  await userStore.getProfile(session)
+  // await fetchHerderConnections()
 })
 </script>
 
@@ -167,7 +174,7 @@ onBeforeMount(async () => {
   display: grid;
   column-gap: 1rem;
   grid-template-columns: auto 2fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   border-radius: var(--border-radius);
   align-items: center;
   justify-items: left;

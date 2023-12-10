@@ -17,7 +17,9 @@ export const useCatsStore = defineStore('cats', () => {
       birthday: '',
       food_info: '',
       health_info: '',
-      behaviour_info: ''
+      behaviour_info: '',
+      herders: '',
+      herderProfiles: ''
 
       // age: '',
       // description: ''
@@ -87,40 +89,6 @@ export const useCatsStore = defineStore('cats', () => {
       state.currentCat.behaviour_info = data.behaviour_info
     }
   }
-  const fetchFoodInfo = async (id) => {
-    const { data, error } = await supabase.from('food').select().eq('cat_id', id).single()
-    if (error) {
-      state.fetchError = error
-      console.log(error)
-      return
-    }
-    if (data) {
-      state.currentCat.food_info = data.food_info
-    }
-  }
-  const fetchHealthInfo = async (id) => {
-    const { data, error } = await supabase.from('health').select().eq('cat_id', id).single()
-    if (error) {
-      state.fetchError = error
-      console.log(error)
-      return
-    }
-    if (data) {
-      state.currentCat.health_info = data.health_info
-    }
-  }
-
-  const fetchBehaviourInfo = async (id) => {
-    const { data, error } = await supabase.from('behaviour').select().eq('cat_id', id).single()
-    if (error) {
-      state.fetchError = error
-      console.log(error)
-      return
-    }
-    if (data) {
-      state.currentCat.behaviour_info = data.behaviour_info
-    }
-  }
 
   function getAge(birthday) {
     let newBirthday = new Date(birthday)
@@ -153,9 +121,6 @@ export const useCatsStore = defineStore('cats', () => {
     fetchHerdedCats,
     fetchCat,
     fetchCatInfo,
-    fetchFoodInfo,
-    fetchHealthInfo,
-    fetchBehaviourInfo,
     getAge
   }
 })

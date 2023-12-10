@@ -12,20 +12,44 @@ import CatsView from './CatsView.vue';
         <h2>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</h2>
       </div>
     </header>
-    <div v-if="ownerId === userStore.state.userId">
-      Herders:
-      <PrimeTag
-        class="user-tag"
-        v-for="herder of userStore.state.herders"
-        :value="herder.username"
-        :key="herder.id"
-        rounded
-      ></PrimeTag>
-      <PrimeTag class="user-tag" value="Füge einen Herder hinzu" rounded></PrimeTag>
+    <div v-if="ownerId === userStore.state.userId" class="user-content-container">
+      <div class="herder-output-container">
+        <div
+          class="herder-data-container"
+          v-for="herder of catsStore.state.currentCat.herderProfiles"
+          :key="herder.id"
+        >
+          <PrimeButton
+            class="user-tag"
+            :label="herder.username"
+            @click="confirmRemoveHerder(herder)"
+            confirmRemoveHerder
+            rounded
+          >
+          </PrimeButton>
+        </div>
+
+        <Toast />
+        <PrimeConfirmDialog />
+      </div>
+      <div class="herder-input-container">
+        <PrimeDropdown
+          v-model="selectedHerder"
+          :options="userStore.state.herders"
+          optionLabel="username"
+          placeholder="Wähle einen Nutzer aus"
+          class="herder-dropdown w-full md:w-14rem"
+        />
+        <PrimeButton
+          label="Füge diese Nutzer als Herder hinzu"
+          @click="addHerder(selectedHerder.id)"
+        />
+      </div>
     </div>
-    <div v-else>
-      Owner:
-      <PrimeTag class="user-tag" :value="userStore.state.username" rounded></PrimeTag>
+    <div v-else class="user-content-container">
+      <div div class="herder-output-container">
+        <PrimeTag class="user-tag" :value="userStore.state.username" rounded></PrimeTag>
+      </div>
     </div>
     <div class="cat-content">
       <div class="info-segment">
@@ -43,7 +67,11 @@ import CatsView from './CatsView.vue';
           v-model="catsStore.state.currentCat.food_info"
           autoResize
         ></PrimeTextArea>
-        <svg @click="editFood()" class="icon icon-edit">
+        <svg
+          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+          @click="editFood()"
+          class="icon icon-edit"
+        >
           <use
             v-if="!stateEdit.food"
             xlink:href="@/assets/icons.svg#edit"
@@ -71,7 +99,11 @@ import CatsView from './CatsView.vue';
           v-model="catsStore.state.currentCat.health_info"
           autoResize
         ></PrimeTextArea>
-        <svg @click="editHealth()" class="icon icon-edit">
+        <svg
+          @click="editHealth()"
+          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+          class="icon icon-edit"
+        >
           <use
             v-if="!stateEdit.health"
             xlink:href="@/assets/icons.svg#edit"
@@ -99,7 +131,11 @@ import CatsView from './CatsView.vue';
           v-model="catsStore.state.currentCat.behaviour_info"
           autoResize
         ></PrimeTextArea>
-        <svg @click="editBehaviour()" class="icon icon-edit">
+        <svg
+          @click="editBehaviour()"
+          class="icon icon-edit"
+          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+        >
           <use
             v-if="!stateEdit.behaviour"
             xlink:href="@/assets/icons.svg#edit"
@@ -123,11 +159,16 @@ import { useUserStore } from '../stores/useUserStore'
 import { useRoute } from 'vue-router'
 import { onBeforeMount, reactive, onUnmounted, ref } from 'vue'
 import { supabase } from '../supabase'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
+
+const confirm = useConfirm()
+const toast = useToast()
 
 const route = useRoute()
 const catsStore = useCatsStore()
 const userStore = useUserStore()
-
+const selectedHerder = ref('none')
 catsStore.state.currentCat.id = route.params.id
 
 const stateEdit = reactive({
@@ -140,61 +181,59 @@ const owner = reactive({})
 const ownerName = ref('')
 const ownerId = ref('')
 
+const confirmRemoveHerder = (herder) => {
+  console.log(herder)
+  confirm.require({
+    message: `Möchtest du ${herder.username} als Herder für ${catsStore.state.currentCat.name} entfernen?`,
+    header: 'Herder entfernen',
+
+    accept: () => {
+      toast.add({
+        severity: 'success',
+        summary: 'Herder entfernt',
+        detail: `Du hast ${herder.username} als Herder entfernt`,
+        life: 3000
+      })
+      removeHerder(herder.id)
+    },
+    reject: () => {}
+  })
+}
+
+async function editCatInfo() {
+  const { data, error } = await supabase
+    .from('cats_info')
+
+    .update({
+      food_info: catsStore.state.currentCat.food_info,
+      health_info: catsStore.state.currentCat.health_info,
+      behaviour_info: catsStore.state.currentCat.behaviour_info
+    })
+    .eq('cat_id', catsStore.state.currentCat.id)
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    console.log(data)
+  }
+}
 async function editFood() {
   if (stateEdit.food) {
-    let food_info = catsStore.state.currentCat.food_info
-    let cat_id = catsStore.state.currentCat.id
-
-    const { data, error } = await supabase
-      .from('food')
-      .update({ food_info: food_info })
-      .eq('cat_id', cat_id)
-      .select()
-    if (error) {
-      console.log(error)
-    }
-    if (data) {
-      console.log(data)
-    }
+    await editCatInfo()
   }
   stateEdit.food = !stateEdit.food
 }
 async function editHealth() {
   if (stateEdit.health) {
-    let health_info = catsStore.state.currentCat.health_info
-    let cat_id = catsStore.state.currentCat.id
-
-    const { data, error } = await supabase
-      .from('health')
-      .update({ health_info: health_info })
-      .eq('cat_id', cat_id)
-      .select()
-    if (error) {
-      console.log(error)
-    }
-    if (data) {
-      console.log(data)
-    }
+    editCatInfo()
   }
   stateEdit.health = !stateEdit.health
 }
 
 async function editBehaviour() {
   if (stateEdit.behaviour) {
-    let behaviour_info = catsStore.state.currentCat.behaviour_info
-    let cat_id = catsStore.state.currentCat.id
-
-    const { data, error } = await supabase
-      .from('behaviour')
-      .update({ behaviour_info: behaviour_info })
-      .eq('cat_id', cat_id)
-      .select()
-    if (error) {
-      console.log(error)
-    }
-    if (data) {
-      console.log(data)
-    }
+    editCatInfo()
   }
   stateEdit.behaviour = !stateEdit.behaviour
 }
@@ -215,6 +254,81 @@ async function fetchOwner() {
   }
 }
 
+async function fetchCatHerders() {
+  let { data, error } = await supabase
+    .from('herder_connections')
+    .select('herder_id')
+    .eq('cat_id', catsStore.state.currentCat.id)
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    console.log(data)
+    catsStore.state.currentCat.herders = data
+    fetchCatHerderProfiles()
+  }
+}
+
+async function fetchCatHerderProfiles() {
+  const herderIds = []
+  for (let herder of catsStore.state.currentCat.herders) {
+    herderIds.push(herder.herder_id)
+  }
+  catsStore.state.currentCat.herders = herderIds
+  console.log(catsStore.state.currentCat.herders)
+  let { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .in('id', catsStore.state.currentCat.herders)
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    catsStore.state.currentCat.herderProfiles = data
+    console.log(data)
+  }
+}
+
+async function addHerder(herderId) {
+  if (selectedHerder.value === 'none') {
+    console.log('bitte wähle einen herder aus')
+    return
+  }
+  if (catsStore.state.currentCat.herders.includes(herderId)) {
+    console.log('herder already added')
+    return
+  }
+
+  let { data, error } = await supabase
+    .from('herder_connections')
+    .insert([{ cat_id: catsStore.state.currentCat.id, herder_id: herderId }])
+  if (error) {
+    console.log(error)
+    return
+  }
+  if (data) {
+    console.log(data)
+  }
+  await fetchCatHerders()
+}
+
+async function removeHerder(herderId) {
+  let { data, error } = await supabase
+    .from('herder_connections')
+    .delete()
+    .eq('herder_id', herderId)
+    .eq('cat_id', catsStore.state.currentCat.id)
+
+  if (error) {
+    console.log(error)
+    return
+  }
+  if (data) {
+    console.log(data)
+  }
+  await fetchCatHerders()
+}
 onUnmounted(() => {
   catsStore.state.currentCat.id = ''
   catsStore.state.currentCat.name = ''
@@ -223,12 +337,14 @@ onUnmounted(() => {
   catsStore.state.currentCat.food_info = ''
   catsStore.state.currentCat.health_info = ''
   catsStore.state.currentCat.behaviour_info = ''
+  ;(catsStore.state.currentCat.herderProfiles = ''), (catsStore.state.currentCat.herders = '')
 })
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
   await catsStore.fetchCatInfo(route.params.id)
 
   await fetchOwner()
+  await fetchCatHerders()
 })
 </script>
 
@@ -277,6 +393,30 @@ header {
   font-size: 2rem;
   margin-bottom: 0.25rem;
 }
+
+.user-content-container {
+  width: 70vw;
+  display: grid;
+  position: relative;
+  gap: 0.75rem;
+}
+
+.herder-output-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.herder-input-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  position: relative;
+  width: 100%;
+}
+
 .cat-content {
   display: grid;
   justify-items: start;
@@ -329,6 +469,11 @@ h2 {
   header {
     width: 500px;
   }
+
+  .user-content-container {
+    width: 500px;
+  }
+
   .cat-content {
     width: 500px;
   }
@@ -342,12 +487,22 @@ h2 {
   header {
     width: 700px;
   }
+
+  .user-content-container {
+    width: 700px;
+  }
+  .herder-input-container {
+    grid-template-columns: 2fr 2fr;
+  }
   .cat-content {
     width: 700px;
   }
 }
 @media screen and (min-width: 1200px) {
   header {
+    width: 1000px;
+  }
+  .user-content-container {
     width: 1000px;
   }
   .cat-content {
