@@ -20,7 +20,7 @@
           <img
             v-else
             class="cat-image-show"
-            :src="`./src/assets/images/cat-avatar_` + catsStore.state.currentCat.avatar + `.webp`"
+            :src="imageUrl(catsStore.state.currentCat.avatar)"
             alt="cat avatar"
             @click="pickAvatarVisible = true"
           />
@@ -125,11 +125,7 @@
       <div class="avatars-container">
         <div class="avatar-wrapper" v-for="number of avatarNumbers" :key="number">
           <button class="pick-avatar-button" @click="selectAvatar(number)">
-            <img
-              class="cat-image"
-              :src="`./src/assets/images/cat-avatar_` + number + `.webp`"
-              :alt="'Katzenavatar Nr. ' + number"
-            />
+            <img class="cat-image" :src="imageUrl(number)" :alt="'Katzenavatar Nr. ' + number" />
           </button>
         </div>
       </div>
@@ -176,6 +172,10 @@ function createAvatarNumbers() {
 function selectAvatar(number) {
   catsStore.state.currentCat.avatar = number
   pickAvatarVisible.value = false
+}
+
+function imageUrl(catAvatar) {
+  return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
 const addCat = async () => {

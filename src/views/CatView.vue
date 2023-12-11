@@ -2,11 +2,7 @@ import CatsView from './CatsView.vue';
 <template>
   <div class="content-wrapper">
     <header>
-      <img
-        class="cat-avatar"
-        :src="`../src/assets/images/cat-avatar_` + catsStore.state.currentCat.avatar + `.webp`"
-        alt="cat avatar"
-      />
+      <img class="cat-avatar" :src="imageUrl(catsStore.state.currentCat.avatar)" alt="cat avatar" />
       <div class="header-text-wrapper">
         <h1>{{ catsStore.state.currentCat.name }}</h1>
         <h2>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</h2>
@@ -181,6 +177,10 @@ const owner = reactive({})
 
 const ownerName = ref('')
 const ownerId = ref('')
+
+function imageUrl(catAvatar) {
+  return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
+}
 
 const confirmRemoveHerder = (herder) => {
   console.log(herder)

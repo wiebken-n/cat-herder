@@ -57,12 +57,7 @@
         :key="cat.id"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
-        <img
-          v-if="cat.avatar"
-          class="cat-avatar"
-          :src="`./src/assets/images/cat-avatar_` + cat.avatar + `.webp`"
-          alt=""
-        />
+        <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
         <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
@@ -112,6 +107,13 @@ const catsStore = useCatsStore()
 
 const session = ref()
 const user_id = ref('')
+
+function imageUrl(catAvatar) {
+  return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
+}
+// const imageUrl = computed((catAvatar) => {
+//   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
+// })
 
 // async function fetchHerderConnections() {
 //   const { data, error } = await supabase.from('herder_connections').select()
