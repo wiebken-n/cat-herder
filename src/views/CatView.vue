@@ -1,4 +1,3 @@
-import CatsView from './CatsView.vue';
 <template>
   <div class="content-wrapper">
     <header>
@@ -350,12 +349,6 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped>
-.cat-icon {
-  background: url('@/assets/cat-sitting.svg') no-repeat center center;
-  background-size: contain;
-  width: 16px; /* Adjust the width and height as needed */
-  height: 16px;
-}
 .user-tag {
   font-size: 1rem;
   padding-inline: 1rem;
