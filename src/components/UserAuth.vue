@@ -94,9 +94,7 @@ const handleLogin = async () => {
     </form>
   </div>
   <div v-else class="content-wrapper">
-    <svg class="icon">
-      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
-    </svg>
+    <img :src="imageUrl()" alt="Bild einer Katze mit Hut" />
     <h1 class="header">CatHerder</h1>
     <p class="description">
       Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
