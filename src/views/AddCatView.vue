@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <header><h1 class="headline" data-cy="headline">Füge Deine Katze hinzu</h1></header>
+    <header><h1 class="headline" data-cy="headline">Füge eine Katze hinzu</h1></header>
     <form>
       <article class="input-avatar-wrapper">
         <div class="image-container">
@@ -70,7 +70,10 @@
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
           </svg>
-          <label class="label" for="input-cat-food ">Welches Futter bekommt deine Katze?</label>
+          <label class="label label-info" for="input-cat-food "
+            >Welches Futter bekommt deine Katze?
+            <span class="info-optional">(optional)</span></label
+          >
         </div>
         <PrimeTextArea
           v-model="catsStore.state.currentCat.food_info"
@@ -83,8 +86,9 @@
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
           </svg>
-          <label class="label" for="input-cat-health"
-            >Welche gesundheitlichen Besonderheiten hat deine Katze?</label
+          <label class="label label-info" for="input-cat-health"
+            >Hat deine Katze gesundheitlichen Besonderheiten?
+            <span class="info-optional">(optional)</span></label
           >
         </div>
         <PrimeTextArea
@@ -98,9 +102,10 @@
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
           </svg>
-          <label class="label" for="input-cat-behaviour"
-            >Welche Verhaltensbesonderheiten hat deine Katze?</label
-          >
+          <label class="label label-info" for="input-cat-behaviour"
+            ><span>Hat deine Katze Verhaltensbesonderheiten?</span>
+            <span class="info-optional">(optional)</span>
+          </label>
         </div>
         <PrimeTextArea
           id="input-cat-behaviour"
@@ -129,30 +134,39 @@
         </div>
       </div>
     </PrimeDialog>
+    <Toast />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useCatsStore } from '../stores/useCatsStore'
 import { supabase } from '../supabase'
-import { onUnmounted } from 'vue'
+import { onUnmounted, onBeforeMount } from 'vue'
 import router from '../router'
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
 
 const formError = ref('')
 const catsStore = useCatsStore()
 const pickAvatarVisible = ref(false)
 const avatarNumbers = []
 
-catsStore.state.currentCat.id = ''
-catsStore.state.currentCat.name = ''
-catsStore.state.currentCat.avatar = ''
-catsStore.state.currentCat.birthday = ''
-catsStore.state.currentCat.food_info = ''
-catsStore.state.currentCat.health_info = ''
-catsStore.state.currentCat.behaviour_info = ''
+const toastData = reactive({
+  severity: 'warn',
+  summary: 'Warnung',
+  detail: ''
+})
 
-createAvatarNumbers()
+const addCatToast = () => {
+  toast.add({
+    severity: toastData.severity,
+    summary: toastData.summary,
+    detail: toastData.detail,
+    life: 3000
+  })
+}
+
 function createAvatarNumbers() {
   for (let i = 1; i < 10; i++) {
     avatarNumbers.push(i)
@@ -168,6 +182,29 @@ const addCat = async () => {
   let name = catsStore.state.currentCat.name
   let birthday = catsStore.state.currentCat.birthday
   let avatar = catsStore.state.currentCat.avatar
+  if (name.length < 1 || birthday.length < 1 || avatar.length < 1) {
+    toastData.summary = 'Nicht alle Daten vorhanden'
+    toastData.detail = 'Bitte fülle alle Pflichtfelder aus!'
+    addCatToast()
+    return
+  }
+  if (name.length > 20) {
+    toastData.summary = 'Name zu lang'
+    toastData.detail = 'Der Name darf maximal 20 Zeichen lang sein'
+    addCatToast()
+    return
+  }
+  if (
+    catsStore.state.currentCat.food_info.length > 2000 ||
+    catsStore.state.currentCat.health_info.length > 2000 ||
+    catsStore.state.currentCat.behaviour_info.length > 2000
+  ) {
+    toastData.summary = 'Text zu lang'
+    toastData.detail =
+      'Die Texte zu Futter, Gesundheit und Verhalten dürfen jeweils maximal 2000 Zeichen lang sein!'
+    addCatToast()
+    return
+  }
   const { data, error } = await supabase
     .from('cats')
     .insert([{ name, birthday, avatar }])
@@ -183,13 +220,14 @@ const addCat = async () => {
     catsStore.state.currentCat.id = data.id
     formError.value = ''
     addCatInfo(data.id)
-    // catsStore.state.currentCat.name = ''
-    // catsStore.state.currentCat.avatar = ''
-    // catsStore.state.currentCat.birthday = ''
-    // catsStore.state.currentCat.food_info = ''
-    // catsStore.state.currentCat.health_info = ''
-    // catsStore.state.currentCat.behaviour_info = ''
-    router.push({ name: 'cat', params: { id: catsStore.state.currentCat.id } })
+    toastData.severity = 'success'
+    toastData.summary = 'Katze gespeichert'
+    toastData.detail = 'Deine Katze wurde hinzugefügt!'
+    addCatToast()
+
+    setTimeout(() => {
+      router.push({ name: 'cat', params: { id: catsStore.state.currentCat.id } })
+    }, 1500)
   }
 }
 
@@ -220,7 +258,7 @@ const addCatInfo = async (catId) => {
   }
 }
 
-onUnmounted(() => {
+function emptyCatData() {
   catsStore.state.currentCat.id = ''
   catsStore.state.currentCat.name = ''
   catsStore.state.currentCat.avatar = ''
@@ -228,6 +266,14 @@ onUnmounted(() => {
   catsStore.state.currentCat.food_info = ''
   catsStore.state.currentCat.health_info = ''
   catsStore.state.currentCat.behaviour_info = ''
+}
+onBeforeMount(() => {
+  createAvatarNumbers()
+  emptyCatData()
+})
+
+onUnmounted(() => {
+  emptyCatData()
 })
 </script>
 <style scoped>
@@ -267,6 +313,15 @@ article > div {
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+.label-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.info-optional {
+  font-size: 0.9rem;
+  align-self: flex-end;
 }
 
 .btn-submit {

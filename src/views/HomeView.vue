@@ -6,7 +6,7 @@
       </h1>
     </header>
     <article class="cat-overview content-wrapper-owned-cats" data-cy="cat-overview">
-      <h2 class="cat-overview-headline" data-cy="cat-overview-headline">Meine Katzen:</h2>
+      <h2 class="cat-overview-headline" data-cy="cat-overview-headline">Deine Katzen</h2>
       <article
         v-for="cat of catsStore.state.cats"
         class="cat-info"
@@ -43,9 +43,13 @@
       </PrimeButton>
     </article>
     <article class="cat-overview content-wrapper-herded-cats" data-cy="cat-overview">
-      <h2 class="cat-overview-headline" data-cy="cat-overview-headline">
-        Von mir betreute Katzen:
-      </h2>
+      <h2 class="cat-overview-headline" data-cy="cat-overview-headline">Von dir betreute Katzen</h2>
+      <article v-if="catsStore.state.herdedCats.length < 1" class="no-herded-cats">
+        <p>Du betreust noch keine Katzen</p>
+        <svg class="icon logo" width="1.5em" height="1.5em" data-cy="logo">
+          <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor" />
+        </svg>
+      </article>
       <article
         v-for="cat of catsStore.state.herdedCats"
         class="cat-info"
@@ -161,11 +165,17 @@ onBeforeMount(async () => {
   padding: 1.5rem;
   padding-top: 0.75rem;
   border-radius: var(--border-radius);
+  /* width: 70vw; */
 }
 .cat-overview-headline {
   grid-row: 1;
   padding: 0;
   margin: 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  text-align: start;
 }
 .cat-info {
   background-color: var(--secondary);
@@ -233,11 +243,28 @@ onBeforeMount(async () => {
   grid-column: 2;
   grid-row: 2;
 }
-.cat-herders {
+/* .cat-herders {
   grid-column: 2;
   grid-row: 3;
+} */
+.no-herded-cats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 270px;
+  color: var(--secondary);
+  height: 5.25rem;
+  margin-block: 0.25rem;
 }
 
+.no-herded-cats > * {
+  margin: 0;
+}
+.no-herded-cats > p {
+  font-size: 1.125rem;
+}
 .content-wrapper-herded-cats {
   margin-top: 3rem;
 }
@@ -252,12 +279,18 @@ onBeforeMount(async () => {
 .btn-add-cat:hover {
   scale: 1.02;
 }
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 630px) {
   .cat-overview {
     grid-template-columns: 1fr 1fr;
   }
   .cat-overview-headline {
     grid-column: 1 / 3;
+  }
+
+  .no-herded-cats {
+    width: 540px;
+    margin-inline: 0.5rem;
+    grid-column: 1/ 3;
   }
 }
 

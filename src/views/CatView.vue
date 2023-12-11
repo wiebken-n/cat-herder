@@ -43,6 +43,7 @@ import CatsView from './CatsView.vue';
         <PrimeButton
           label="Füge diese Nutzer als Herder hinzu"
           @click="addHerder(selectedHerder.id)"
+          outlined
         />
       </div>
     </div>
@@ -410,6 +411,8 @@ header {
 }
 
 .herder-input-container {
+  padding-top: 0.5rem;
+  padding-bottom: 1.5rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.25rem;
@@ -426,7 +429,7 @@ header {
 }
 
 .info-segment {
-  width: 100%;
+  width: 70vw;
   padding-inline: 1.25rem;
   padding-bottom: 1rem;
   border: 2px solid var(--primary);
@@ -453,6 +456,9 @@ h2 {
 }
 .info-segment > p {
   padding-bottom: 0.5rem;
+  inline-size: 100%;
+  overflow-wrap: break-word;
+  hyphens: manual;
 }
 
 .input-area {
@@ -474,7 +480,8 @@ h2 {
     width: 500px;
   }
 
-  .cat-content {
+  .cat-content,
+  .info-segment {
     width: 500px;
   }
 
@@ -491,10 +498,9 @@ h2 {
   .user-content-container {
     width: 700px;
   }
-  .herder-input-container {
-    grid-template-columns: 2fr 2fr;
-  }
-  .cat-content {
+
+  .cat-content,
+  .info-segment {
     width: 700px;
   }
 }
@@ -508,6 +514,17 @@ h2 {
   .cat-content {
     grid-template-columns: 1fr 1fr;
     width: 1000px;
+  }
+
+  .info-segment {
+    width: 500px;
+  }
+  .herder-input-container {
+    gap: 1rem;
+    grid-template-columns: 2fr 2fr;
+  }
+  .herder-input-container > * {
+    width: 500px;
   }
 }
 </style>
