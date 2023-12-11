@@ -1,37 +1,81 @@
 <script setup>
 import { supabase } from '../supabase'
-import { onBeforeMount, ref, toRefs, computed } from 'vue'
+import { onBeforeMount, ref, reactive, toRefs, computed } from 'vue'
 import { useUserStore } from '../stores/useUserStore'
-
-const userStore = useUserStore()
-
-const error = ref('')
-onBeforeMount(() => {
-  userStore.getProfile(session)
-})
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+import { useRouter } from 'vue-router'
 
 const props = defineProps(['session'])
 const { session } = toRefs(props)
 
+const userStore = useUserStore()
+
+const router = useRouter()
+
+const toast = useToast()
+const error = ref('')
+const formInfo = reactive({
+  summary: '',
+  detail: '',
+  severity: 'warn'
+})
+
 const loading = ref(true)
+
+const showToast = () => {
+  toast.add({
+    severity: `${formInfo.severity}`,
+    summary: `${formInfo.summary}`,
+    detail: `${formInfo.detail}`,
+    life: 3000
+  })
+}
 
 const btnValue = computed(() => {
   if (userStore.fetchState.loading) {
     return 'Loading'
-  } else return 'Update'
+  } else return 'Absenden'
 })
 
 async function updateProfile() {
-  if (userStore.state.username.includes(' ')) {
-    error.value = 'Dein Nutzername darf keine Leerzeichen enthalten!'
+  if (userStore.state.username === null) {
+    formInfo.detail = 'Dein Name muss mindestens 3 Zeichen lang sein!'
+    formInfo.summary = 'Name zu kurz'
+    userStore.state.username = userStore.state.usernameOld
+    showToast()
     return
   }
-  if (userStore.state.username.length < 3) {
-    error.value = 'Dein Nutzername muss mindestens 3 Zeichen lang sein!'
+  if (userStore.state.username.includes(' ')) {
+    formInfo.detail = 'Der Name darf keine Leerzeichen enthalten!'
+    formInfo.summary = 'Name enthält Leerzeichen'
+    userStore.state.username = userStore.state.usernameOld
+    showToast()
+    return
+  }
+
+  if (userStore.state.username === null || userStore.state.username.length < 3) {
+    formInfo.detail = 'Dein Name muss mindestens 3 Zeichen lang sein!'
+    formInfo.summary = 'Name zu kurz'
+    userStore.state.username = userStore.state.usernameOld
+    showToast()
+    return
+  }
+  if (userStore.state.username.length > 15) {
+    formInfo.detail = 'Der Name kann maximal 15 Zeichen lang sein!'
+    formInfo.summary = 'Name zu lang'
+    userStore.state.username = userStore.state.usernameOld
+    showToast()
+    return
+  }
+  if (userStore.state.usernameOld === userStore.state.username) {
+    formInfo.detail = 'Du hast den selben Namen angegeben!'
+    formInfo.summary = 'Keiner Änderung des Namens'
+    showToast()
     return
   }
   try {
-    loading.value = true
+    userStore.fetchState.loading = true
     const { user } = session.value
 
     const updates = {
@@ -47,10 +91,25 @@ async function updateProfile() {
     if (error) throw error
   } catch (error) {
     alert(error.message)
+    userStore.state.username = userStore.state.usernameOld
+    return
   } finally {
+    formInfo.detail = 'Dein Name wurde geändert!'
+    formInfo.summary = 'Name geändert'
+    if (userStore.state.usernameOld === null) {
+      formInfo.detail = 'Dein Name wurde ergänzt!'
+      formInfo.summary = 'Name gespeichert'
+      setTimeout(() => {
+        router.push('/')
+      }, 1500)
+    }
+
+    formInfo.severity = 'success'
+    showToast()
     userStore.state.usernameOld = userStore.state.username
 
-    loading.value = false
+    userStore.fetchState.loading = false
+    formInfo.severity = 'warn'
   }
 }
 
@@ -65,13 +124,22 @@ async function signOut() {
     loading.value = false
   }
 }
+
+onBeforeMount(() => {
+  userStore.getProfile(session)
+})
 </script>
 
 <template>
   <div class="content-wrapper">
     <header>
-      <h1 v-if="!userStore.state.usernameOld">Bitte ergänze deine Daten!</h1>
-      <h1 v-else>Hier kannst du deine Nutzerdaten ändern, {{ userStore.state.usernameOld }}</h1>
+      <div v-if="!userStore.state.usernameOld">
+        <h1>Bitte ergänze deinen Nutzernamen!</h1>
+        <h2>(Dieser Name ist für andere Nutzer sichtbar)</h2>
+      </div>
+      <div v-else>
+        <h1>Hier kannst du deine Namen ändern, {{ userStore.state.usernameOld }}</h1>
+      </div>
     </header>
     <form class="form-widget" @submit.prevent="updateProfile">
       <span class="p-float-label">
@@ -86,7 +154,7 @@ async function signOut() {
           class="float-label_label"
           :class="{ labelUp: userStore.state.username }"
           for="username"
-          >Username</label
+          >Nutzername</label
         >
       </span>
       <!-- <span class="p-float-label">
@@ -111,9 +179,10 @@ async function signOut() {
           @click="signOut"
           :disabled="userStore.fetchState.loading"
           outlined
-          ><p>Sign Out</p></PrimeButton
+          ><p>Nutzer Abmelden</p></PrimeButton
         >
       </div>
+      <Toast />
       <h2>{{ error }}</h2>
     </form>
   </div>
