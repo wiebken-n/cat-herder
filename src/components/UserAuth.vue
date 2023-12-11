@@ -22,6 +22,9 @@ const throwToast = () => {
     life: 4000
   })
 }
+function imageUrl() {
+  return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
+}
 
 const handleLogin = async () => {
   if (email.value.length < 1 || email.value.length > 40) {
@@ -56,9 +59,10 @@ const handleLogin = async () => {
 <template>
   <Toast />
   <div v-if="!linkSend" class="content-wrapper">
-    <svg class="icon">
+    <!-- <svg class="icon">
       <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
-    </svg>
+    </svg> -->
+    <img :src="imageUrl()" alt="Bild einer Katze mit Hut" />
     <h1 class="header">CatHerder</h1>
 
     <form class="signup-form" @submit.prevent>
@@ -135,7 +139,9 @@ h1 {
 .icon {
   color: var(--dark);
 }
-
+img {
+  height: 200px;
+}
 .input-field {
   width: 100%;
   height: 3rem;

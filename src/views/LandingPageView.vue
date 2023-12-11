@@ -1,8 +1,9 @@
 <template>
   <div class="content-wrapper">
-    <svg class="icon logo" data-cy="logo">
+    <img :src="imageUrl()" alt="Bild einer Katze mit Hut" />
+    <!-- <svg class="icon logo" data-cy="logo">
       <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
-    </svg>
+    </svg> -->
     <h1 class="headline" data-cy="headline">Cat Herder</h1>
     <p class="intro-text" data-cy="intro-text">
       <span>
@@ -32,6 +33,10 @@
 import { ref } from 'vue'
 import UserAuth from '../components/UserAuth.vue'
 const visible = ref(false)
+
+function imageUrl() {
+  return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
+}
 </script>
 
 <style scoped>
@@ -65,6 +70,9 @@ const visible = ref(false)
 .btn-open-modal {
   height: 2.5rem;
   width: 70vw;
+}
+img {
+  height: 200px;
 }
 
 @media screen and (min-width: 600px) {
