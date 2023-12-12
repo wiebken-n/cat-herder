@@ -286,7 +286,7 @@ onUnmounted(() => {
 }
 
 header {
-  width: 70vw;
+  width: 80vw;
   text-align: left;
 }
 .headline {
@@ -296,7 +296,7 @@ header {
 }
 
 form {
-  width: 70vw;
+  width: 80vw;
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
@@ -305,7 +305,7 @@ form {
 }
 
 form > article {
-  width: 70vw;
+  width: 80vw;
   display: grid;
   gap: 0.4rem;
 }
@@ -327,7 +327,7 @@ article > div {
 }
 
 .btn-submit {
-  width: 70vw;
+  width: 80vw;
 }
 .icon {
   width: 1.25rem;
@@ -337,43 +337,36 @@ article > div {
 .input-area {
   height: 7rem;
 }
-@media screen and (min-width: 700px) {
-  header {
-    width: 500px;
-  }
-  form {
-    width: 500px;
-  }
 
-  form > article {
-    width: 500px;
+@media screen and (min-width: 600px) {
+  header,
+  form,
+  form > article,
+  form > article > *,
+  .btn-submit {
+    width: 70vw;
   }
-  form > article > * {
-    width: 500px;
-  }
+}
+
+@media screen and (min-width: 700px) {
+  header,
+  form,
+  form > article,
+  form > article > *,
   .btn-submit {
     width: 500px;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  header {
-    width: 600px;
-  }
-  form {
-    width: 600px;
-  }
-  form > article {
-    width: 600px;
-  }
-  form > article > * {
-    width: 600px;
-  }
+  header,
+  form,
+  form > article,
+  form > article > *,
   .btn-submit {
     width: 600px;
   }
 }
-
 .avatars-container {
   padding-top: 1rem;
   display: flex;

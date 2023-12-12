@@ -145,7 +145,7 @@ onBeforeMount(async () => {
   justify-items: center;
   align-items: start;
   padding-inline: 1rem;
-  background-color: white;
+  background-color: var(--background-clr);
   height: min-content;
   padding-bottom: 2rem;
 }
@@ -176,7 +176,7 @@ h2 {
   text-align: start;
 }
 .cat-info {
-  background-color: var(--primary);
+  background-color: var(--cat-card-background);
   width: 270px;
   color: white;
   display: grid;
@@ -195,7 +195,7 @@ h2 {
   margin: 0.125rem 0;
 }
 .cat-info:hover {
-  background-color: var(--primary-lighter);
+  background-color: var(--cat-card-background-hover);
   box-shadow: 2px 2px 5px 0 var(--hover-shadow);
   scale: 1.02;
 }

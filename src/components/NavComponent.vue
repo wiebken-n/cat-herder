@@ -1,7 +1,13 @@
 <template>
   <div class="content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
-      <svg @click="activateMenu" alt="burger-menu-icon" class="burger" data-cy="burger">
+      <svg
+        @click="activateMenu"
+        :class="{ burgeractive: menuActive }"
+        alt="burger-menu-icon"
+        class="burger"
+        data-cy="burger"
+      >
         <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
       </svg>
     </div>
@@ -14,8 +20,18 @@
             <li @click="goToPage('/herder')">Cat Herder</li>
             <li @click="goToPage('/user')">Einstellungen</li>
             <li @click="goToPage('/')">Impressum</li>
+            <li></li>
           </ul>
         </div>
+        <button @click="toggleDarkmode()" class="darkmode-toggle">
+          <svg class="darkmode-toggle-icon">
+            <use
+              class="darkmode-icon"
+              xlink:href="@/assets/icons.svg#moon"
+              fill="currentcolor"
+            ></use>
+          </svg>
+        </button>
       </nav>
     </transition>
   </div>
@@ -32,13 +48,32 @@
   background-color: transparent;
   transition: all 300ms ease-in;
 }
+
+.darkmode-toggle {
+  background-color: transparent;
+  border-color: transparent;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+}
+.darkmode-toggle-icon {
+  z-index: 1;
+  height: 2rem;
+  width: 2rem;
+  color: var(--text);
+  transition: all 200ms ease-in-out;
+}
+.darkmode-toggle:hover > .darkmode-toggle-icon {
+  scale: 1.1;
+  color: var(--alert-dark);
+}
 .menuactive {
   visibility: visible;
   width: 15rem;
   height: 20rem;
   border-radius: 0 0 0 var(--border-radius);
   position: relative;
-  background-color: var(--accent);
+  background-color: var(--nav-background);
   opacity: 0.95;
 }
 .content-wrapper {
@@ -63,6 +98,9 @@
   transform-origin: center;
   color: var(--alert-dark);
   cursor: pointer;
+}
+.burgeractive {
+  color: var(--burger-bg);
 }
 
 .nav-wrapper {
@@ -97,10 +135,11 @@ ul {
   padding-top: 1.5rem;
 }
 li {
+  color: var(--nav-text);
   width: 80%;
 }
 li:hover {
-  color: var(--dark);
+  color: var(--nav-text-hover);
   border-bottom: 10px var(--primary) solid;
   cursor: pointer;
 }
@@ -117,10 +156,30 @@ li:hover {
 </style>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { usePrimeVue } from 'primevue/config'
+import { useUserStore } from '@/stores/useUserStore.js'
+import { supabase } from '../supabase'
+const userStore = useUserStore()
+
 const router = useRouter()
+
 const menuActive = ref(false)
+const PrimeVue = usePrimeVue()
+
+const themeInfo = reactive({
+  light: {
+    name: 'lara-light-cyan',
+    link: 'current-theme'
+  },
+  dark: {
+    name: 'lara-dark-cyan',
+    link: 'current-theme'
+  },
+  currentLight: true,
+  currentDark: false
+})
 
 const activateMenu = function () {
   menuActive.value = !menuActive.value
@@ -134,4 +193,45 @@ const goToPage = function (path) {
   router.push(path)
   menuActive.value = !menuActive.value
 }
+
+function toggleDarkmode() {
+  if (!userStore.state.darkmode) {
+    document.body.classList.toggle('darkmode')
+    PrimeVue.changeTheme(themeInfo.light.name, themeInfo.dark.name, themeInfo.dark.link, () => {})
+    userStore.state.darkmode = !userStore.state.darkmode
+    changeDarkmodeSetting()
+
+    return
+  }
+  if (userStore.state.darkmode) {
+    document.body.classList.toggle('darkmode')
+    PrimeVue.changeTheme(themeInfo.dark.name, themeInfo.light.name, themeInfo.light.link, () => {})
+    userStore.state.darkmode = !userStore.state.darkmode
+    changeDarkmodeSetting()
+
+    return
+  }
+}
+
+async function changeDarkmodeSetting() {
+  console.log(userStore.state.darkmode)
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ darkmode: userStore.state.darkmode })
+    .eq('id', userStore.state.userId)
+    .select()
+  if (error) {
+    console.log(error)
+  }
+}
+
+onMounted(() => {
+  setTimeout(() => {
+    if (userStore.state.darkmode) {
+      document.body.classList.toggle('darkmode')
+      PrimeVue.changeTheme(themeInfo.light.name, themeInfo.dark.name, themeInfo.dark.link, () => {})
+    }
+  }, 1000)
+})
 </script>

@@ -3,7 +3,7 @@ import { ref, reactive } from 'vue'
 import { supabase } from '../supabase'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
-import SiteLogo from './SiteLogo.vue'
+import SiteLogo from '@/components/SiteLogo.vue'
 const toast = useToast()
 
 const loading = ref(false)
@@ -143,14 +143,14 @@ const handleLogin = async () => {
 }
 
 .input-field:focus + .float-label_label {
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg);
   transform: translateY(0.55rem);
   color: var(--primary);
 }
 
 .labelUp {
   color: var(--text-off);
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg);
   transform: translateY(0.55rem);
 }
 .button-submit {

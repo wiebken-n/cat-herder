@@ -442,7 +442,7 @@ header {
 }
 
 h2 {
-  color: var(--primary-darker);
+  color: var(--primary);
   font-size: 1.1rem;
   top: -0.8rem;
 }
