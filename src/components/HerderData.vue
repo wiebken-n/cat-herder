@@ -141,8 +141,9 @@ async function deleteRequest(user) {
 
 <style scoped>
 .user-info-element {
-  background-color: rgb(238, 238, 238);
-  border: 2px solid var(--secondary);
+  background-color: var(--cat-card-background);
+  /* box-shadow: 0 0 5px 2px var(--card-shadow-darker); */
+  color: var(--text);
   display: grid;
   grid-template-columns: 2rem auto;
   row-gap: 0.5rem;
@@ -151,13 +152,19 @@ async function deleteRequest(user) {
   padding: 1rem;
   width: 100%;
   position: relative;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
+  transition: all 200ms ease-in-out;
+}
+.user-info-element:hover {
+  background-color: var(--cat-card-background-hover);
 }
 .user-icon {
+  color: rgb(233, 233, 233);
   height: 2rem;
   width: 2rem;
 }
 .username {
+  color: rgb(233, 233, 233);
   font-size: 1.5rem;
   padding-left: 1.5rem;
   margin-right: auto;
@@ -170,6 +177,12 @@ async function deleteRequest(user) {
   grid-column: 1 / 3;
 }
 .connection-btn {
+  color: var(--inline-button-text);
   width: 100%;
+  background-color: var(--card-background);
+  transition: all 100ms ease-in-out;
+}
+.connection-btn:hover {
+  background-color: var(--card-background-hover);
 }
 </style>

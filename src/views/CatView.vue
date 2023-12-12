@@ -401,6 +401,7 @@ header {
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .herder-input-container {
@@ -425,9 +426,12 @@ header {
   width: 70vw;
   padding-inline: 1.25rem;
   padding-bottom: 1rem;
-  border: 2px solid var(--primary);
+  /* border: 2px solid var(--primary); */
   border-radius: 10px;
   position: relative;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 4px 2px var(--card-shadow);
 }
 .info-segment-header {
   display: flex;
@@ -438,17 +442,18 @@ header {
 }
 
 h2 {
-  color: grey;
+  color: var(--primary);
   font-size: 1.1rem;
   top: -0.8rem;
 }
 .icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: grey;
+  color: var(--primary-darker);
 }
 .info-segment > p {
   padding-bottom: 0.5rem;
+  padding-inline: 0.5rem;
   inline-size: 100%;
   overflow-wrap: break-word;
   hyphens: manual;

@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <header><h1>Herders</h1></header>
+    <header><h1>Deine Co-Herder</h1></header>
     <div class="connected-herders-info">
       <form class="form-search-user" @submit.prevent>
         <PrimeInputText v-model="userName" class="usersearch-input"></PrimeInputText>
@@ -303,8 +303,12 @@ onBeforeMount(async () => {
 }
 
 .user-info-container {
+  padding: 1.25rem;
   display: grid;
-  gap: 0.5rem;
+  gap: 1.5rem;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 4px 2px var(--card-shadow);
 }
 
 .usersearch-input {
@@ -319,14 +323,21 @@ onBeforeMount(async () => {
 
 .user-info-wrapper {
   display: grid;
-  gap: 1rem;
 }
 
 .user-info {
   width: 100%;
 }
+@media screen and (min-width: 500px) {
+  .connected-herders-info {
+    width: 350px;
+  }
+}
 
 @media screen and (min-width: 700px) {
+  .connected-herders-info {
+    width: 70vw;
+  }
   .user-info-container {
     grid-template-columns: 1fr 1fr;
   }

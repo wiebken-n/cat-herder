@@ -13,7 +13,8 @@ export const useUserStore = defineStore('users', () => {
     avatar_url: '',
     full_name: '',
     herderConnections: '',
-    herders: ''
+    herders: '',
+    darkmode: false
   })
   const fetchState = reactive({
     loading: false,
@@ -28,16 +29,17 @@ export const useUserStore = defineStore('users', () => {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, avatar_url, full_name`)
+        .select(`username, avatar_url, darkmode`)
         .eq('id', user.id)
         .single()
 
       if (error && status !== 406) throw error
 
       if (data) {
+        console.log(data)
         ;(state.username = data.username),
           (state.avatar_url = data.avatar_url),
-          (state.full_name = data.full_name)
+          (state.darkmode = data.darkmode)
       }
     } catch (error) {
       alert(error.message)
