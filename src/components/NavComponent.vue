@@ -49,8 +49,8 @@
 }
 .burger {
   position: absolute;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2.75rem;
+  width: 2.75rem;
   right: 10px;
   top: 10px;
   z-index: 1;

@@ -127,6 +127,8 @@ a {
 
 html {
   font-size: 14px;
+  --url-logo-grey: '';
+  --url-logo-color: '';
 }
 
 body {

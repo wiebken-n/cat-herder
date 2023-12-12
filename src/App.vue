@@ -40,7 +40,7 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <div v-if="!session" >
+    <div v-if="!session">
       <LandingPageView />
     </div>
     <div v-else>
@@ -76,8 +76,8 @@ onMounted(() => {
   z-index: 1;
   width: 2rem;
   height: 2rem;
-  left: 7px;
-  top: 10px;
+  left: 5px;
+  top: 5px;
 }
 .container {
   position: relative;
