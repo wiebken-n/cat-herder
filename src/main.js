@@ -8,6 +8,7 @@ import router from './router'
 
 import PrimeVue from 'primevue/config'
 import 'primevue/resources/themes/lara-light-blue/theme.css'
+import 'primevue/resources/themes/lara-light-cyan/theme.css'
 
 /* Prime Vue Component imports >>>>>>>> */
 

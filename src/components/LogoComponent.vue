@@ -35,7 +35,7 @@ onBeforeMount(() => imageUrl())
   background-image: url('/catwithhat_small_grey.webp');
   background-size: contain;
   background-repeat: no-repeat;
-  background-color: var(--text-on-dark-off);
+  background-color: var(--secondary-lighter);
   background-size: 55%;
   background-position: center;
   border-radius: 90px;
@@ -44,7 +44,7 @@ onBeforeMount(() => imageUrl())
   color: var(--alert-dark);
   scale: 1.1;
   cursor: pointer;
-  background-color: var(--primary-lighter);
+  background-color: var(--secondary-light);
   background-image: url('/catwithhat_small.webp');
   animation: tilt-shaking 0.25s 2 ease-in-out;
 }

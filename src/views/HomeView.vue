@@ -156,12 +156,13 @@ onBeforeMount(async () => {
 }
 
 .cat-overview {
-  background-color: rgb(235, 235, 235);
   display: grid;
   gap: 1rem;
   padding: 1.5rem;
   padding-top: 0.75rem;
+  background-color: var(--card-background);
   border-radius: var(--border-radius);
+  box-shadow: 0 0 4px 2px var(--card-shadow);
   /* width: 70vw; */
 }
 .cat-overview-headline {
@@ -175,7 +176,7 @@ h2 {
   text-align: start;
 }
 .cat-info {
-  background-color: var(--secondary);
+  background-color: var(--primary);
   width: 270px;
   color: white;
   display: grid;
@@ -194,7 +195,7 @@ h2 {
   margin: 0.125rem 0;
 }
 .cat-info:hover {
-  background-color: var(--secondary-light);
+  background-color: var(--primary-lighter);
   box-shadow: 2px 2px 5px 0 var(--hover-shadow);
   scale: 1.02;
 }
@@ -251,9 +252,8 @@ h2 {
   justify-content: center;
   gap: 1rem;
   width: 270px;
-  color: var(--secondary);
+  color: var(--primary);
   height: 5.25rem;
-  margin-block: 0.25rem;
 }
 
 .no-herded-cats > * {

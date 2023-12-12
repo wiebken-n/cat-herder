@@ -101,7 +101,7 @@ li {
 }
 li:hover {
   color: var(--dark);
-  border-bottom: 10px var(--secondary) solid;
+  border-bottom: 10px var(--primary) solid;
   cursor: pointer;
 }
 

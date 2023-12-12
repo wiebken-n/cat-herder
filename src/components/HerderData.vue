@@ -142,7 +142,7 @@ async function deleteRequest(user) {
 <style scoped>
 .user-info-element {
   background-color: rgb(238, 238, 238);
-  border: 2px solid var(--secondary);
+  border: 2px solid var(--primary);
   display: grid;
   grid-template-columns: 2rem auto;
   row-gap: 0.5rem;

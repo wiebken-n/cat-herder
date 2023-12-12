@@ -298,10 +298,12 @@ header {
 form {
   width: 70vw;
   display: grid;
+  grid-template-columns: 1fr;
   gap: 2rem;
   padding-bottom: 2rem;
   position: relative;
 }
+
 form > article {
   width: 70vw;
   display: grid;
@@ -342,6 +344,10 @@ article > div {
   form {
     width: 500px;
   }
+
+  form > article {
+    width: 500px;
+  }
   form > article > * {
     width: 500px;
   }
@@ -355,6 +361,9 @@ article > div {
     width: 600px;
   }
   form {
+    width: 600px;
+  }
+  form > article {
     width: 600px;
   }
   form > article > * {
@@ -389,7 +398,7 @@ article > div {
 }
 .cat-avatar {
   color: var(--text-on-dark);
-  background-color: var(--primary-lighter);
+  background-color: var(--primary);
   height: 100px;
   width: 100px;
   /* padding: 1rem; */
@@ -408,6 +417,6 @@ article > div {
   box-shadow: 0 0 20px 2px var(--primary);
 }
 .cat-image:active {
-  box-shadow: 0 0 20px 2px var(--secondary);
+  box-shadow: 0 0 20px 2px var(--primary-darker);
 }
 </style>

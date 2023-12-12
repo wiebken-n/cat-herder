@@ -3,6 +3,7 @@ import { ref, reactive } from 'vue'
 import { supabase } from '../supabase'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
+import SiteLogo from './SiteLogo.vue'
 const toast = useToast()
 
 const loading = ref(false)
@@ -22,9 +23,9 @@ const throwToast = () => {
     life: 4000
   })
 }
-function imageUrl() {
-  return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
-}
+// function imageUrl() {
+//   return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
+// }
 
 const handleLogin = async () => {
   if (email.value.length < 1 || email.value.length > 40) {
@@ -59,11 +60,8 @@ const handleLogin = async () => {
 <template>
   <Toast />
   <div v-if="!linkSend" class="content-wrapper">
-    <!-- <svg class="icon">
-      <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
-    </svg> -->
-    <img :src="imageUrl()" alt="Bild einer Katze mit Hut" />
-    <h1 class="header">CatHerder</h1>
+    <div class="logo-wrapper"></div>
+    <SiteLogo class="logo-component" />
 
     <form class="signup-form" @submit.prevent>
       <p class="description">
@@ -94,8 +92,7 @@ const handleLogin = async () => {
     </form>
   </div>
   <div v-else class="content-wrapper">
-    <img :src="imageUrl()" alt="Bild einer Katze mit Hut" />
-    <h1 class="header">CatHerder</h1>
+    <SiteLogo class="logo-component" />
     <p class="description">
       Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
     </p>
@@ -127,18 +124,13 @@ const handleLogin = async () => {
   height: 3rem;
   width: 100%;
 }
+.logo-component {
+  color: var(--text);
+  font-size: 0.3rem;
+}
 
-h1 {
-  color: var(--dark);
-  border-radius: 25px;
-  padding: 1.25rem;
-  padding-block: 1.5rem;
-}
-.icon {
-  color: var(--dark);
-}
-img {
-  height: 200px;
+.description {
+  text-align: center;
 }
 .input-field {
   width: 100%;
