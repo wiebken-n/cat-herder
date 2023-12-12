@@ -26,8 +26,15 @@
         <button @click="toggleDarkmode()" class="darkmode-toggle">
           <svg class="darkmode-toggle-icon">
             <use
+              v-if="!userStore.state.darkmode"
               class="darkmode-icon"
               xlink:href="@/assets/icons.svg#moon"
+              fill="currentcolor"
+            ></use>
+            <use
+              v-if="userStore.state.darkmode"
+              class="darkmode-icon"
+              xlink:href="@/assets/icons.svg#sun"
               fill="currentcolor"
             ></use>
           </svg>
@@ -53,19 +60,19 @@
   background-color: transparent;
   border-color: transparent;
   position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
+  bottom: 0.5rem;
+  right: 0.5rem;
 }
 .darkmode-toggle-icon {
   z-index: 1;
   height: 2rem;
   width: 2rem;
-  color: var(--text);
+  color: var(--darkmode-icon);
   transition: all 200ms ease-in-out;
 }
 .darkmode-toggle:hover > .darkmode-toggle-icon {
   scale: 1.1;
-  color: var(--alert-dark);
+  color: var(--alert);
 }
 .menuactive {
   visibility: visible;

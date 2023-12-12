@@ -70,6 +70,7 @@
   --old-rose-light: hsla(4, 41%, 70%, 1);
   --old-rose-lighter: hsla(4, 41%, 80%, 1);
   --old-rose-light-less-sat: hsl(4, 20%, 93%);
+  --old-rose-light-less-sat-darker: hsl(4, 23%, 80%);
   --old-rose-darker: hsla(4, 41%, 55%, 1);
 
   --flax: hsla(55, 86%, 78%, 1);
@@ -124,7 +125,9 @@
   --text-header: var(--dark);
   --positive: #52db40;
   --card-background: var(--old-rose-light-less-sat);
+  --card-background-hover: hsla(192, 30%, 90%, 1);
   --card-shadow: hsl(0, 0%, 85%);
+  --card-shadow-darker: hsl(0, 0%, 80%);
   --nav-background: var(--accent);
   --nav-text: var(--text);
   --nav-text-hover: var(--text);
@@ -134,6 +137,8 @@
   --logo-bg: var(--old-rose);
   --logo-bg-hover: var(--old-rose-darker);
   --burger-bg: var(--alert-dark);
+  --darkmode-icon: var(--alert-dark);
+  --inline-button-text: var(--primary-darker);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -211,6 +216,9 @@ body {
   --logo-bg: var(--old-rose-darker);
   --logo-bg-hover: var(--old-rose);
   --burger-bg: var(--accent);
+  --darkmode-icon: var(--accent);
+  --card-background-hover: hsl(0, 2%, 15%);
+  --inline-button-text: var(--primary);
 }
 h1,
 h2 {
