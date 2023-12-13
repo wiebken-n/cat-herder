@@ -61,7 +61,7 @@
   border-color: transparent;
   position: absolute;
   bottom: 0.5rem;
-  right: 0.5rem;
+  left: 1.25rem;
 }
 .darkmode-toggle-icon {
   z-index: 1;
@@ -72,7 +72,7 @@
 }
 .darkmode-toggle:hover > .darkmode-toggle-icon {
   scale: 1.1;
-  color: var(--alert);
+  color: var(--burger-icons-hover);
 }
 .menuactive {
   visibility: visible;
@@ -98,12 +98,13 @@
   z-index: 1;
   transition: all 200ms ease;
   scale: 1;
+  color: var(--burger-icons);
 }
 
 .burger:hover {
   scale: 1.05;
   transform-origin: center;
-  color: var(--alert-dark);
+  color: var(--burger-icons-hover);
   cursor: pointer;
 }
 .burgeractive {
