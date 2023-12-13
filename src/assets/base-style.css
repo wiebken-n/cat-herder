@@ -93,6 +93,7 @@
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary-darker);
   --cat-avatar-dummy: var(--old-rose-light-less-sat);
+  --selection-bg: var(--primary);
 }
 
 * {
@@ -120,16 +121,19 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-family: 'Raleway';
   background-color: var(--background-clr);
-  color: var(--text-normal);
+  color: var(--text);
   margin: 0;
 }
-
+*::selection {
+  color: var(--text);
+  background-color: var(--selection-bg);
+}
 .darkmode {
   --hover-shadow: rgba(0, 0, 0, 0.404);
   /* --background-clr: rgb(31, 31, 31); */
   --background-clr: hsl(0, 2%, 10%);
-  --text: rgb(233, 233, 233);
-  --text-off: rgb(196, 196, 196);
+  --text: hsl(0, 0%, 96%);
+  --text-off: hsl(0, 0%, 77%);
   --text-on-dark: rgb(0, 0, 0);
   --text-on-dark-off: rgb(37, 37, 37);
 
@@ -153,6 +157,7 @@ body {
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary);
   --cat-avatar-dummy: var(--old-rose-light-less-sat);
+  --selection-bg: var(--primary-darker-dark);
 }
 h1,
 h2 {
@@ -168,6 +173,7 @@ h1 {
 p {
   line-height: 1.5rem;
 }
+
 /* 
 button,
 input[type='submit'] {
