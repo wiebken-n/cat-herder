@@ -94,6 +94,12 @@
   --burger-icons-hover: var(--primary-darker);
   --cat-avatar-dummy: var(--old-rose-light-less-sat);
   --selection-bg: var(--primary);
+  --background-cat-avatar: hsl(4, 13%, 87%);
+  --background-cat-avatar: radial-gradient(
+    hsl(4, 13%, 87%) 65%,
+    hsla(4, 41%, 77%, 1) 70%,
+    hsla(4, 41%, 60%, 1) 90%
+  );
 }
 
 * {
@@ -158,6 +164,11 @@ body {
   --burger-icons-hover: var(--primary);
   --cat-avatar-dummy: var(--old-rose-light-less-sat);
   --selection-bg: var(--primary-darker-dark);
+  --background-cat-avatar: radial-gradient(
+    hsl(4, 7%, 20%) 65%,
+    hsla(4, 35%, 55%, 1) 70%,
+    hsla(4, 41%, 57%, 1) 90%
+  );
 }
 h1,
 h2 {

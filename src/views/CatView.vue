@@ -21,7 +21,21 @@
         </div>
 
         <Toast />
-        <PrimeConfirmDialog />
+        <PrimeConfirmDialog group="headless">
+          <template #container="{ message, acceptCallback, rejectCallback }">
+            <div class="dialog-container">
+              <h3 class="dialog-header">{{ message.header }}</h3>
+              <div class="dialog-text-container">
+                <p class="dialog-text">{{ message.message }}</p>
+              </div>
+
+              <div class="button-container">
+                <PrimeButton label="Herder entfernen" @click="acceptCallback"></PrimeButton>
+                <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+              </div>
+            </div>
+          </template>
+        </PrimeConfirmDialog>
       </div>
       <div class="herder-input-container">
         <PrimeDropdown
@@ -189,6 +203,7 @@ function imageUrl(catAvatar) {
 
 const confirmRemoveHerder = (herder) => {
   confirm.require({
+    group: 'headless',
     message: `Möchtest du ${herder.username} als Herder für ${catsStore.state.currentCat.name} entfernen?`,
     header: 'Herder entfernen',
 
@@ -398,21 +413,28 @@ onBeforeMount(async () => {
   padding-bottom: 2rem;
 }
 header {
-  width: 70vw;
+  width: 80vw;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .cat-avatar {
-  width: 5rem;
-  height: 5rem;
   grid-column: 1;
   grid-row: 1 / 4;
   margin-inline: 0.25rem;
   scale: 1;
+  width: 7.5rem;
+  height: 7.5rem;
+  background-color: var(--background-cat-avatar);
+  background: var(--background-cat-avatar);
+  border-radius: 100%;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px 2px var(--card-shadow);
 }
-
+.cat-avatar:hover {
+  animation: tilt-shaking 0.25s 2 ease-in-out;
+}
 .header-text-wrapper {
   display: flex;
   flex-direction: column;
@@ -424,7 +446,7 @@ header {
 }
 
 .user-content-container {
-  width: 70vw;
+  width: 80vw;
   display: grid;
   position: relative;
   gap: 0.75rem;
@@ -439,6 +461,35 @@ header {
   margin-bottom: 1rem;
 }
 
+.dialog-container {
+  border-radius: var(--border-radius);
+  display: grid;
+  grid-template-columns: 1;
+  justify-items: center;
+  min-height: max-content;
+  width: 85vw;
+  background-color: var(--card-background);
+  position: relative;
+  padding: 1rem;
+}
+.dialog-container > h3 {
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+.dialog-text-container {
+  width: 100%;
+  padding-inline: 3rem;
+  padding-block: 2rem;
+  text-align: left;
+  font-weight: 500;
+}
+.button-container {
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
 .herder-input-container {
   padding-top: 0.5rem;
   padding-bottom: 1.5rem;
@@ -452,13 +503,13 @@ header {
 .cat-content {
   display: grid;
   justify-items: start;
-  width: 70vw;
+  width: 80vw;
   gap: 1rem;
   position: relative;
 }
 
 .info-segment {
-  width: 70vw;
+  width: 80vw;
   padding-inline: 1.25rem;
   padding-bottom: 1rem;
   /* border: 2px solid var(--primary); */
@@ -511,7 +562,9 @@ h2 {
   .user-content-container {
     width: 500px;
   }
-
+  .dialog-container {
+    width: 450px;
+  }
   .cat-content,
   .info-segment {
     width: 500px;
@@ -530,7 +583,9 @@ h2 {
   .user-content-container {
     width: 700px;
   }
-
+  .dialog-container {
+    width: 600px;
+  }
   .cat-content,
   .info-segment {
     width: 700px;
@@ -557,6 +612,24 @@ h2 {
   }
   .herder-input-container > * {
     width: 500px;
+  }
+}
+
+@keyframes tilt-shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2.5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-2.5deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 </style>
