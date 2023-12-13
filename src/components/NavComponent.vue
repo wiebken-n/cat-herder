@@ -222,8 +222,6 @@ function toggleDarkmode() {
 }
 
 async function changeDarkmodeSetting() {
-  console.log(userStore.state.darkmode)
-
   const { error } = await supabase
     .from('profiles')
     .update({ darkmode: userStore.state.darkmode })

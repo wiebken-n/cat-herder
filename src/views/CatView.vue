@@ -9,11 +9,7 @@
     </header>
     <div v-if="ownerId === userStore.state.userId" class="user-content-container">
       <div class="herder-output-container">
-        <div
-          class="herder-data-container"
-          v-for="herder of catsStore.state.currentCat.herderProfiles"
-          :key="herder.id"
-        >
+        <div class="herder-data-container" v-for="herder of herderProfiles" :key="herder.id">
           <PrimeButton
             class="user-tag"
             :label="herder.username"
@@ -42,9 +38,13 @@
         />
       </div>
     </div>
-    <div v-else class="user-content-container">
+    <div v-if="ownerId !== userStore.state.userId" class="user-content-container">
       <div div class="herder-output-container">
-        <PrimeTag class="user-tag" :value="userStore.state.username" rounded></PrimeTag>
+        <PrimeTag
+          class="user-tag owner-name"
+          :value="catsStore.state.currentCat.profiles.username"
+          rounded
+        ></PrimeTag>
       </div>
     </div>
     <div class="cat-content">
@@ -55,16 +55,16 @@
           </svg>
           <h2>Futterinfo</h2>
         </div>
-        <p v-if="!stateEdit.food">{{ catsStore.state.currentCat.food_info }}</p>
+        <p v-if="!stateEdit.food">{{ catsStore.state.currentCat.cats_info[0].food_info }}</p>
         <PrimeTextArea
           v-if="stateEdit.food"
           id="input-cat-food"
           class="input-cat-food input input-area"
-          v-model="catsStore.state.currentCat.food_info"
+          v-model="catsStore.state.currentCat.cats_info[0].food_info"
           autoResize
         ></PrimeTextArea>
         <svg
-          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
           @click="editFood()"
           class="icon icon-edit"
         >
@@ -87,17 +87,17 @@
           </svg>
           <h2>Infos zur Gesundheit</h2>
         </div>
-        <p v-if="!stateEdit.health">{{ catsStore.state.currentCat.health_info }}</p>
+        <p v-if="!stateEdit.health">{{ catsStore.state.currentCat.cats_info[0].health_info }}</p>
         <PrimeTextArea
           v-if="stateEdit.health"
           id="input-cat-health"
           class="input-cat-health input input-area"
-          v-model="catsStore.state.currentCat.health_info"
+          v-model="catsStore.state.currentCat.cats_info[0].health_info"
           autoResize
         ></PrimeTextArea>
         <svg
           @click="editHealth()"
-          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
           class="icon icon-edit"
         >
           <use
@@ -119,18 +119,20 @@
           </svg>
           <h2>Infos zum Verhalten</h2>
         </div>
-        <p v-if="!stateEdit.behaviour">{{ catsStore.state.currentCat.behaviour_info }}</p>
+        <p v-if="!stateEdit.behaviour">
+          {{ catsStore.state.currentCat.cats_info[0].behaviour_info }}
+        </p>
         <PrimeTextArea
           v-if="stateEdit.behaviour"
           id="input-cat-health"
           class="input-cat-health input input-area"
-          v-model="catsStore.state.currentCat.behaviour_info"
+          v-model="catsStore.state.currentCat.cats_info[0].behaviour_info"
           autoResize
         ></PrimeTextArea>
         <svg
           @click="editBehaviour()"
           class="icon icon-edit"
-          v-if="catsStore.state.currentCat.userId === userStore.state.userId"
+          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
         >
           <use
             v-if="!stateEdit.behaviour"
@@ -153,7 +155,7 @@ import { useCatsStore } from '../stores/useCatsStore'
 
 import { useUserStore } from '../stores/useUserStore'
 import { useRoute } from 'vue-router'
-import { onBeforeMount, reactive, onUnmounted, ref } from 'vue'
+import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
@@ -172,17 +174,20 @@ const stateEdit = reactive({
   health: false,
   behaviour: false
 })
-const owner = reactive({})
 
-const ownerName = ref('')
-const ownerId = ref('')
+// const owner = computed(() => catsStore.state.currentCat.profiles)
+// const ownerName = ref('')
+
+const herderProfiles = computed(() => {
+  return catsStore.state.currentCat.catHerderProfiles
+})
+const ownerId = computed(() => catsStore.state.currentCat.profiles.id)
 
 function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
 const confirmRemoveHerder = (herder) => {
-  console.log(herder)
   confirm.require({
     message: `Möchtest du ${herder.username} als Herder für ${catsStore.state.currentCat.name} entfernen?`,
     header: 'Herder entfernen',
@@ -205,9 +210,9 @@ async function editCatInfo() {
     .from('cats_info')
 
     .update({
-      food_info: catsStore.state.currentCat.food_info,
-      health_info: catsStore.state.currentCat.health_info,
-      behaviour_info: catsStore.state.currentCat.behaviour_info
+      food_info: catsStore.state.currentCat.cats_info[0].food_info,
+      health_info: catsStore.state.currentCat.cats_info[0].health_info,
+      behaviour_info: catsStore.state.currentCat.cats_info[0].behaviour_info
     })
     .eq('cat_id', catsStore.state.currentCat.id)
     .select()
@@ -215,7 +220,7 @@ async function editCatInfo() {
     console.log(error)
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
 }
 async function editFood() {
@@ -238,66 +243,79 @@ async function editBehaviour() {
   stateEdit.behaviour = !stateEdit.behaviour
 }
 
-async function fetchOwner() {
-  let { data, error } = await supabase
-    .from('profiles')
-    .select()
-    .eq('id', catsStore.state.currentCat.userId)
-  if (error) {
-    console.log(error)
-  }
+// async function fetchOwner() {
+//   let { data, error } = await supabase
+//     .from('profiles')
+//     .select()
+//     .eq('id', catsStore.state.currentCat.user_id)
+//   if (error) {
+//     console.log(error)
+//   }
 
-  if (data) {
-    owner.value = data
-    ownerName.value = data[0].username
-    ownerId.value = data[0].id
-  }
-}
+//   if (data) {
+//     owner.value = data
+//     ownerName.value = data[0].username
+//     ownerId.value = data[0].id
+//   }
+// }
 
-async function fetchCatHerders() {
-  let { data, error } = await supabase
-    .from('herder_connections')
-    .select('herder_id')
-    .eq('cat_id', catsStore.state.currentCat.id)
+// async function fetchCatHerders() {
+//   let { data, error } = await supabase
+//     .from('herder_connections')
+//     .select('herder_id')
+//     .eq('cat_id', catsStore.state.currentCat.id)
 
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-    catsStore.state.currentCat.herders = data
-    fetchCatHerderProfiles()
-  }
-}
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//     catsStore.state.currentCat.herders = data
+//     fetchCatHerderProfiles()
+//   }
+// }
 
-async function fetchCatHerderProfiles() {
-  const herderIds = []
-  for (let herder of catsStore.state.currentCat.herders) {
-    herderIds.push(herder.herder_id)
-  }
-  catsStore.state.currentCat.herders = herderIds
-  console.log(catsStore.state.currentCat.herders)
-  let { data, error } = await supabase
-    .from('profiles')
-    .select()
-    .in('id', catsStore.state.currentCat.herders)
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    catsStore.state.currentCat.herderProfiles = data
-    console.log(data)
-  }
-}
+// async function fetchCatHerderProfiles() {
+//   const herderIds = []
+//   for (let herder of catsStore.state.currentCat.herders) {
+//     herderIds.push(herder.herder_id)
+//   }
+//   catsStore.state.currentCat.herders = herderIds
+//   console.log(catsStore.state.currentCat.herders)
+//   let { data, error } = await supabase
+//     .from('profiles')
+//     .select()
+//     .in('id', catsStore.state.currentCat.herders)
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     catsStore.state.currentCat.herderProfiles = data
+//     console.log(data)
+//   }
+// }
 
 async function addHerder(herderId) {
   if (selectedHerder.value === 'none') {
-    console.log('bitte wähle einen herder aus')
+    // console.log('bitte wähle einen herder aus')
+    toast.add({
+      severity: 'warn',
+      summary: 'Kein Nutzer ausgewählt',
+      detail: 'Bitte wähle einen Nutzer aus!',
+      life: 3000
+    })
     return
   }
-  if (catsStore.state.currentCat.herders.includes(herderId)) {
-    console.log('herder already added')
-    return
+  for (let herder of catsStore.state.currentCat.herder_connections) {
+    if (herder.herder_id === herderId) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Herder bereits hinzugefügt',
+        detail: 'Du hast diesen Nutzer bereits als Herder hinzugefügt',
+        life: 3000
+      })
+      return
+    }
   }
 
   let { data, error } = await supabase
@@ -308,9 +326,9 @@ async function addHerder(herderId) {
     return
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
-  await fetchCatHerders()
+  await catsStore.fetchCat(route.params.id)
 }
 
 async function removeHerder(herderId) {
@@ -325,26 +343,43 @@ async function removeHerder(herderId) {
     return
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
-  await fetchCatHerders()
+  await catsStore.fetchCat(route.params.id)
 }
 onUnmounted(() => {
-  catsStore.state.currentCat.id = ''
-  catsStore.state.currentCat.name = ''
-  catsStore.state.currentCat.avatar = ''
-  catsStore.state.currentCat.birthday = ''
-  catsStore.state.currentCat.food_info = ''
-  catsStore.state.currentCat.health_info = ''
-  catsStore.state.currentCat.behaviour_info = ''
-  ;(catsStore.state.currentCat.herderProfiles = ''), (catsStore.state.currentCat.herders = '')
+  catsStore.state.currentCat = {
+    user_id: '',
+    id: '',
+    name: '',
+    avatar: '',
+    birthday: '',
+    food_info: '',
+    health_info: '',
+    behaviour_info: '',
+    herder_connections: '',
+    catHerderProfiles: '',
+    herders: '',
+    herderProfiles: '',
+    profiles: {
+      id: '',
+      username: ''
+    },
+    cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
+
+    // age: '',
+    // description: ''
+  }
 })
+// onMounted(async () => {
+//   await catsStore.fetchCat(route.params.id)
+// })
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
-  await catsStore.fetchCatInfo(route.params.id)
+  // await catsStore.fetchCatInfo(route.params.id)
 
-  await fetchOwner()
-  await fetchCatHerders()
+  // await fetchOwner()
+  // await fetchCatHerders()
 })
 </script>
 
@@ -427,7 +462,6 @@ header {
   padding-inline: 1.25rem;
   padding-bottom: 1rem;
   /* border: 2px solid var(--primary); */
-  border-radius: 10px;
   position: relative;
   background-color: var(--card-background);
   border-radius: var(--border-radius);

@@ -60,6 +60,7 @@
   --secondary-lighter: var(--old-rose-lighter);
   --primary-darker: var(--moonstone-dark);
   --primary-darker-dark: #0e7490;
+  --primary-darkest: hsl(193, 82%, 27%);
   --primary-lighter: var(--moonstone-light);
 
   --accent: var(--jonquil);
@@ -78,12 +79,11 @@
   --card-background: var(--old-rose-light-less-sat);
   --card-background-hover: hsla(192, 30%, 90%, 1);
   --card-shadow: hsl(0, 0%, 82%);
-  --card-shadow-darker: hsl(0, 0%, 80%);
   --nav-background: var(--old-rose-lighter);
   --nav-text: var(--text);
   --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary);
-  --cat-card-background-hover: var(--primary-lighter);
+  --cat-card-background-hover: var(--primary-darker);
   --hover-label-bg: white;
   --logo-bg: var(--old-rose-light);
   --logo-bg-hover: var(--primary-darker);
@@ -92,10 +92,11 @@
   --inline-button-text: var(--primary-darker);
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary-darker);
+  --cat-avatar-dummy: var(--old-rose-light-less-sat);
 }
 
 * {
-  --border-radius: 5px;
+  --border-radius: 6px;
 }
 
 *,
@@ -140,8 +141,7 @@ body {
   --nav-text: var(--text);
   --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary-darker-dark);
-  --cat-card-background-hover: var(--primary-darker);
-  /* --hover-label-bg: linear-gradient(#1f2937 55%, #111827); */
+  --cat-card-background-hover: var(--primary-darkest);
   --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
   --logo-bg: var(--old-rose);
 
@@ -152,6 +152,7 @@ body {
   --inline-button-text: var(--primary);
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary);
+  --cat-avatar-dummy: var(--old-rose-light-less-sat);
 }
 h1,
 h2 {
@@ -203,30 +204,3 @@ input[type='submit']:active {
     font-size: 16px;
   }
 }
-
-/* 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-} */
