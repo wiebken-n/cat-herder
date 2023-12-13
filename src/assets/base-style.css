@@ -72,11 +72,11 @@
   --background-clr: rgb(255, 255, 255);
   --text: black;
   --text-off: rgb(29, 29, 29);
-  --text-on-dark: white;
+  --text-on-dark: hsl(0, 0%, 96%);
   --text-on-dark-off: rgb(223, 223, 223);
   --text-header: var(--dark);
   --positive: #52db40;
-  --card-background: var(--old-rose-light-less-sat);
+  --card-background: hsl(4, 15%, 93%);
   --card-background-hover: hsla(192, 30%, 90%, 1);
   --card-shadow: hsl(0, 0%, 82%);
   --nav-background: var(--old-rose-lighter);
@@ -93,7 +93,7 @@
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary-darker);
   --cat-avatar-dummy: var(--old-rose-light-less-sat);
-  --selection-bg: var(--primary);
+  --selection-bg: var(--primary-darker);
   --background-cat-avatar: hsl(4, 13%, 87%);
   --background-cat-avatar: radial-gradient(
     hsl(4, 13%, 87%) 65%,
@@ -131,7 +131,7 @@ body {
   margin: 0;
 }
 *::selection {
-  color: var(--text);
+  color: hsl(0, 0%, 96%);
   background-color: var(--selection-bg);
 }
 .darkmode {
