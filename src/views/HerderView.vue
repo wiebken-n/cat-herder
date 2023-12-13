@@ -294,7 +294,7 @@ onBeforeMount(async () => {
   padding-bottom: 2rem;
 }
 .connected-herders-info {
-  width: 70vw;
+  width: 80vw;
 }
 .form-search-user {
   width: 100%;

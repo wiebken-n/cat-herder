@@ -40,32 +40,13 @@
 /* ----------------------- colors ----------- */
 
 :root {
-  --picton-blue: hsla(200, 67%, 60%, 1);
-  --picton-blue-darker: hsla(200, 67%, 40%, 1);
-  --picton-blue-lighter: hsla(200, 67%, 70%, 1);
   --moonstone: hsla(192, 49%, 50%, 1);
   --moonstone-dark: hsla(192, 49%, 40%, 1);
   --moonstone-darker: hsla(192, 49%, 30%, 1);
   --moonstone-light: hsla(192, 49%, 60%, 1);
-  --saffron: hsla(47, 81%, 56%, 1);
   --jonquil: #f8cf18;
-  --yinmn-blue: hsla(217, 48%, 39%, 1);
-  --polynesian-blue: hsl(217, 68%, 34%);
   --jasper: hsla(5, 61%, 53%, 1);
   --amaranth-purple: hsl(351, 52%, 43%);
-
-  /* CSS HSL */
-  --light-green: hsla(96, 60%, 71%, 1);
-  --flax: hsla(55, 85%, 78%, 1);
-  --buff: hsla(29, 79%, 74%, 1);
-  --coral: hsla(16, 90%, 69%, 1);
-  --ebony: hsla(110, 6%, 38%, 1);
-
-  /* CSS HSL */
-  --light-green: hsla(96, 59%, 71%, 1);
-  --light-green-lighter: hsla(96, 59%, 80%, 1);
-  --light-green-darker: hsla(96, 59%, 60%, 1);
-
   --old-rose: hsla(4, 41%, 60%, 1);
   --old-rose-light: hsla(4, 41%, 70%, 1);
   --old-rose-lighter: hsla(4, 41%, 80%, 1);
@@ -73,42 +54,13 @@
   --old-rose-light-less-sat-darker: hsl(4, 23%, 80%);
   --old-rose-darker: hsla(4, 41%, 55%, 1);
 
-  --flax: hsla(55, 86%, 78%, 1);
-  --ebony: hsla(110, 6%, 38%, 1);
-
-  --licorice: hsla(342, 30%, 8%, 1);
-
-  /* --primary: var(--light-green);
-  --secondary: var(--old-rose-darker);
-  --secondary-light: var(--old-rose);
-  --primary-darker: var(--light-green-darker);
-  --primary-lighter: var(--light-green-lighter);
-  --accent: var(--light-green-lighter);
-  --alert: var(--jasper);
-  --alert-dark: var(--amaranth-purple);
-  --dark: var(--polynesian-blue); */
-  /* 
-  --primary-new: #06b6d4;
-  --primary-lighter-new: #a5f3fc;
-  --primary-dark-new: #0891b2;
-  --primary-darker-new: #0e7490;
-
-  --highlight-new: #ecfeff;
-
-  --highlightFocusBg: rgba(var(--primary-new), 0.24); */
-
-  /* --primary: var(--picton-blue);
-  --secondary: var(--moonstone);
-  --secondary-light: var(--moonstone-light);
-  --primary-darker: var(--picton-blue-darker);
-  --primary-lighter: var(--picton-blue-lighter); */
-
   --primary: var(--moonstone);
   --secondary: var(--old-rose);
   --secondary-light: var(--old-rose-light);
   --secondary-lighter: var(--old-rose-lighter);
   --primary-darker: var(--moonstone-dark);
   --primary-darker-dark: #0e7490;
+  --primary-darkest: hsl(193, 82%, 27%);
   --primary-lighter: var(--moonstone-light);
 
   --accent: var(--jonquil);
@@ -120,56 +72,38 @@
   --background-clr: rgb(255, 255, 255);
   --text: black;
   --text-off: rgb(29, 29, 29);
-  --text-on-dark: white;
+  --text-on-dark: hsl(0, 0%, 96%);
   --text-on-dark-off: rgb(223, 223, 223);
   --text-header: var(--dark);
   --positive: #52db40;
-  --card-background: var(--old-rose-light-less-sat);
+  --card-background: hsl(4, 15%, 93%);
   --card-background-hover: hsla(192, 30%, 90%, 1);
-  --card-shadow: hsl(0, 0%, 85%);
-  --card-shadow-darker: hsl(0, 0%, 80%);
-  --nav-background: var(--accent);
+  --card-shadow: hsl(0, 0%, 82%);
+  --nav-background: var(--old-rose-lighter);
   --nav-text: var(--text);
-  --nav-text-hover: var(--text);
+  --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary);
-  --cat-card-background-hover: var(--primary-lighter);
+  --cat-card-background-hover: var(--primary-darker);
   --hover-label-bg: white;
-  --logo-bg: var(--old-rose);
-  --logo-bg-hover: var(--old-rose-darker);
+  --logo-bg: var(--old-rose-light);
+  --logo-bg-hover: var(--primary-darker);
   --burger-bg: var(--alert-dark);
   --darkmode-icon: var(--alert-dark);
   --inline-button-text: var(--primary-darker);
+  --burger-icons: var(--old-rose);
+  --burger-icons-hover: var(--primary-darker);
+  --cat-avatar-dummy: var(--old-rose-light-less-sat);
+  --selection-bg: var(--primary-darker);
+  --background-cat-avatar: hsl(4, 13%, 87%);
+  --background-cat-avatar: radial-gradient(
+    hsl(4, 13%, 87%) 65%,
+    hsla(4, 41%, 77%, 1) 70%,
+    hsla(4, 41%, 60%, 1) 90%
+  );
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    /*darkmode clrs */
-/*
---hover-shadow: rgba(0, 0, 0, 0.404);
---background-clr: rgb(31, 31, 31);
---text: rgb(233, 233, 233);
---text-off: rgb(196, 196, 196);
---text-on-dark: rgb(0, 0, 0);
---text-on-dark-off: rgb(37, 37, 37);
-
---card-background: hsl(0, 2%, 9%);
---card-shadow: hsl(0, 0%, 15%);
---nav-background: #1f2937;
---nav-text: var(--text);
---nav-text-hover: var(--old-rose-light);
---cat-card-background: var(--primary-darker-dark);
---cat-card-background-hover: var(--primary-darker);
---hover-label-bg: linear-gradient(#1f2937 55%, #111827);
---logo-bg: var(--old-rose-darker);
---logo-bg-hover: var(--old-rose);
---burger-bg: var(--accent); 
-  }
-} */
-
-/*  ----- other custom values ----*/
-
 * {
-  --border-radius: 5px;
+  --border-radius: 6px;
 }
 
 *,
@@ -193,32 +127,48 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-family: 'Raleway';
   background-color: var(--background-clr);
-  color: var(--text-normal);
+  color: var(--text);
   margin: 0;
 }
-
+*::selection {
+  color: hsl(0, 0%, 96%);
+  background-color: var(--selection-bg);
+}
 .darkmode {
   --hover-shadow: rgba(0, 0, 0, 0.404);
-  --background-clr: rgb(31, 31, 31);
-  --text: rgb(233, 233, 233);
-  --text-off: rgb(196, 196, 196);
+  /* --background-clr: rgb(31, 31, 31); */
+  --background-clr: hsl(0, 2%, 10%);
+  --text: hsl(0, 0%, 96%);
+  --text-off: hsl(0, 0%, 77%);
   --text-on-dark: rgb(0, 0, 0);
   --text-on-dark-off: rgb(37, 37, 37);
 
-  --card-background: hsl(0, 2%, 9%);
-  --card-shadow: hsl(0, 0%, 15%);
-  --nav-background: #1f2937;
+  /* --card-background: hsl(0, 2%, 7%); */
+  --card-background: hsl(0, 0%, 17%);
+  --card-shadow: hsl(0, 0%, 8.5%);
+  /* --nav-background: #1f2e37; */
+  --nav-background: hsla(192, 49%, 17%, 1);
   --nav-text: var(--text);
-  --nav-text-hover: var(--old-rose-light);
+  --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary-darker-dark);
-  --cat-card-background-hover: var(--primary-darker);
-  --hover-label-bg: linear-gradient(#1f2937 55%, #111827);
-  --logo-bg: var(--old-rose-darker);
-  --logo-bg-hover: var(--old-rose);
-  --burger-bg: var(--accent);
-  --darkmode-icon: var(--accent);
+  --cat-card-background-hover: var(--primary-darkest);
+  --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
+  --logo-bg: var(--old-rose);
+
+  --logo-bg-hover: var(--primary-darker);
+  --burger-bg: var(--old-rose);
+  --darkmode-icon: var(--old-rose);
   --card-background-hover: hsl(0, 2%, 15%);
   --inline-button-text: var(--primary);
+  --burger-icons: var(--old-rose);
+  --burger-icons-hover: var(--primary);
+  --cat-avatar-dummy: var(--old-rose-light-less-sat);
+  --selection-bg: var(--primary-darker-dark);
+  --background-cat-avatar: radial-gradient(
+    hsl(4, 7%, 20%) 65%,
+    hsla(4, 35%, 55%, 1) 70%,
+    hsla(4, 41%, 57%, 1) 90%
+  );
 }
 h1,
 h2 {
@@ -234,6 +184,7 @@ h1 {
 p {
   line-height: 1.5rem;
 }
+
 /* 
 button,
 input[type='submit'] {
@@ -270,30 +221,3 @@ input[type='submit']:active {
     font-size: 16px;
   }
 }
-
-/* 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-} */

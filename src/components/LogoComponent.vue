@@ -38,7 +38,7 @@ onBeforeMount(() => imageUrl())
   background-color: var(--logo-bg);
   background-size: 55%;
   background-position: center;
-  border-radius: 90px;
+  border-radius: 90%;
 }
 .logo:hover {
   color: var(--alert-dark);

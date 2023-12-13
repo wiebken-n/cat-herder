@@ -230,6 +230,9 @@ h2 {
   grid-row: 1 / 4;
   margin-inline: 0.25rem;
   scale: 1;
+  background-color: var(--background-cat-avatar);
+  background: var(--background-cat-avatar);
+  border-radius: 45px;
   transition: all 200ms ease-in-out;
 }
 .cat-name {

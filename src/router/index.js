@@ -27,6 +27,11 @@ const router = createRouter({
       path: '/herder',
       name: 'herder',
       component: () => import('@/views/HerderView.vue')
+    },
+    {
+      path: '/impressum',
+      name: 'impressum',
+      component: () => import('@/views/ImpressumView.vue')
     }
   ]
 })

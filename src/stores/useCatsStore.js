@@ -10,7 +10,7 @@ export const useCatsStore = defineStore('cats', () => {
     cats: {},
     herdedCats: {},
     currentCat: {
-      userId: '',
+      user_id: '',
       id: '',
       name: '',
       avatar: '',
@@ -18,8 +18,15 @@ export const useCatsStore = defineStore('cats', () => {
       food_info: '',
       health_info: '',
       behaviour_info: '',
+      herder_connections: '',
+      catHerderProfiles: '',
       herders: '',
-      herderProfiles: ''
+      herderProfiles: '',
+      profiles: {
+        id: '',
+        username: ''
+      },
+      cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
 
       // age: '',
       // description: ''
@@ -31,8 +38,11 @@ export const useCatsStore = defineStore('cats', () => {
   const fetchCats = async () => {
     const { data, error } = await supabase
       .from('cats')
-      .select()
+      .select(
+        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info)`
+      )
       .eq('user_id', userStore.state.userId)
+
       .order(state.orderBy, { ascending: false })
     if (error) {
       state.fetchError = 'could not fetch cats'
@@ -44,10 +54,14 @@ export const useCatsStore = defineStore('cats', () => {
       state.fetchError = null
     }
   }
+
   const fetchHerdedCats = async () => {
     const { data, error } = await supabase
       .from('cats')
-      .select()
+      .select(
+        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username)`
+      )
+
       .neq('user_id', userStore.state.userId)
       .order(state.orderBy, { ascending: false })
     if (error) {
@@ -62,33 +76,58 @@ export const useCatsStore = defineStore('cats', () => {
   }
 
   const fetchCat = async (id) => {
-    const { data, error } = await supabase.from('cats').select().eq('id', id).single()
+    const { data, error } = await supabase
+      .from('cats')
+      .select(
+        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username)`
+      )
+      .eq('id', id)
+      .single()
+
     if (error) {
       router.push('/')
       return
     }
     if (data) {
-      state.currentCat.name = data.name
-      state.currentCat.id = data.id
-      state.currentCat.birthday = data.birthday
-      state.currentCat.avatar = data.avatar
-      state.currentCat.userId = data.user_id
+      // console.log(data)
+      state.currentCat = data
+      if (data.herder_connections) {
+        const herderIds = []
+        for (let connection of data.herder_connections) {
+          herderIds.push(connection.herder_id)
+        }
+        state.currentCat.catHerderProfiles = await fetchCatHerderProfiles(herderIds)
+      }
     }
   }
 
-  const fetchCatInfo = async (id) => {
-    const { data, error } = await supabase.from('cats_info').select().eq('cat_id', id).single()
-    if (error) {
-      state.fetchError = error
-      console.log(error)
-      return
-    }
+  async function fetchCatHerderProfiles(idArray) {
+    let { data, error } = await supabase.from('profiles').select('id, username').in('id', idArray)
+
     if (data) {
-      state.currentCat.food_info = data.food_info
-      state.currentCat.health_info = data.health_info
-      state.currentCat.behaviour_info = data.behaviour_info
+      if (data.length > 0) {
+        return data
+        // const userData = await userStore.fetchUser(data[0].user_active)
+      }
+    }
+    if (error) {
+      console.log(error)
     }
   }
+
+  // const fetchCatInfo = async (id) => {
+  //   const { data, error } = await supabase.from('cats_info').select().eq('cat_id', id).single()
+  //   if (error) {
+  //     state.fetchError = error
+  //     console.log(error)
+  //     return
+  //   }
+  //   if (data) {
+  //     state.currentCat.food_info = data.food_info
+  //     state.currentCat.health_info = data.health_info
+  //     state.currentCat.behaviour_info = data.behaviour_info
+  //   }
+  // }
 
   function getAge(birthday) {
     let newBirthday = new Date(birthday)
@@ -120,7 +159,7 @@ export const useCatsStore = defineStore('cats', () => {
     fetchCats,
     fetchHerdedCats,
     fetchCat,
-    fetchCatInfo,
+    // fetchCatInfo,
     getAge
   }
 })

@@ -7,7 +7,7 @@
           <svg
             v-if="!catsStore.state.currentCat.avatar"
             alt="cat avatar"
-            class="cat-avatar cat-image-show"
+            class="cat-avatar cat-image-show cat-avatar-dummy"
             data-cy="cat-avatar"
             @click="pickAvatarVisible = true"
           >
@@ -19,7 +19,7 @@
           </svg>
           <img
             v-else
-            class="cat-image-show"
+            class="cat-image-show cat-avatar"
             :src="imageUrl(catsStore.state.currentCat.avatar)"
             alt="cat avatar"
             @click="pickAvatarVisible = true"
@@ -125,7 +125,11 @@
       <div class="avatars-container">
         <div class="avatar-wrapper" v-for="number of avatarNumbers" :key="number">
           <button class="pick-avatar-button" @click="selectAvatar(number)">
-            <img class="cat-image" :src="imageUrl(number)" :alt="'Katzenavatar Nr. ' + number" />
+            <img
+              class="cat-image cat-image-show cat-avatar selection-cat-avatar"
+              :src="imageUrl(number)"
+              :alt="'Katzenavatar Nr. ' + number"
+            />
           </button>
         </div>
       </div>
@@ -384,18 +388,29 @@ article > div {
 .cat-image,
 .cat-image-show {
   background-color: transparent;
-  border-radius: 100px;
+  border-radius: 90%;
   width: 100px;
   height: auto;
+  scale: 1;
   transition: all 200ms ease-in-out;
 }
+.cat-image-show:hover {
+  scale: 1.05;
+  box-shadow: 0 0 10px 2px var(--hover-shadow);
+}
+
 .cat-avatar {
-  color: var(--text-on-dark);
-  background-color: var(--primary);
-  height: 100px;
-  width: 100px;
-  /* padding: 1rem; */
-  border-radius: 90%;
+  width: 7.5rem;
+  height: 7.5rem;
+  background: var(--background-cat-avatar);
+  border-radius: 100%;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px 2px var(--card-shadow);
+}
+
+.cat-avatar-dummy {
+  color: var(--cat-avatar-dummy);
+  background: var(--old-rose-darker);
 }
 .svg-img {
   scale: 0.5;
@@ -407,9 +422,29 @@ article > div {
   border: 0 transparent solid;
 }
 .cat-image:hover {
-  box-shadow: 0 0 20px 2px var(--primary);
+  box-shadow: 0 0 10px 2px var(--hover-shadow);
+  scale: 1.05;
+  animation: tilt-shaking 0.25s 2 ease-in-out;
 }
 .cat-image:active {
   box-shadow: 0 0 20px 2px var(--primary-darker);
+}
+
+@keyframes tilt-shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2.5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-2.5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 </style>
