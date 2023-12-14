@@ -21,9 +21,12 @@
       ></use>
     </svg>
 
-    <h2 class="username">{{ user.username }}</h2>
+    <!-- <h2 class="username">{{ user.username }}</h2> -->
     <!-- {{ props.connectionStatus }} -->
-
+    <div class="connetion-info">
+      <p class="connetion-info">{{ userConnectionStatus }}</p>
+      <!-- {{ props.connectionStatus }} -->
+    </div>
     <div v-if="showButton" class="button-wrapper">
       <PrimeButton
         class="connection-btn"
@@ -36,21 +39,18 @@
         v-if="props.connectionStatus === 'connected'"
         label="Verbindung trennen"
         @click="deleteRequest(props.user)"
-        outlined
       ></PrimeButton>
       <PrimeButton
         class="connection-btn"
         v-if="props.connectionStatus === 'pending incoming'"
         @click="acceptRequest(props.user)"
         label="Anfrage annehmen"
-        outlined
       ></PrimeButton>
       <PrimeButton
         class="connection-btn"
         v-if="props.connectionStatus === 'pending outgoing'"
         label="Anfrage zurücknehmen"
         @click="deleteRequest(props.user)"
-        outlined
       ></PrimeButton>
     </div>
   </div>
@@ -59,6 +59,27 @@
 <script setup>
 // import { ref } from 'vue'
 import { supabase } from '../supabase'
+import { ref, onBeforeMount } from 'vue'
+
+const userConnectionStatus = ref('')
+
+function connection() {
+  console.log(props.connectionStatus)
+  setTimeout(() => {
+    if (props.connectionStatus === 'connected') {
+      userConnectionStatus.value = 'Ihr seid verbunden'
+    }
+    if (props.connectionStatus === 'pending incoming') {
+      userConnectionStatus.value = 'Du hast eine Verbindungsanfrage bekommen'
+    }
+    if (props.connectionStatus === 'pending outgoing') {
+      userConnectionStatus.value = 'Du hast eine Verbindungsanfrage gesendet'
+    } else return
+  }, 100)
+}
+onBeforeMount(() => {
+  connection()
+})
 
 const props = defineProps({
   user: Object,
@@ -119,48 +140,65 @@ async function deleteRequest(user) {
 
 <style scoped>
 .user-info-element {
-  background-color: var(--cat-card-background);
-  /* box-shadow: 0 0 5px 2px var(--card-shadow-darker); */
+  /* background-color: var(--card-background);
+  box-shadow: 0 0 5px 2px var(--card-shadow); */
   color: var(--text);
   display: grid;
   grid-template-columns: 2rem auto;
   row-gap: 0.5rem;
   align-items: center;
   justify-items: center;
-  padding: 1rem;
-  width: 100%;
+  /* padding: 1.5rem; */
+  width: 75vw;
   position: relative;
+  margin-top: 3px;
   border-radius: var(--border-radius);
   transition: all 200ms ease-in-out;
 }
-.user-info-element:hover {
+/* .user-info-element:hover {
   background-color: var(--cat-card-background-hover);
-}
+} */
 .user-icon {
-  color: rgb(233, 233, 233);
+  margin-left: 0.5rem;
+  color: var(--text);
   height: 2rem;
   width: 2rem;
 }
 .username {
-  color: rgb(233, 233, 233);
+  color: var(--text);
   font-size: 1.5rem;
   padding-left: 1.5rem;
   margin-right: auto;
   margin-block: 0;
 }
+.connetion-info {
+  margin: 0;
+  padding-left: 1rem;
+  text-align: left;
+  margin-right: auto;
+  /* grid-column: 1 / 3; */
+}
 .button-wrapper {
-  width: 100%;
+  width: 70vw;
   display: flex;
   position: relative;
   grid-column: 1 / 3;
+  margin-top: 1rem;
 }
 .connection-btn {
-  color: var(--inline-button-text);
+  /* color: var(--inline-button-text); */
   width: 100%;
-  background-color: var(--card-background);
-  transition: all 100ms ease-in-out;
+  /* background-color: var(--card-background); */
+  /* transition: all 100ms ease-in-out; */
 }
-.connection-btn:hover {
+/* .connection-btn:hover {
   background-color: var(--card-background-hover);
+} */
+
+@media screen and (min-width: 500px) {
+  .user-info-element,
+  .button-wrapper {
+    width: 400px;
+  }
 }
 </style>

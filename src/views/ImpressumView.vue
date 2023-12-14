@@ -1,6 +1,7 @@
 <template>
   <div class="content-wrapper">
-    <h1>Impressum</h1>
+    <div v-if="props.fromLanding" class="non-buffer"><h1>Impressum</h1></div>
+    <h1 v-else>Impressum</h1>
     <!-- <SiteLogo class="logo-component" /> -->
     <img class="logo" :src="imageUrl()" alt="Bild einer Katze mit Hut" />
 
@@ -63,10 +64,26 @@
         <li>Icons von <a target="_blank" href="https://fontawesome.com/">Fontawesome</a></li>
       </ul>
     </div>
+    <div class="button-wrapper">
+      <PrimeButton
+        class="home-button"
+        v-if="props.fromLanding"
+        label="Zurück zur Anmeldung"
+        @click="buttonClicked()"
+      ></PrimeButton>
+    </div>
   </div>
 </template>
 
 <script setup>
+const props = defineProps({
+  fromLanding: Boolean
+})
+const emit = defineEmits(['backToLanding'])
+
+function buttonClicked() {
+  emit('backToLanding')
+}
 function imageUrl() {
   return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
 }
@@ -77,28 +94,33 @@ function imageUrl() {
   display: grid;
   justify-items: center;
 }
+.non-buffer > h1 {
+  margin: 0;
+}
 
 .text {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   width: 80vw;
   text-align: left;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-family: 'Roboto-Slab';
   display: flex;
   flex-direction: column;
 }
 
 img {
-  margin-block: 5vh;
+  margin-block: 4vh;
   height: 10rem;
 }
 .credit-container {
   width: 80vw;
 }
-
+h2 {
+  font-size: 1.125rem;
+}
 ul,
 li {
   list-style: inside;
@@ -111,23 +133,25 @@ li {
   text-indent: -1.5rem;
   margin-left: 1rem;
 }
-/* 
-.github-icon {
-  color: var(--primary-darker);
-  height: 1.5rem;
-  scale: 1;
-  transition: all 200ms ease-in-out;
+
+.button-wrapper {
+  width: 80vw;
+  margin-top: 6vh;
+  display: flex;
+  flex-direction: column;
 }
-
-.github-icon:hover {
-  color: var(--old-rose);
-  scale: 1.05;
-} */
-
+@media screen and (min-width: 450px) {
+  .button-wrapper {
+    width: 300px;
+  }
+}
 @media screen and (min-width: 500px) {
   .text,
   .credit-container {
     width: 400px;
+  }
+  .button-wrapper {
+    width: 300px;
   }
 }
 </style>

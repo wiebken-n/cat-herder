@@ -64,7 +64,6 @@ onMounted(() => {
 
 <style scoped>
 .nav-component {
-  /*position: sticky;*/
   position: absolute;
   z-index: 1;
   width: max-content;
@@ -78,15 +77,5 @@ onMounted(() => {
   height: 2rem;
   left: 5px;
   top: 5px;
-}
-.container {
-  position: relative;
-  padding-top: 3rem;
-}
-
-@media screen and (min-width: 1000px) {
-  .container {
-    padding-top: 5rem;
-  }
 }
 </style>
