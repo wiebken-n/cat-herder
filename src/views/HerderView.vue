@@ -17,7 +17,18 @@
             :user="user"
             :connectionStatus="checkConnectionStatus(user)"
             @interaction="userStore.fetchAllConnections"
+            :showButton="false"
+            @click="userInteraction(user)"
           />
+          <div v-if="user === activeUser">
+            <PrimeDialog :header="user.username" v-model:visible="userContextMenu">
+              <HerderDataContext
+                :user="user"
+                :connectionStatus="checkConnectionStatus(user)"
+                @interaction="userStore.fetchAllConnections"
+                :showButton="true"
+            /></PrimeDialog>
+          </div>
         </div>
       </div>
 
@@ -37,6 +48,7 @@
           >
             <div class="user-info" v-for="user of userSearchResults.value" :key="user">
               <HerderData
+                :showButton="true"
                 :user="user"
                 :connectionStatus="checkConnectionStatus(user)"
                 @interaction="userStore.fetchAllConnections"
@@ -53,6 +65,7 @@ import { ref, reactive, onBeforeMount } from 'vue'
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
+import HerderDataContext from '../components/HerderDataContext.vue'
 
 import HerderData from '../components/HerderData.vue'
 
@@ -71,7 +84,9 @@ userStore.$subscribe(() => {
 // const loading = ref(0)
 
 const usersFound = ref(false)
+const userContextMenu = ref(false)
 const userSearchResults = reactive({})
+const activeUser = ref('')
 // const passiveRequests = reactive({})
 // const activeRequests = reactive({})
 // const connections = reactive({})
@@ -102,12 +117,16 @@ async function searchUser() {
     console.log(error)
   }
   if (data) {
-    console.log(data)
     userSearchResults.value = data
     if (data.length < 1) {
       noUserFound()
     } else usersFound.value = true
   }
+}
+
+function userInteraction(user) {
+  activeUser.value = user
+  userContextMenu.value = !userContextMenu.value
 }
 
 // function extractUserIdsFromConnections() {
@@ -311,6 +330,7 @@ onBeforeMount(async () => {
   width: 100%;
   margin-bottom: 1.5rem;
   display: grid;
+  gap: 0.5rem;
 }
 
 .user-info-container {

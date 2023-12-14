@@ -159,7 +159,6 @@ export const useCatsStore = defineStore('cats', () => {
     fetchCats,
     fetchHerdedCats,
     fetchCat,
-    // fetchCatInfo,
     getAge
   }
 })

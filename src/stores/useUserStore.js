@@ -36,7 +36,6 @@ export const useUserStore = defineStore('users', () => {
       if (error && status !== 406) throw error
 
       if (data) {
-        console.log(data)
         ;(state.username = data.username),
           (state.avatar_url = data.avatar_url),
           (state.darkmode = data.darkmode)
@@ -194,18 +193,9 @@ export const useUserStore = defineStore('users', () => {
       console.log(error)
     }
     if (data) {
-      console.log(data)
       connectionData.users.userdata = data
     }
   }
-
-  // watch(connectionData.loading, () => {
-  //   if (connectionData.loading === 3) {
-  //     setTimeout(() => {
-  //       combineConnectionData()
-  //     }, 100)
-  //   }
-  // })
 
   onBeforeMount(async () => {
     fetchHerders()
