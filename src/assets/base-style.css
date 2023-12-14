@@ -86,6 +86,7 @@
   --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary);
   --cat-card-background-hover: var(--primary-darker);
+  --cat-card-text: hsl(0, 0%, 96%);
   --hover-label-bg: white;
   --logo-bg: var(--old-rose-light);
   --logo-bg-hover: var(--primary-darker);

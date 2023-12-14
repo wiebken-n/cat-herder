@@ -24,7 +24,15 @@
     <h2 class="username">{{ user.username }}</h2>
     <!-- {{ props.connectionStatus }} -->
 
-    <div v-if="showButton" class="button-wrapper">
+    <div
+      v-if="
+        showButton &&
+        (props.connectionStatus === 'no connection' ||
+          props.connectionStatus === 'pending incoming' ||
+          props.connectionStatus === 'pending outgoing')
+      "
+      class="button-wrapper"
+    >
       <PrimeButton
         class="connection-btn"
         v-if="props.connectionStatus === 'no connection'"
@@ -52,6 +60,9 @@
         @click="deleteRequest(props.user)"
         outlined
       ></PrimeButton>
+    </div>
+    <div v-if="showButton && props.connectionStatus === 'connected'" class="buffer">
+      Ihr seid verbunden
     </div>
   </div>
 </template>
@@ -137,12 +148,12 @@ async function deleteRequest(user) {
   background-color: var(--cat-card-background-hover);
 }
 .user-icon {
-  color: rgb(233, 233, 233);
+  color: var(--cat-card-text);
   height: 2rem;
   width: 2rem;
 }
 .username {
-  color: rgb(233, 233, 233);
+  color: var(--cat-card-text);
   font-size: 1.5rem;
   padding-left: 1.5rem;
   margin-right: auto;
@@ -152,6 +163,16 @@ async function deleteRequest(user) {
   width: 100%;
   display: flex;
   position: relative;
+  grid-column: 1 / 3;
+}
+.buffer {
+  color: var(--cat-card-text);
+  font-size: 1.125rem;
+  padding-left: 0.1rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 2.5rem;
   grid-column: 1 / 3;
 }
 .connection-btn {
