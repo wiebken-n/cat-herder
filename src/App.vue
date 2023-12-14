@@ -81,12 +81,12 @@ onMounted(() => {
 }
 .container {
   position: relative;
-  padding-top: 3rem;
+  /* padding-top: 3rem; */
 }
 
 @media screen and (min-width: 1000px) {
   .container {
-    padding-top: 5rem;
+    /* padding-top: 5rem; */
   }
 }
 </style>

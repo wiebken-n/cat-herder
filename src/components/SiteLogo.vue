@@ -12,7 +12,7 @@ function imageUrl() {
 </script>
 <style scoped>
 .logo-wrapper {
-  scale: 1;
+  height: 30em;
   display: grid;
   justify-items: center;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper" @mouseleave="deactivateMenu">
+  <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
       <svg
         @click="activateMenu"
@@ -83,7 +83,7 @@
   background-color: var(--nav-background);
   opacity: 0.95;
 }
-.content-wrapper {
+.nav-content-wrapper {
   width: 100%;
   display: grid;
   justify-content: right;

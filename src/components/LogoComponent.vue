@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper">
+  <div class="logo-content-wrapper">
     <div
       class="logo"
       alt="Eine Katze mit einem Cowboy-Hut"
@@ -25,7 +25,7 @@ onBeforeMount(() => imageUrl())
 </script>
 
 <style scoped>
-.content-wrapper {
+.logo-content-wrapper {
   height: max-content;
 }
 .logo {

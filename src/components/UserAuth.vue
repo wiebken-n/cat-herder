@@ -28,7 +28,11 @@ const throwToast = () => {
 // }
 
 const handleLogin = async () => {
-  if (email.value.length < 1 || email.value.length > 40) {
+  const textInput = document.querySelector('#user-email')
+  textInput.classList.remove('p-invalid')
+
+  if (email.value.length < 5 || email.value.length > 40) {
+    textInput.classList.add('p-invalid')
     toastData.summary = 'Bitte gib eine gültige Emailadresse ein!'
     toastData.detail = 'Emailadresse ungültig'
     throwToast()
@@ -59,7 +63,7 @@ const handleLogin = async () => {
 
 <template>
   <Toast />
-  <div v-if="!linkSend" class="content-wrapper">
+  <div v-if="!linkSend" class="auth-content-wrapper">
     <div class="logo-wrapper"></div>
     <SiteLogo class="logo-component" />
 
@@ -91,7 +95,7 @@ const handleLogin = async () => {
       </div>
     </form>
   </div>
-  <div v-else class="content-wrapper">
+  <div v-else class="auth-content-wrapper">
     <SiteLogo class="logo-component" />
     <p class="description">
       Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
@@ -100,7 +104,7 @@ const handleLogin = async () => {
 </template>
 
 <style scoped>
-.content-wrapper {
+.auth-content-wrapper {
   padding-inline: 2rem;
   display: grid;
   justify-items: center;
