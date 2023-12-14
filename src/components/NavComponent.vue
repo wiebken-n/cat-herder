@@ -81,7 +81,9 @@
   border-radius: 0 0 0 var(--border-radius);
   position: relative;
   background-color: var(--nav-background);
-  opacity: 0.95;
+  border-left: 1.5px solid var(--nav-border);
+  border-bottom: 1.5px solid var(--nav-border);
+  opacity: 0.97;
 }
 .nav-content-wrapper {
   width: 100%;

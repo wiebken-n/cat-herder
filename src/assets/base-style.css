@@ -80,6 +80,8 @@
   --card-background-hover: hsla(192, 30%, 90%, 1);
   --card-shadow: hsl(0, 0%, 82%);
   --nav-background: var(--old-rose-lighter);
+  --nav-border: var(--old-rose-lighter);
+
   --nav-text: var(--text);
   --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary);
@@ -147,14 +149,17 @@ body {
   --card-background: hsl(0, 0%, 17%);
   --card-shadow: hsl(0, 0%, 8.5%);
   /* --nav-background: #1f2e37; */
-  --nav-background: hsla(192, 49%, 17%, 1);
+  /* --nav-background: hsla(192, 49%, 17%, 1);  */
+  /* --nav-background: hsl(4, 7%, 15%);  */
+  --nav-background: hsl(205, 20%, 17%);
+  --nav-border: var(--primary);
+
   --nav-text: var(--text);
   --nav-text-hover: var(--text-off);
   --cat-card-background: var(--primary-darker-dark);
   --cat-card-background-hover: var(--primary-darkest);
   --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
   --logo-bg: var(--old-rose);
-
   --logo-bg-hover: var(--primary-darker);
   --burger-bg: var(--old-rose);
   --darkmode-icon: var(--old-rose);
