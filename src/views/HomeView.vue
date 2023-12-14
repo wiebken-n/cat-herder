@@ -103,23 +103,15 @@ const catsStore = useCatsStore()
 const session = ref()
 const user_id = ref('')
 
+userStore.$subscribe(() => {
+  if (userStore.connectionData.loading === 3) {
+    userStore.combineConnectionData()
+  }
+})
 function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
-// const imageUrl = computed((catAvatar) => {
-//   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
-// })
 
-// async function fetchHerderConnections() {
-//   const { data, error } = await supabase.from('herder_connections').select()
-
-//   if (error) {
-//     console.log(error)
-//   }
-//   if (data) {
-//     console.log(data)
-//   }
-// }
 onBeforeMount(async () => {
   await supabase.auth.getSession().then(({ data }) => {
     session.value = data.session
@@ -135,7 +127,6 @@ onBeforeMount(async () => {
   await catsStore.fetchCats()
   await catsStore.fetchHerdedCats()
   await userStore.getProfile(session)
-  // await fetchHerderConnections()
 })
 </script>
 

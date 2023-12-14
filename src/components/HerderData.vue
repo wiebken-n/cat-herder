@@ -114,29 +114,6 @@ async function deleteRequest(user) {
   emit('interaction')
   return
 }
-
-// function checkConnectionStatus(user) {
-//   const status = ref('no connection')
-//   // check if that user has send a request to current user
-//   for (const entry of props.passiveRequests.value) {
-//     if (user.id === entry.user_active) {
-//       status.value = 'pending incoming'
-//     }
-//   }
-//   // check if that user has been send a request by current user
-//   for (const entry of props.activeRequests.value) {
-//     if (user.id === entry.user_passive) {
-//       status.value = 'pending outgoing'
-//     }
-//   }
-
-//   for (const entry of props.connections.value) {
-//     if (user.id === entry.user_active || user.id === entry.user_passive) {
-//       status.value = 'connected'
-//     }
-//   }
-//   return status.value
-// }
 </script>
 
 <style scoped>

@@ -95,15 +95,135 @@ export const useUserStore = defineStore('users', () => {
     }
   }
 
-  onBeforeMount(() => {
-    fetchHerders()
+  ///////////////////////////////////////////////////////////////////////////////
+  const connectionData = reactive({
+    loading: 0,
+    connections: {
+      connected: {},
+      outgoing: {},
+      incoming: {},
+      combined: {},
+      combinedIds: {}
+    },
+    users: {
+      userdata: {}
+    }
   })
+
+  async function fetchConnections() {
+    let { data, error } = await supabase.from('user_connections').select().eq('connected', true)
+
+    if (data) {
+      connectionData.connections.connected = data
+      connectionData.loading++
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  async function fetchOutgoingRequests() {
+    let { data, error } = await supabase
+      .from('user_connections')
+      .select()
+      .eq('user_active', state.userId)
+      .eq('connected', false)
+
+    if (error) {
+      console.log(error)
+    }
+
+    if (data) {
+      connectionData.connections.outgoing = data
+      connectionData.loading++
+      if (data.length > 0) {
+        //      }
+      }
+    }
+  }
+  async function fetchIncomingRequests() {
+    let { data, error } = await supabase
+      .from('user_connections')
+      .select()
+      .eq('user_passive', state.userId)
+      .eq('connected', false)
+    if (error) {
+      console.log(error)
+    }
+    if (data) {
+      connectionData.connections.incoming = data
+      connectionData.loading++
+    }
+  }
+
+  async function fetchAllConnections() {
+    await fetchConnections()
+    await fetchOutgoingRequests()
+    await fetchIncomingRequests()
+  }
+
+  function combineConnectionData() {
+    connectionData.loading = 0
+    const combinedConnections = connectionData.connections.connected
+      .concat(connectionData.connections.outgoing)
+      .concat(connectionData.connections.incoming)
+    connectionData.connections.combined = combinedConnections
+
+    extractUserIdsFromConnections()
+    getUserData()
+  }
+
+  function extractUserIdsFromConnections() {
+    const ids = []
+    for (let connection of connectionData.connections.combined) {
+      if (connection.user_passive !== state.userId && connection.user_passive !== null) {
+        ids.push(connection.user_passive)
+      }
+      if (connection.user_active !== state.userId && connection.user_active !== null)
+        ids.push(connection.user_active)
+    }
+    connectionData.connections.combinedIds = ids
+  }
+
+  async function getUserData() {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select()
+      .in('id', connectionData.connections.combinedIds)
+    if (error) {
+      console.log(error)
+    }
+    if (data) {
+      console.log(data)
+      connectionData.users.userdata = data
+    }
+  }
+
+  // watch(connectionData.loading, () => {
+  //   if (connectionData.loading === 3) {
+  //     setTimeout(() => {
+  //       combineConnectionData()
+  //     }, 100)
+  //   }
+  // })
+
+  onBeforeMount(async () => {
+    fetchHerders()
+    await fetchAllConnections()
+  })
+
   return {
     state,
     fetchState,
     getProfile,
     fetchUser,
     fetchHerders,
-    fetchHerderProfiles
+    fetchHerderProfiles,
+    connectionData,
+    fetchConnections,
+    fetchOutgoingRequests,
+    fetchIncomingRequests,
+    fetchAllConnections,
+    combineConnectionData
   }
 })
