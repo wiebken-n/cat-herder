@@ -10,8 +10,6 @@ import PrimeVue from 'primevue/config'
 
 /* Prime Vue Component imports >>>>>>>> */
 
-// import Slider from 'primevue/slider'
-// import Knob from 'primevue/knob'
 import PrimeButton from 'primevue/button'
 import PrimeInputText from 'primevue/inputtext'
 import PrimeTextArea from 'primevue/textarea'
@@ -24,10 +22,12 @@ import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import PrimeDropdown from 'primevue/dropdown'
 import PrimeConfirmDialog from 'primevue/confirmdialog'
+import PrimeTabMenu from 'primevue/tabmenu'
 
-// import FileUpload from 'primevue/fileupload'
+import 'v-calendar/style.css'
 
 import './assets/base-style.css'
+import { setupCalendar } from 'v-calendar'
 
 /* <<<<<<<<<<<< Prime Vue Component imports */
 
@@ -37,6 +37,7 @@ app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
 app.use(ConfirmationService)
+app.use(setupCalendar, {})
 
 /* Prime Vue Components >>>>>>>> */
 
@@ -52,6 +53,7 @@ app.component('PrimeTag', PrimeTag)
 app.component('PrimeDropdown', PrimeDropdown)
 app.component('PrimeConfirmDialog', PrimeConfirmDialog)
 app.component('Toast', Toast)
+app.component('PrimeTabMenu', PrimeTabMenu)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */

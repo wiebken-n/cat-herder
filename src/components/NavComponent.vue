@@ -54,6 +54,7 @@
   visibility: hidden;
   background-color: transparent;
   transition: all 300ms ease-in;
+  z-index: 2;
 }
 
 .darkmode-toggle {
@@ -64,7 +65,7 @@
   left: 1.25rem;
 }
 .darkmode-toggle-icon {
-  z-index: 1;
+  z-index: 3;
   height: 2rem;
   width: 2rem;
   color: var(--darkmode-icon);
@@ -97,7 +98,7 @@
   width: 2.75rem;
   right: 10px;
   top: 10px;
-  z-index: 1;
+  z-index: 3;
   transition: all 200ms ease;
   scale: 1;
   color: var(--burger-icons);
