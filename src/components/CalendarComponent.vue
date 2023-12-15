@@ -15,7 +15,10 @@
         @didMove="handleDidMove"
       >
         <template #footer>
-          <div class="input-wrappper">
+          <div
+            class="input-wrappper"
+            v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+          >
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
@@ -63,7 +66,11 @@
                 {{ new Date(todo.dates).getUTCFullYear() }}
               </p>
               <p class="todo-description">{{ todo.desciption }}</p>
-              <button class="delete-todo-button" @click="deleteTodo(todo)">
+              <button
+                v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+                class="delete-todo-button"
+                @click="deleteTodo(todo)"
+              >
                 <svg class="trash-icon">
                   <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
                 </svg>
@@ -111,6 +118,10 @@ async function getTodos() {
     console.log(error)
   }
   if (data) {
+    if (data[0].todos === null) {
+      todos.value = null
+      return
+    }
     todos.value = JSON.parse(data[0].todos)
   }
 }
@@ -153,13 +164,19 @@ function createNewTodo() {
     console.log('todo text zu kurz/zu lang')
     // add toast
   }
+  if (todos.value === null) {
+    todos.value = [
+      { desciption: todoContent.value, isComplete: false, dates: date.value, color: 'teal' }
+    ]
+  } else {
+    todos.value.push({
+      desciption: todoContent.value,
+      isComplete: false,
+      dates: date.value,
+      color: 'teal'
+    })
+  }
 
-  todos.value.push({
-    desciption: todoContent.value,
-    isComplete: false,
-    dates: date.value,
-    color: 'teal'
-  })
   editTodos()
   todoContent.value = ''
   addNewTodo.value = false
@@ -167,26 +184,32 @@ function createNewTodo() {
 
 const todos = ref([
   {
-    desciption: '',
-    text: '',
-    isComplete: false,
-    dates: new Date(),
-    color: 'pink'
+    // desciption: '',
+    // text: '',
+    // isComplete: false,
+    // dates: new Date(),
+    // color: 'pink'
   }
 ])
 
-const attributes = computed(() => [
-  ...todos.value.map((todo) => ({
-    dates: todo.dates,
-    dot: {
-      color: todo.color,
-      ...(todo.isComplete && { class: 'opacit-75' })
-    },
-    popover: {
-      label: todo.desciption
-    }
-  }))
-])
+const attributes = computed(() => {
+  if (todos.value === null) {
+    return null
+  } else {
+    return [
+      ...todos.value.map((todo) => ({
+        dates: todo.dates,
+        dot: {
+          color: todo.color,
+          ...(todo.isComplete && { class: 'opacit-75' })
+        },
+        popover: {
+          label: todo.desciption
+        }
+      }))
+    ]
+  }
+})
 
 const selectedColor = ref('teal')
 
