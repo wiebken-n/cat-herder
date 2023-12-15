@@ -7,61 +7,67 @@
         <h2>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</h2>
       </div>
     </header>
-    <div v-if="ownerId === userStore.state.userId" class="user-content-container">
-      <div class="herder-output-container">
-        <div class="herder-data-container" v-for="herder of herderProfiles" :key="herder.id">
-          <PrimeButton
-            class="user-tag"
-            :label="herder.username"
-            @click="confirmRemoveHerder(herder)"
-            confirmRemoveHerder
+    <div class="menu-wrapper">
+      <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
+    </div>
+
+    <div v-if="activeMenuItem === 0" class="herder-container-output">
+      <div v-if="ownerId !== userStore.state.userId" class="user-content-container">
+        <div div class="herder-output-container">
+          <PrimeTag
+            class="user-tag owner-name"
+            :value="catsStore.state.currentCat.profiles.username"
             rounded
-          >
-          </PrimeButton>
+          ></PrimeTag>
         </div>
-
-        <Toast />
-        <PrimeConfirmDialog group="headless">
-          <template #container="{ message, acceptCallback, rejectCallback }">
-            <div class="dialog-container">
-              <h3 class="dialog-header">{{ message.header }}</h3>
-              <div class="dialog-text-container">
-                <p class="dialog-text">{{ message.message }}</p>
-              </div>
-
-              <div class="button-container">
-                <PrimeButton label="Herder entfernen" @click="acceptCallback"></PrimeButton>
-                <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
-              </div>
-            </div>
-          </template>
-        </PrimeConfirmDialog>
       </div>
-      <div class="herder-input-container">
-        <PrimeDropdown
-          v-model="selectedHerder"
-          :options="userStore.state.herders"
-          optionLabel="username"
-          placeholder="Wähle einen Nutzer aus"
-          class="herder-dropdown w-full md:w-14rem"
-        />
-        <PrimeButton
-          label="Füge diese Nutzer als Herder hinzu"
-          @click="addHerder(selectedHerder.id)"
-          outlined
-        />
+      <div v-if="ownerId === userStore.state.userId" class="user-content-container">
+        <div class="herder-output-container">
+          <div class="herder-data-container" v-for="herder of herderProfiles" :key="herder.id">
+            <PrimeButton
+              class="user-tag"
+              :label="herder.username"
+              @click="confirmRemoveHerder(herder)"
+              confirmRemoveHerder
+              rounded
+            >
+            </PrimeButton>
+          </div>
+
+          <Toast />
+          <PrimeConfirmDialog group="headless">
+            <template #container="{ message, acceptCallback, rejectCallback }">
+              <div class="dialog-container">
+                <h3 class="dialog-header">{{ message.header }}</h3>
+                <div class="dialog-text-container">
+                  <p class="dialog-text">{{ message.message }}</p>
+                </div>
+
+                <div class="button-container">
+                  <PrimeButton label="Herder entfernen" @click="acceptCallback"></PrimeButton>
+                  <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+                </div>
+              </div>
+            </template>
+          </PrimeConfirmDialog>
+        </div>
+        <div v-if="activeMenuItem === 0" class="herder-input-container">
+          <PrimeDropdown
+            v-model="selectedHerder"
+            :options="userStore.state.herders"
+            optionLabel="username"
+            placeholder="Wähle einen Nutzer aus"
+            class="herder-dropdown w-full md:w-14rem"
+          />
+          <PrimeButton
+            label="Füge diese Nutzer als Herder hinzu"
+            @click="addHerder(selectedHerder.id)"
+            outlined
+          />
+        </div>
       </div>
     </div>
-    <div v-if="ownerId !== userStore.state.userId" class="user-content-container">
-      <div div class="herder-output-container">
-        <PrimeTag
-          class="user-tag owner-name"
-          :value="catsStore.state.currentCat.profiles.username"
-          rounded
-        ></PrimeTag>
-      </div>
-    </div>
-    <div class="cat-content">
+    <div v-if="activeMenuItem === 0" class="cat-content">
       <div class="info-segment">
         <div class="info-segment-header">
           <svg class="icon">
@@ -161,13 +167,16 @@
         </svg>
       </div>
     </div>
+    <div v-if="activeMenuItem === 1">
+      <CalendarComponent />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useCatsStore } from '../stores/useCatsStore'
-
 import { useUserStore } from '../stores/useUserStore'
+import CalendarComponent from '@/components/CalendarComponent.vue'
 import { useRoute } from 'vue-router'
 import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'
@@ -183,6 +192,13 @@ const userStore = useUserStore()
 const selectedHerder = ref('none')
 catsStore.state.currentCat.id = route.params.id
 
+function imageUrl(catAvatar) {
+  return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
+}
+
+const menuItems = ref([{ label: 'Infos' }, { label: 'Termine' }])
+
+const activeMenuItem = ref(0)
 const stateEdit = reactive({
   food: false,
   health: false,
@@ -196,10 +212,6 @@ const herderProfiles = computed(() => {
   return catsStore.state.currentCat.catHerderProfiles
 })
 const ownerId = computed(() => catsStore.state.currentCat.profiles.id)
-
-function imageUrl(catAvatar) {
-  return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
-}
 
 const confirmRemoveHerder = (herder) => {
   confirm.require({
@@ -257,58 +269,6 @@ async function editBehaviour() {
   }
   stateEdit.behaviour = !stateEdit.behaviour
 }
-
-// async function fetchOwner() {
-//   let { data, error } = await supabase
-//     .from('profiles')
-//     .select()
-//     .eq('id', catsStore.state.currentCat.user_id)
-//   if (error) {
-//     console.log(error)
-//   }
-
-//   if (data) {
-//     owner.value = data
-//     ownerName.value = data[0].username
-//     ownerId.value = data[0].id
-//   }
-// }
-
-// async function fetchCatHerders() {
-//   let { data, error } = await supabase
-//     .from('herder_connections')
-//     .select('herder_id')
-//     .eq('cat_id', catsStore.state.currentCat.id)
-
-//   if (error) {
-//     console.log(error)
-//   }
-//   if (data) {
-//     console.log(data)
-//     catsStore.state.currentCat.herders = data
-//     fetchCatHerderProfiles()
-//   }
-// }
-
-// async function fetchCatHerderProfiles() {
-//   const herderIds = []
-//   for (let herder of catsStore.state.currentCat.herders) {
-//     herderIds.push(herder.herder_id)
-//   }
-//   catsStore.state.currentCat.herders = herderIds
-//   console.log(catsStore.state.currentCat.herders)
-//   let { data, error } = await supabase
-//     .from('profiles')
-//     .select()
-//     .in('id', catsStore.state.currentCat.herders)
-//   if (error) {
-//     console.log(error)
-//   }
-//   if (data) {
-//     catsStore.state.currentCat.herderProfiles = data
-//     console.log(data)
-//   }
-// }
 
 async function addHerder(herderId) {
   if (selectedHerder.value === 'none') {
@@ -381,20 +341,11 @@ onUnmounted(() => {
       username: ''
     },
     cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
-
-    // age: '',
-    // description: ''
   }
 })
-// onMounted(async () => {
-//   await catsStore.fetchCat(route.params.id)
-// })
+
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
-  // await catsStore.fetchCatInfo(route.params.id)
-
-  // await fetchOwner()
-  // await fetchCatHerders()
 })
 </script>
 
@@ -407,7 +358,6 @@ onBeforeMount(async () => {
   padding-inline: 2rem;
   display: grid;
   justify-items: center;
-  gap: 1rem;
   text-align: start;
   position: relative;
   padding-bottom: 2rem;
@@ -445,6 +395,12 @@ header {
   margin-bottom: 0.25rem;
 }
 
+.menu-wrapper {
+  width: 80vw;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
 .user-content-container {
   width: 80vw;
   display: grid;
@@ -555,19 +511,16 @@ h2 {
   bottom: 8px;
 }
 @media screen and (min-width: 700px) {
-  header {
-    width: 500px;
-  }
-
-  .user-content-container {
-    width: 500px;
-  }
-  .dialog-container {
-    width: 450px;
-  }
+  header,
+  .menu-wrapper,
+  .user-content-container,
   .cat-content,
   .info-segment {
     width: 500px;
+  }
+
+  .dialog-container {
+    width: 450px;
   }
 
   .info-segment-header {
@@ -576,28 +529,27 @@ h2 {
   }
 }
 @media screen and (min-width: 1000px) {
-  header {
+  header,
+  .menu-wrapper,
+  .user-content-container,
+  .cat-content,
+  .info-segment,
+  .content-wrapper-calendar {
     width: 700px;
   }
 
-  .user-content-container {
-    width: 700px;
-  }
   .dialog-container {
     width: 600px;
   }
-  .cat-content,
-  .info-segment {
-    width: 700px;
-  }
 }
 @media screen and (min-width: 1200px) {
-  header {
+  header,
+  .user-content-container,
+  .menu-wrapper,
+  .content-wrapper-calendar {
     width: 1000px;
   }
-  .user-content-container {
-    width: 1000px;
-  }
+
   .cat-content {
     grid-template-columns: 1fr 1fr;
     width: 1000px;

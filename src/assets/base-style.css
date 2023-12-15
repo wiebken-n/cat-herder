@@ -89,7 +89,7 @@
   --cat-card-text: hsl(0, 0%, 96%);
   --hover-label-bg: white;
   --logo-bg: var(--old-rose-light);
-  --logo-bg-hover: var(--primary-darker);
+  --logo-bg-hover: var(--primary);
   --burger-bg: var(--alert-dark);
   --darkmode-icon: var(--alert-dark);
   --inline-button-text: var(--primary-darker);
@@ -161,7 +161,7 @@ body {
   --cat-card-background-hover: var(--primary-darkest);
   --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
   --logo-bg: var(--old-rose);
-  --logo-bg-hover: var(--primary-darker);
+  --logo-bg-hover: var(--primary);
   --burger-bg: var(--old-rose);
   --darkmode-icon: var(--old-rose);
   --card-background-hover: hsl(0, 2%, 15%);
@@ -190,8 +190,23 @@ h1 {
 p {
   line-height: 1.5rem;
 }
+
 .content-wrapper {
   padding-top: 3rem;
+}
+
+@media screen and (min-width: 600px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media screen and (min-width: 1000px) {
+  html {
+    font-size: 16px;
+  }
+  .content-wrapper {
+    padding-top: 5rem;
+  }
 }
 /* 
 button,
@@ -218,17 +233,3 @@ input[type='submit']:active {
   background-color: var(--primary-darker);
   color: var(--text-off);
 } */
-
-@media screen and (min-width: 600px) {
-  html {
-    font-size: 15px;
-  }
-}
-@media screen and (min-width: 1000px) {
-  html {
-    font-size: 16px;
-  }
-  .content-wrapper {
-    padding-top: 5rem;
-  }
-}
