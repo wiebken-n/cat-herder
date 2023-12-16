@@ -112,7 +112,8 @@
           <div v-for="todo of todos" :key="todo">
             <div
               v-if="
-                new Date(todo.dates).getUTCDate() === new Date(date).getUTCDate() &&
+                new Date(todo.dates).getUTCDate() ===
+                  new Date(new Date(date).setHours(10)).getUTCDate() &&
                 new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
                 new Date(todo.dates).getUTCFullYear() === shownDate.year
               "
@@ -271,8 +272,13 @@ const todoContent = ref('')
 
 function createNewTodo() {
   if (todoContent.value.length < 1 || todoContent.value.length > 500) {
-    console.log('todo text zu kurz/zu lang')
-    // add toast
+    toast.add({
+      severity: 'warn',
+      summary: 'Text ungültig',
+      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      life: 3000
+    })
+    return
   }
   if (todos.value === null) {
     todos.value = [
@@ -286,6 +292,7 @@ function createNewTodo() {
       color: 'teal'
     })
   }
+
   sortTodos()
   editTodos()
   todoContent.value = ''
@@ -302,9 +309,6 @@ function sortTodos() {
       return 1
     }
     return 0
-    // console.log(a)
-    // console.log(b)
-    // return a.dates - b.dates
   }
 }
 const todos = ref([
@@ -354,7 +358,6 @@ const deleteTodoDialog = (todo) => {
     header: 'Termin löschen',
 
     accept: () => {
-      // console.log('deleted')
       deleteTodo(todo)
       toast.add({
         severity: 'success',
@@ -456,6 +459,7 @@ onBeforeMount(() => {
 .menu-wrapper {
   display: flex;
   justify-content: center;
+  padding-bottom: 1.25rem;
 }
 .todo-contentwrapper {
   display: flex;
