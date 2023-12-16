@@ -50,6 +50,8 @@
   --old-rose: hsla(4, 41%, 60%, 1);
   --old-rose-light: hsla(4, 41%, 70%, 1);
   --old-rose-lighter: hsla(4, 41%, 80%, 1);
+  --old-rose-superlight: hsla(4, 41%, 90%, 1);
+  --old-rose-lighter-dark: hsla(4, 41%, 75%, 1);
   --old-rose-light-less-sat: hsl(4, 20%, 93%);
   --old-rose-light-less-sat-darker: hsl(4, 23%, 80%);
   --old-rose-darker: hsla(4, 41%, 55%, 1);
@@ -77,7 +79,9 @@
   --text-header: var(--dark);
   --positive: #52db40;
   --card-background: hsl(4, 15%, 93%);
-  --card-background-hover: hsla(192, 30%, 90%, 1);
+  --card-background-hover: hsla(192, 30%, 80%, 1);
+  /* --card-background-alt: hsl(4, 30%, 93%);
+  --card-background-alt-hover: hsla(192, 30%, 90%, 1); */
   --card-shadow: hsl(0, 0%, 82%);
   --nav-background: var(--old-rose-lighter);
   --nav-border: var(--old-rose-lighter);
@@ -103,6 +107,32 @@
     hsla(4, 41%, 77%, 1) 70%,
     hsla(4, 41%, 60%, 1) 90%
   );
+}
+
+/* ----colors for calendar----- */
+.vc-primary {
+  --vc-accent-50: hsl(192, 100%, 97%);
+  --vc-accent-100: hsl(192, 94%, 94%);
+  --vc-accent-200: hsl(192, 94%, 86%);
+  --vc-accent-300: hsl(192, 95%, 74%);
+  --vc-accent-400: hsl(192, 93%, 60%);
+  --vc-accent-500: hsl(192, 49%, 50%);
+  --vc-accent-600: hsl(192, 98%, 39%);
+  --vc-accent-700: hsl(192, 96%, 32%);
+  --vc-accent-800: hsl(192, 90%, 27%);
+  --vc-accent-900: hsl(192, 80%, 24%);
+}
+.vc-rose {
+  --vc-accent-50: hsl(4, 100%, 97%);
+  --vc-accent-100: hsl(4, 94%, 94%);
+  --vc-accent-200: hsl(4, 94%, 86%);
+  --vc-accent-300: hsl(4, 95%, 74%);
+  --vc-accent-400: hsl(4, 93%, 60%);
+  --vc-accent-500: hsl(4, 49%, 50%);
+  --vc-accent-600: hsl(4, 98%, 39%);
+  --vc-accent-700: hsl(4, 96%, 32%);
+  --vc-accent-800: hsl(4, 90%, 27%);
+  --vc-accent-900: hsl(4, 80%, 24%);
 }
 
 * {

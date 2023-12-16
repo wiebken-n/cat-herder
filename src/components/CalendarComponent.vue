@@ -19,13 +19,6 @@
             class="input-wrappper"
             v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
           >
-            <!-- <div class="select-time">
-              <h3>Uhrzeit:</h3>
-              <div class="time-input-container">
-                <PrimeInputNumber class="input-time" v-model="time.hour" :min="0" :max="24" />:
-                <PrimeInputNumber class="input-time" v-model="time.minute" :min="0" :max="60" />
-              </div>
-            </div> -->
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
@@ -61,99 +54,50 @@
         <div class="menu-wrapper">
           <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
         </div>
-        <div v-if="activeMenuItem === 1" class="dates-month-wrapper">
-          <div v-for="todo of todos" :key="todo">
-            <div
-              v-if="
-                new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
-                new Date(todo.dates).getUTCFullYear() === shownDate.year
-              "
-            >
-              <div class="todo-contentwrapper">
-                <p class="todo-date">
-                  <span>
-                    {{
-                      getTime(
-                        new Date(todo.dates).getUTCHours(),
-                        new Date(todo.dates).getUTCMinutes()
-                      )
-                    }}</span
-                  >
 
-                  <span>|</span>
-                  <span>
-                    {{
-                      getDate(
-                        new Date(todo.dates).getUTCDate(),
-                        new Date(todo.dates).getUTCMonth() + 1,
-                        new Date(todo.dates).getUTCFullYear()
-                      )
-                    }}</span
-                  >
-                </p>
-                <p class="todo-date"></p>
-
-                <p class="todo-description">{{ todo.desciption }}</p>
-                <button
-                  v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-                  class="delete-todo-button"
-                  @click="deleteTodo(todo)"
-                >
-                  <svg class="trash-icon">
-                    <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
-                  </svg>
-                </button>
+        <div v-if="activeMenuItem === 0" class="dates-month-wrapper">
+          <div class="todo-container">
+            <div v-for="todo of todos" :key="todo">
+              <div
+                v-if="
+                  new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                  new Date(todo.dates).getFullYear() === shownDate.year
+                "
+              >
+                <TodoCard
+                  :todo="todo"
+                  :cat-user-id="catsStore.state.currentCat.user_id"
+                  :user-id="userStore.state.userId"
+                  @deleteTodo="deleteTodoDialog(todo)"
+                  @editActive="date = new Date(todo.dates)"
+                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  class="todo-card"
+                ></TodoCard>
               </div>
-              <br />
             </div>
           </div>
         </div>
-        <div v-if="activeMenuItem === 0" class="dates-day-wrapper">
-          <div v-for="todo of todos" :key="todo">
-            <div
-              v-if="
-                new Date(todo.dates).getUTCDate() ===
-                  new Date(new Date(date).setHours(10)).getUTCDate() &&
-                new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
-                new Date(todo.dates).getUTCFullYear() === shownDate.year
-              "
-            >
-              <div class="todo-contentwrapper">
-                <p class="todo-date">
-                  <span>
-                    {{
-                      getTime(
-                        new Date(todo.dates).getUTCHours(),
-                        new Date(todo.dates).getUTCMinutes()
-                      )
-                    }}</span
-                  >
-
-                  <span>|</span>
-                  <span>
-                    {{
-                      getDate(
-                        new Date(todo.dates).getUTCDate(),
-                        new Date(todo.dates).getUTCMonth() + 1,
-                        new Date(todo.dates).getUTCFullYear()
-                      )
-                    }}</span
-                  >
-                </p>
-                <p class="todo-date"></p>
-
-                <p class="todo-description">{{ todo.desciption }}</p>
-                <button
-                  v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-                  class="delete-todo-button"
-                  @click="deleteTodoDialog(todo)"
-                >
-                  <svg class="trash-icon">
-                    <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
-                  </svg>
-                </button>
+        <div v-if="activeMenuItem === 1" class="dates-day-wrapper">
+          <div class="todo-container">
+            <div v-for="todo of todos" :key="todo">
+              <div
+                v-if="
+                  new Date(todo.dates).getDate() ===
+                    new Date(new Date(date).setHours(10)).getDate() &&
+                  new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                  new Date(todo.dates).getFullYear() === shownDate.year
+                "
+              >
+                <TodoCard
+                  :todo="todo"
+                  :cat-user-id="catsStore.state.currentCat.user_id"
+                  :user-id="userStore.state.userId"
+                  @deleteTodo="deleteTodoDialog(todo)"
+                  @editActive="date = new Date(todo.dates)"
+                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  class="todo-card"
+                ></TodoCard>
               </div>
-              <br />
             </div>
           </div>
         </div>
@@ -185,22 +129,23 @@ import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 import { ref, computed, onBeforeMount } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
-const confirm = useConfirm()
-
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useCatsStore } from '../stores/useCatsStore'
 import { useToast } from 'primevue/usetoast'
+import TodoCard from './TodoCard.vue'
 
 const toast = useToast()
+const confirm = useConfirm()
 
 const userStore = useUserStore()
 const catsStore = useCatsStore()
 
 const calendar = ref(null)
+const todoContent = ref('')
 
 const addNewTodo = ref(false)
-const menuItems = ref([{ label: 'Termine an diesem Tag' }, { label: 'Termine in diesem Monat' }])
+const menuItems = ref([{ label: 'Termine je Monat' }, { label: 'Termine pro Tag' }])
 const activeMenuItem = ref(0)
 
 // const time = ref({
@@ -208,9 +153,9 @@ const activeMenuItem = ref(0)
 //   minute: 0
 // })
 const shownDate = ref({
-  year: new Date().getUTCFullYear(),
-  month: new Date().getUTCMonth() + 1,
-  day: new Date().getUTCDate()
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  day: new Date().getDate()
 })
 
 function handleDidMove(pages) {
@@ -234,6 +179,30 @@ async function getTodos() {
     todos.value = JSON.parse(data[0].todos)
     sortTodos()
   }
+}
+function handleEdit(todoDescription, todo) {
+  if (todoDescription.length < 1 || todoDescription.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Text ungültig',
+      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      life: 3000
+    })
+    return
+  }
+  todoContent.value = todoDescription
+  const newTodo = {
+    desciption: todoContent.value,
+    isComplete: todo.isComplete,
+    dates: new Date(date.value),
+    color: todo.color
+  }
+
+  todos.value.push(newTodo)
+  sortTodos()
+  deleteTodo(todo)
+  editTodos()
+  todoContent.value = ''
 }
 async function editTodos() {
   const { data, error } = await supabase
@@ -268,8 +237,6 @@ const rules = ref({
   minutes: [0, 15, 30, 45]
 })
 
-const todoContent = ref('')
-
 function createNewTodo() {
   if (todoContent.value.length < 1 || todoContent.value.length > 500) {
     toast.add({
@@ -289,7 +256,7 @@ function createNewTodo() {
       desciption: todoContent.value,
       isComplete: false,
       dates: date.value,
-      color: 'teal'
+      color: 'rose'
     })
   }
 
@@ -322,13 +289,13 @@ const todos = ref([
   }
 ])
 
-function getDate(day, month, year) {
-  return day + '.' + month + '.' + year
-}
+// function getDate(day, month, year) {
+//   return day + '.' + month + '.' + year
+// }
 
-function getTime(hour, minute) {
-  return hour + ':' + minute + ' ' + 'Uhr'
-}
+// function getTime(hour, minute) {
+//   return hour + ':' + minute + ' ' + 'Uhr'
+// }
 
 const attributes = computed(() => {
   if (todos.value === null) {
@@ -349,7 +316,7 @@ const attributes = computed(() => {
   }
 })
 
-const selectedColor = ref('teal')
+const selectedColor = ref('primary')
 
 const deleteTodoDialog = (todo) => {
   confirm.require({
@@ -461,50 +428,20 @@ onBeforeMount(() => {
   justify-content: center;
   padding-bottom: 1.25rem;
 }
-.todo-contentwrapper {
+.todo-container {
+  background-color: var(--card-background);
+  box-shadow: 0 0 4px 2px var(--card-shadow);
+
+  padding: 1rem;
+  min-height: 10rem;
+  border-radius: var(--border-radius);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem;
-  background-color: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: 0 0 4px 2px var(--card-shadow);
+  margin-bottom: 1rem;
 }
-
-.todo-contentwrapper > p {
-  margin: 0;
+.todo-card {
+  margin-block: 0.5rem;
 }
-
-.todo-date {
-  font-family: 'Roboto-Slab';
-  align-self: flex-end;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-.todo-description {
-  align-self: flex-start;
-  padding-block: 0.25rem;
-}
-.delete-todo-button {
-  align-self: flex-end;
-
-  background: none;
-  border: none;
-  width: min-content;
-}
-.trash-icon {
-  height: 1.25rem;
-  width: 1.25rem;
-  scale: 1;
-  transition: all 200ms ease-in-out;
-  color: var(--text);
-}
-.delete-todo-button:hover > .trash-icon {
-  scale: 1.05;
-  color: var(--alert-dark);
-}
-
 .dialog-container {
   border-radius: var(--border-radius);
   display: grid;
@@ -535,7 +472,8 @@ onBeforeMount(() => {
   gap: 1rem;
 }
 @media screen and (min-width: 600px) {
-  .calendar-container {
+  .calendar-container,
+  .dialog-container {
     width: 400px;
   }
 }
@@ -543,6 +481,9 @@ onBeforeMount(() => {
 @media screen and (min-width: 800px) {
   .calendar-container {
     width: 600px;
+  }
+  .dialog-container {
+    width: 630px;
   }
 }
 </style>
