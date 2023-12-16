@@ -46,7 +46,7 @@
             <PrimeTextArea
               id="todo-content"
               class="input input-area"
-              v-model="todoContent"
+              v-model="todoCoentent"
               label="Termininhalt"
               rows="10"
             ></PrimeTextArea>
@@ -110,8 +110,6 @@
         </div>
         <div v-if="activeMenuItem === 0" class="dates-day-wrapper">
           <div v-for="todo of todos" :key="todo">
-            {{ new Date(todo.dates).getUTCDate() }}
-            {{ new Date(new Date(date).setHours(10)).getUTCDate() }}
             <div
               v-if="
                 new Date(todo.dates).getUTCDate() ===
@@ -459,6 +457,7 @@ onBeforeMount(() => {
 .menu-wrapper {
   display: flex;
   justify-content: center;
+  padding-bottom: 1.25rem;
 }
 .todo-contentwrapper {
   display: flex;
