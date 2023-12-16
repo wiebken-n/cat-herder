@@ -169,7 +169,7 @@ h2 {
 .cat-info {
   background-color: var(--cat-card-background);
   width: 270px;
-  color: white;
+  color: var(--cat-card-text);
   display: grid;
   column-gap: 1rem;
   grid-template-columns: auto 2fr;

@@ -38,7 +38,7 @@
         class="connection-btn"
         v-if="props.connectionStatus === 'connected'"
         label="Verbindung trennen"
-        @click="deleteRequest(props.user)"
+        @click="deleteConnection(user)"
       ></PrimeButton>
       <PrimeButton
         class="connection-btn"
@@ -53,21 +53,58 @@
         @click="deleteRequest(props.user)"
       ></PrimeButton>
     </div>
+    <div class="confimation-wrapper">
+      <PrimeConfirmDialog group="headless">
+        <template #container="{ message, acceptCallback, rejectCallback }">
+          <div class="dialog-container">
+            <h3 class="dialog-header">{{ message.header }}</h3>
+            <div class="dialog-text-container">
+              <p class="dialog-text">{{ message.message }}</p>
+            </div>
+
+            <div class="button-container">
+              <PrimeButton label="Herder entfernen" @click="acceptCallback"></PrimeButton>
+              <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+            </div>
+          </div>
+        </template>
+      </PrimeConfirmDialog>
+    </div>
   </div>
 </template>
 
 <script setup>
 // import { ref } from 'vue'
 import { supabase } from '../supabase'
+import { useConfirm } from 'primevue/useconfirm'
 import { ref, onBeforeMount } from 'vue'
+
+const confirm = useConfirm()
 
 const userConnectionStatus = ref('')
 
+const deleteConnection = (user) => {
+  confirm.require({
+    group: 'headless',
+    message: `Möchtest du die Verbindung mit ${user.username} wirklich trennen?`,
+    header: 'Herder entfernen',
+
+    accept: () => {
+      emit('connectionDeleted')
+      emit('interaction')
+      deleteUserConnection(user)
+    },
+    reject: () => {}
+  })
+}
+
 function connection() {
-  console.log(props.connectionStatus)
   setTimeout(() => {
     if (props.connectionStatus === 'connected') {
       userConnectionStatus.value = 'Ihr seid verbunden'
+    }
+    if (props.connectionStatus === 'no connection') {
+      userConnectionStatus.value = 'Ihr seid nicht verbunden'
     }
     if (props.connectionStatus === 'pending incoming') {
       userConnectionStatus.value = 'Du hast eine Verbindungsanfrage bekommen'
@@ -86,7 +123,13 @@ const props = defineProps({
   connectionStatus: String,
   showButton: Boolean
 })
-const emit = defineEmits(['interaction'])
+const emit = defineEmits([
+  'interaction',
+  'connectionDeleted',
+  'connectionEstablished',
+  'requestSend',
+  'requestDeleted'
+])
 
 async function sendRequest(user) {
   const { data, error } = await supabase
@@ -98,8 +141,10 @@ async function sendRequest(user) {
     console.log(error)
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
+
+  emit('requestSend')
   emit('interaction')
   return
 }
@@ -113,15 +158,24 @@ async function acceptRequest(user) {
 
   if (error) {
     console.log(error)
+    return
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
+  emit('connectionEstablished')
   emit('interaction')
   return
 }
 
 async function deleteRequest(user) {
+  emit('requestDeleted')
+  emit('interaction')
+  deleteUserConnection(user)
+  return
+}
+
+async function deleteUserConnection(user) {
   const { data, error } = await supabase
     .from('user_connections')
     .delete()
@@ -131,9 +185,8 @@ async function deleteRequest(user) {
     console.log(error)
   }
   if (data) {
-    console.log(data)
+    // console.log(data)
   }
-  emit('interaction')
   return
 }
 </script>
@@ -194,11 +247,51 @@ async function deleteRequest(user) {
 /* .connection-btn:hover {
   background-color: var(--card-background-hover);
 } */
-
+.dialog-container {
+  border-radius: var(--border-radius);
+  display: grid;
+  grid-template-columns: 1;
+  justify-items: center;
+  min-height: max-content;
+  width: 85vw;
+  background-color: var(--card-background);
+  position: relative;
+  padding: 1rem;
+}
+.dialog-container > h3 {
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+.dialog-text-container {
+  width: 100%;
+  padding-inline: 3rem;
+  padding-block: 2rem;
+  text-align: left;
+  font-weight: 500;
+}
+.button-container {
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
 @media screen and (min-width: 500px) {
   .user-info-element,
   .button-wrapper {
     width: 400px;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .dialog-container {
+    width: 450px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .dialog-container {
+    width: 600px;
   }
 }
 </style>

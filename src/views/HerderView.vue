@@ -16,7 +16,7 @@
           <HerderData
             :user="user"
             :connectionStatus="checkConnectionStatus(user)"
-            @interaction="userStore.fetchAllConnections"
+            @interaction="userStore.fetchAllConnections()"
             :showButton="false"
             @click="userInteraction(user)"
           />
@@ -25,7 +25,11 @@
               <HerderDataContext
                 :user="user"
                 :connectionStatus="checkConnectionStatus(user)"
-                @interaction="userStore.fetchAllConnections"
+                @interaction="userStore.fetchAllConnections()"
+                @connectionDeleted="throwToastDeleted(user)"
+                @connectionEstablished="throwToastAdded(user)"
+                @requestSend="throwToastRequestSend(user)"
+                @requestDeleted="throwToastRequestDeleted(user)"
                 :showButton="true"
             /></PrimeDialog>
           </div>
@@ -48,11 +52,25 @@
           >
             <div class="user-info" v-for="user of userSearchResults.value" :key="user">
               <HerderData
-                :showButton="true"
                 :user="user"
                 :connectionStatus="checkConnectionStatus(user)"
-                @interaction="userStore.fetchAllConnections"
+                @interaction="userStore.fetchAllConnections()"
+                :showButton="false"
+                @click="userInteraction(user)"
               />
+              <div v-if="user === activeUser">
+                <PrimeDialog :header="user.username" v-model:visible="userContextMenu">
+                  <HerderDataContext
+                    :user="user"
+                    :connectionStatus="checkConnectionStatus(user)"
+                    @interaction="userStore.fetchAllConnections()"
+                    @connectionDeleted="throwToastDeleted(user)"
+                    @connectionEstablished="throwToastAdded(user)"
+                    @requestSend="throwToastRequestSend(user)"
+                    @requestDeleted="throwToastRequestDeleted(user)"
+                    :showButton="true"
+                /></PrimeDialog>
+              </div>
             </div>
           </div>
         </PrimeDialog>
@@ -66,8 +84,7 @@ import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
 import HerderDataContext from '../components/HerderDataContext.vue'
-
-import HerderData from '../components/HerderData.vue'
+import HerderData from '@/components/HerderData.vue'
 
 const toast = useToast()
 
@@ -106,11 +123,52 @@ const noUserFound = () => {
   })
 }
 
+const throwToastDeleted = (user) => {
+  toast.add({
+    severity: 'info',
+    summary: 'Verbindung getrennt',
+    detail: `Du hast die Verbindung mit ${user.username} getrennt`,
+    life: 3000
+  })
+}
+const throwToastAdded = (user) => {
+  toast.add({
+    severity: 'info',
+    summary: 'Verbindung hergestellt',
+    detail: `Du bist nun mit ${user.username} verbunden`,
+    life: 3000
+  })
+}
+const throwToastRequestSend = (user) => {
+  toast.add({
+    severity: 'info',
+    summary: 'Anfrage gesendet',
+    detail: `Du hast eine Verbindungsanfrage an ${user.username} gesendet`,
+    life: 3000
+  })
+}
+const throwToastRequestDeleted = (user) => {
+  toast.add({
+    severity: 'info',
+    summary: 'Anfrage gelöscht',
+    detail: `Du hast deine Verbindungsanfrage an ${user.username} gelöscht`,
+    life: 3000
+  })
+}
 async function searchUser() {
+  if (userName.value.length < 2 || userName.value.length > 20) {
+    toast.add({
+      severity: 'info',
+      summary: 'Achtung',
+      detail: 'Bitte gib für die Suche zwischen 2 und 20 Zeichen ein',
+      life: 3000
+    })
+    return
+  }
   const { data, error } = await supabase
     .from('profiles')
     .select()
-    .textSearch('username', userName.value)
+    .ilike('username', `%${userName.value}%`)
     .neq('id', userStore.state.userId)
 
   if (error) {
@@ -336,7 +394,7 @@ onBeforeMount(async () => {
 .user-info-container {
   padding: 1.25rem;
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
   background-color: var(--card-background);
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px 2px var(--card-shadow);
