@@ -110,9 +110,12 @@
         </div>
         <div v-if="activeMenuItem === 0" class="dates-day-wrapper">
           <div v-for="todo of todos" :key="todo">
+            {{ new Date(todo.dates).getUTCDate() }}
+            {{ new Date(new Date(date).setHours(10)).getUTCDate() }}
             <div
               v-if="
-                new Date(todo.dates).getUTCDate() === new Date(date).getUTCDate() &&
+                new Date(todo.dates).getUTCDate() ===
+                  new Date(new Date(date).setHours(10)).getUTCDate() &&
                 new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
                 new Date(todo.dates).getUTCFullYear() === shownDate.year
               "
