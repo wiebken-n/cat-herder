@@ -278,6 +278,7 @@ function createNewTodo() {
       detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
       life: 3000
     })
+    return
   }
   if (todos.value === null) {
     todos.value = [
@@ -291,6 +292,7 @@ function createNewTodo() {
       color: 'teal'
     })
   }
+
   sortTodos()
   editTodos()
   todoContent.value = ''
@@ -307,9 +309,6 @@ function sortTodos() {
       return 1
     }
     return 0
-    // console.log(a)
-    // console.log(b)
-    // return a.dates - b.dates
   }
 }
 const todos = ref([
@@ -359,7 +358,6 @@ const deleteTodoDialog = (todo) => {
     header: 'Termin löschen',
 
     accept: () => {
-      // console.log('deleted')
       deleteTodo(todo)
       toast.add({
         severity: 'success',
