@@ -46,7 +46,7 @@
             <PrimeTextArea
               id="todo-content"
               class="input input-area"
-              v-model="todoCoentent"
+              v-model="todoContent"
               label="Termininhalt"
               rows="10"
             ></PrimeTextArea>
@@ -272,8 +272,12 @@ const todoContent = ref('')
 
 function createNewTodo() {
   if (todoContent.value.length < 1 || todoContent.value.length > 500) {
-    console.log('todo text zu kurz/zu lang')
-    // add toast
+    toast.add({
+      severity: 'warn',
+      summary: 'Text ungültig',
+      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      life: 3000
+    })
   }
   if (todos.value === null) {
     todos.value = [
