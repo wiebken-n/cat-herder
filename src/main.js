@@ -23,12 +23,10 @@ import ConfirmationService from 'primevue/confirmationservice'
 import PrimeDropdown from 'primevue/dropdown'
 import PrimeConfirmDialog from 'primevue/confirmdialog'
 import PrimeTabMenu from 'primevue/tabmenu'
-
+import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
 
 import './assets/base-style.css'
-import { setupCalendar } from 'v-calendar'
-
 /* <<<<<<<<<<<< Prime Vue Component imports */
 
 const app = createApp(App)
