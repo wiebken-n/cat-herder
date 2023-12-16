@@ -19,6 +19,13 @@
             class="input-wrappper"
             v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
           >
+            <!-- <div class="select-time">
+              <h3>Uhrzeit:</h3>
+              <div class="time-input-container">
+                <PrimeInputNumber class="input-time" v-model="time.hour" :min="0" :max="24" />:
+                <PrimeInputNumber class="input-time" v-model="time.minute" :min="0" :max="60" />
+              </div>
+            </div> -->
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
@@ -51,34 +58,122 @@
         </div>
       </PrimeDialog>
       <div class="todo-output-container">
-        <h3>Termine in diesem Monat</h3>
-        <div v-for="todo of todos" :key="todo">
-          <div
-            v-if="
-              new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
-              new Date(todo.dates).getUTCFullYear() === shownDate.year
-            "
-          >
-            <div class="todo-contentwrapper">
-              <p class="todo-date">
-                {{ new Date(todo.dates).getUTCDate() }}.
-                {{ new Date(todo.dates).getUTCMonth() + 1 }}.
-                {{ new Date(todo.dates).getUTCFullYear() }}
-              </p>
-              <p class="todo-description">{{ todo.desciption }}</p>
-              <button
-                v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-                class="delete-todo-button"
-                @click="deleteTodo(todo)"
-              >
-                <svg class="trash-icon">
-                  <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
-                </svg>
-              </button>
+        <div class="menu-wrapper">
+          <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
+        </div>
+        <div v-if="activeMenuItem === 1" class="dates-month-wrapper">
+          <div v-for="todo of todos" :key="todo">
+            <div
+              v-if="
+                new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
+                new Date(todo.dates).getUTCFullYear() === shownDate.year
+              "
+            >
+              <div class="todo-contentwrapper">
+                <p class="todo-date">
+                  <span>
+                    {{
+                      getTime(
+                        new Date(todo.dates).getUTCHours(),
+                        new Date(todo.dates).getUTCMinutes()
+                      )
+                    }}</span
+                  >
+
+                  <span>|</span>
+                  <span>
+                    {{
+                      getDate(
+                        new Date(todo.dates).getUTCDate(),
+                        new Date(todo.dates).getUTCMonth() + 1,
+                        new Date(todo.dates).getUTCFullYear()
+                      )
+                    }}</span
+                  >
+                </p>
+                <p class="todo-date"></p>
+
+                <p class="todo-description">{{ todo.desciption }}</p>
+                <button
+                  v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+                  class="delete-todo-button"
+                  @click="deleteTodo(todo)"
+                >
+                  <svg class="trash-icon">
+                    <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
+                  </svg>
+                </button>
+              </div>
+              <br />
             </div>
-            <br />
           </div>
         </div>
+        <div v-if="activeMenuItem === 0" class="dates-day-wrapper">
+          <div v-for="todo of todos" :key="todo">
+            <div
+              v-if="
+                new Date(todo.dates).getUTCDate() === new Date(date).getUTCDate() &&
+                new Date(todo.dates).getUTCMonth() + 1 === shownDate.month &&
+                new Date(todo.dates).getUTCFullYear() === shownDate.year
+              "
+            >
+              <div class="todo-contentwrapper">
+                <p class="todo-date">
+                  <span>
+                    {{
+                      getTime(
+                        new Date(todo.dates).getUTCHours(),
+                        new Date(todo.dates).getUTCMinutes()
+                      )
+                    }}</span
+                  >
+
+                  <span>|</span>
+                  <span>
+                    {{
+                      getDate(
+                        new Date(todo.dates).getUTCDate(),
+                        new Date(todo.dates).getUTCMonth() + 1,
+                        new Date(todo.dates).getUTCFullYear()
+                      )
+                    }}</span
+                  >
+                </p>
+                <p class="todo-date"></p>
+
+                <p class="todo-description">{{ todo.desciption }}</p>
+                <button
+                  v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+                  class="delete-todo-button"
+                  @click="deleteTodoDialog(todo)"
+                >
+                  <svg class="trash-icon">
+                    <use xlink:href="@/assets/icons.svg#trash" fill="currentcolor"></use>
+                  </svg>
+                </button>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="confimation-wrapper">
+        <PrimeConfirmDialog group="headless">
+          <template #container="{ message, acceptCallback, rejectCallback }">
+            <div class="dialog-container">
+              <h3 class="dialog-header">{{ message.header }}</h3>
+              <div class="dialog-text-container">
+                <p class="dialog-text">{{ message.message }}</p>
+              </div>
+
+              <div class="button-container">
+                <PrimeButton label="Termin löschen" @click="acceptCallback"></PrimeButton>
+                <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+              </div>
+            </div>
+          </template>
+        </PrimeConfirmDialog>
+        <Toast />
       </div>
     </div>
   </div>
@@ -88,20 +183,33 @@
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 import { ref, computed, onBeforeMount } from 'vue'
+import { useConfirm } from 'primevue/useconfirm'
+const confirm = useConfirm()
 
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useCatsStore } from '../stores/useCatsStore'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
+
 const userStore = useUserStore()
 const catsStore = useCatsStore()
 
 const calendar = ref(null)
 
 const addNewTodo = ref(false)
+const menuItems = ref([{ label: 'Termine an diesem Tag' }, { label: 'Termine in diesem Monat' }])
+const activeMenuItem = ref(0)
 
+// const time = ref({
+//   hour: 0,
+//   minute: 0
+// })
 const shownDate = ref({
   year: new Date().getUTCFullYear(),
-  month: new Date().getUTCMonth() + 1
+  month: new Date().getUTCMonth() + 1,
+  day: new Date().getUTCDate()
 })
 
 function handleDidMove(pages) {
@@ -123,6 +231,7 @@ async function getTodos() {
       return
     }
     todos.value = JSON.parse(data[0].todos)
+    sortTodos()
   }
 }
 async function editTodos() {
@@ -139,6 +248,7 @@ async function editTodos() {
   }
   if (data) {
     todos.value = JSON.parse(data[0].todos)
+    sortTodos()
   }
 }
 
@@ -176,21 +286,45 @@ function createNewTodo() {
       color: 'teal'
     })
   }
-
+  sortTodos()
   editTodos()
   todoContent.value = ''
   addNewTodo.value = false
 }
+// todos: [ {dates: "", }]
+function sortTodos() {
+  todos.value = todos.value.sort(compareDateCreated)
 
+  function compareDateCreated(a, b) {
+    if (a.dates < b.dates) {
+      return -1
+    } else if (a.dates > b.dates) {
+      return 1
+    }
+    return 0
+    // console.log(a)
+    // console.log(b)
+    // return a.dates - b.dates
+  }
+}
 const todos = ref([
   {
     // desciption: '',
     // text: '',
     // isComplete: false,
     // dates: new Date(),
-    // color: 'pink'
+    // color: 'pink',
+    //time: ""
   }
 ])
+
+function getDate(day, month, year) {
+  return day + '.' + month + '.' + year
+}
+
+function getTime(hour, minute) {
+  return hour + ':' + minute + ' ' + 'Uhr'
+}
 
 const attributes = computed(() => {
   if (todos.value === null) {
@@ -212,6 +346,26 @@ const attributes = computed(() => {
 })
 
 const selectedColor = ref('teal')
+
+const deleteTodoDialog = (todo) => {
+  confirm.require({
+    group: 'headless',
+    message: `Möchtest du den Termin löschen`,
+    header: 'Termin löschen',
+
+    accept: () => {
+      // console.log('deleted')
+      deleteTodo(todo)
+      toast.add({
+        severity: 'success',
+        summary: 'Termin gelöscht',
+        detail: 'Du hast den Termin gelöscht',
+        life: 3000
+      })
+    },
+    reject: () => {}
+  })
+}
 
 onBeforeMount(() => {
   getTodos()
@@ -299,6 +453,10 @@ onBeforeMount(() => {
   margin-top: 1rem;
   width: 100%;
 }
+.menu-wrapper {
+  display: flex;
+  justify-content: center;
+}
 .todo-contentwrapper {
   display: flex;
   flex-direction: column;
@@ -316,6 +474,9 @@ onBeforeMount(() => {
 .todo-date {
   font-family: 'Roboto-Slab';
   align-self: flex-end;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 .todo-description {
   align-self: flex-start;
@@ -340,6 +501,35 @@ onBeforeMount(() => {
   color: var(--alert-dark);
 }
 
+.dialog-container {
+  border-radius: var(--border-radius);
+  display: grid;
+  grid-template-columns: 1;
+  justify-items: center;
+  min-height: max-content;
+  width: 85vw;
+  background-color: var(--card-background);
+  position: relative;
+  padding: 1rem;
+}
+.dialog-container > h3 {
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+.dialog-text-container {
+  width: 100%;
+  padding-inline: 3rem;
+  padding-block: 2rem;
+  text-align: left;
+  font-weight: 500;
+}
+.button-container {
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
 @media screen and (min-width: 600px) {
   .calendar-container {
     width: 400px;

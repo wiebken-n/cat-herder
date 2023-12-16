@@ -23,6 +23,8 @@ import ConfirmationService from 'primevue/confirmationservice'
 import PrimeDropdown from 'primevue/dropdown'
 import PrimeConfirmDialog from 'primevue/confirmdialog'
 import PrimeTabMenu from 'primevue/tabmenu'
+import PrimeInputNumber from 'primevue/inputnumber'
+
 import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
 
@@ -52,6 +54,7 @@ app.component('PrimeDropdown', PrimeDropdown)
 app.component('PrimeConfirmDialog', PrimeConfirmDialog)
 app.component('Toast', Toast)
 app.component('PrimeTabMenu', PrimeTabMenu)
+app.component('PrimeInputNumber', PrimeInputNumber)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */

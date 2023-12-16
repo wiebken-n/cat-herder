@@ -84,8 +84,7 @@ import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
 import HerderDataContext from '../components/HerderDataContext.vue'
-
-import HerderData from '../components/HerderData.vue'
+import HerderData from '@/components/HerderData.vue'
 
 const toast = useToast()
 
