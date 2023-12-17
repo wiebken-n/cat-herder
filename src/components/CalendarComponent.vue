@@ -54,7 +54,8 @@
 
         <div v-if="activeMenuItem === 0" class="dates-month-wrapper">
           <div class="todo-container">
-            <div v-for="todo of todos" :key="todo">
+            <div class="no-todos"><p>keine Termine vorhanden</p></div>
+            <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
                   new Date(todo.date).getMonth() + 1 === shownDate.month &&
@@ -80,7 +81,8 @@
         </div>
         <div v-if="activeMenuItem === 1" class="dates-day-wrapper">
           <div class="todo-container">
-            <div v-for="todo of todos" :key="todo">
+            <div class="no-todos"><p>keine Termine vorhanden</p></div>
+            <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
                   new Date(todo.date).getDate() ===
@@ -164,7 +166,7 @@ const todos = ref([
 ])
 
 const addNewTodo = ref(false)
-const menuItems = ref([{ label: 'Termine je Monat' }, { label: 'Termine pro Tag' }])
+const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
 const activeMenuItem = ref(0)
 
 const date = ref(new Date())
@@ -422,6 +424,21 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+  position: relative;
+}
+
+.no-todos > p {
+  color: var(--text);
+  font-family: 'Roboto-Slab';
+  position: absolute;
+  margin: 0;
+  top: 49%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.todo-card-wrapper {
+  z-index: 2;
 }
 .todo-card {
   margin-block: 0.5rem;
