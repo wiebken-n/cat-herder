@@ -824,7 +824,7 @@
   }
   .p-checkbox .p-checkbox-box {
     border: 2px solid #424b57;
-    background: hsl(192, 10%, 11%);
+    background: hsl(0, 0%, 17%);
     width: 22px;
     height: 22px;
     color: rgba(255, 255, 255, 0.87);
@@ -845,8 +845,10 @@
     height: 14px;
   }
   .p-checkbox .p-checkbox-box.p-highlight {
-    border-color: hsla(192, 49%, 50%, 1);
-    background: hsla(192, 49%, 50%, 1);
+    border-color: hsl(145, 50%, 45%);
+    background: hsl(145, 50%, 41%);
+    /* border-color: hsla(192, 49%, 50%, 1);
+    background: hsla(192, 49%, 50%, 1); */
   }
   .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
     border-color: hsla(192, 49%, 50%, 1);

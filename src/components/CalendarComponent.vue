@@ -15,10 +15,7 @@
         @didMove="handleDidMove"
       >
         <template #footer>
-          <div
-            class="input-wrappper"
-            v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-          >
+          <div class="input-wrappper">
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
@@ -57,20 +54,25 @@
 
         <div v-if="activeMenuItem === 0" class="dates-month-wrapper">
           <div class="todo-container">
-            <div v-for="todo of todos" :key="todo">
+            <div class="no-todos"><p>keine Termine vorhanden</p></div>
+            <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
-                  new Date(todo.dates).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.dates).getFullYear() === shownDate.year
+                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                  new Date(todo.date).getFullYear() === shownDate.year
                 "
               >
                 <TodoCard
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
                   :user-id="userStore.state.userId"
+                  :created-by="todo.created_by"
+                  :creator-name="todo.profiles.username"
+                  :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.dates)"
+                  @editActive="date = new Date(todo.date)"
                   @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
               </div>
@@ -79,22 +81,27 @@
         </div>
         <div v-if="activeMenuItem === 1" class="dates-day-wrapper">
           <div class="todo-container">
-            <div v-for="todo of todos" :key="todo">
+            <div class="no-todos"><p>keine Termine vorhanden</p></div>
+            <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
-                  new Date(todo.dates).getDate() ===
+                  new Date(todo.date).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
-                  new Date(todo.dates).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.dates).getFullYear() === shownDate.year
+                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                  new Date(todo.date).getFullYear() === shownDate.year
                 "
               >
                 <TodoCard
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
                   :user-id="userStore.state.userId"
+                  :created-by="todo.created_by"
+                  :creator-name="todo.profiles.username"
+                  :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.dates)"
+                  @editActive="date = new Date(todo.date)"
                   @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
               </div>
@@ -142,16 +149,31 @@ const userStore = useUserStore()
 const catsStore = useCatsStore()
 
 const calendar = ref(null)
+
 const todoContent = ref('')
 
+const todos = ref([
+  // {
+  // id: uuid,
+  // cat_id: uui,
+  // created_by: uui,
+  // content: string,
+  // completed: bool
+  // date: Date,
+  //time: Date,
+  //
+  //  }
+])
+
 const addNewTodo = ref(false)
-const menuItems = ref([{ label: 'Termine je Monat' }, { label: 'Termine pro Tag' }])
+const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
 const activeMenuItem = ref(0)
 
-// const time = ref({
-//   hour: 0,
-//   minute: 0
-// })
+const date = ref(new Date())
+const rules = ref({
+  minutes: [0, 15, 30, 45]
+})
+
 const shownDate = ref({
   year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
@@ -162,25 +184,22 @@ function handleDidMove(pages) {
   shownDate.value.month = pages[0].month
   shownDate.value.year = pages[0].year
 }
+
 async function getTodos() {
   const { data, error } = await supabase
-    .from('cats_info')
-    .select('todos')
+    .from('todos')
+    .select(`id, cat_id, content, created_by, completed, created_at, date, profiles(id, username)`)
     .eq('cat_id', catsStore.state.currentCat.id)
-
   if (error) {
     console.log(error)
   }
   if (data) {
-    if (data[0].todos === null) {
-      todos.value = null
-      return
-    }
-    todos.value = JSON.parse(data[0].todos)
+    todos.value = data
     sortTodos()
   }
 }
-function handleEdit(todoDescription, todo) {
+
+async function handleEdit(todoDescription, todo) {
   if (todoDescription.length < 1 || todoDescription.length > 500) {
     toast.add({
       severity: 'warn',
@@ -191,53 +210,57 @@ function handleEdit(todoDescription, todo) {
     return
   }
   todoContent.value = todoDescription
-  const newTodo = {
-    desciption: todoContent.value,
-    isComplete: todo.isComplete,
-    dates: new Date(date.value),
-    color: todo.color
-  }
-
-  todos.value.push(newTodo)
-  sortTodos()
-  deleteTodo(todo)
-  editTodos()
-  todoContent.value = ''
-}
-async function editTodos() {
   const { data, error } = await supabase
-    .from('cats_info')
-
-    .update({
-      todos: JSON.stringify(todos.value)
-    })
-    .eq('cat_id', catsStore.state.currentCat.id)
+    .from('todos')
+    .update([
+      {
+        content: todoContent.value,
+        date: date.value
+      }
+    ])
+    .eq('id', todo.id)
     .select()
+
   if (error) {
     console.log(error)
   }
   if (data) {
-    todos.value = JSON.parse(data[0].todos)
-    sortTodos()
+    todoContent.value = ''
+    getTodos()
   }
 }
 
-function deleteTodo(todo) {
-  //   for (let singleTodo of todos.value) {
-  for (let i = 0; i < todos.value.length; i++) {
-    if (todos.value[i] === todo) {
-      todos.value.splice(i, 1)
-      editTodos()
-    }
+async function handleCheckboxChange(checkboxState, todo) {
+  const { data, error } = await supabase
+    .from('todos')
+    .update([
+      {
+        completed: checkboxState
+      }
+    ])
+    .eq('id', todo.id)
+    .select()
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    getTodos()
   }
 }
 
-const date = ref(new Date())
-const rules = ref({
-  minutes: [0, 15, 30, 45]
-})
+async function deleteTodo(todo) {
+  const { data, error } = await supabase.from('todos').delete().eq('id', todo.id).select()
 
-function createNewTodo() {
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    getTodos()
+  }
+}
+
+async function createNewTodo() {
   if (todoContent.value.length < 1 || todoContent.value.length > 500) {
     toast.add({
       severity: 'warn',
@@ -247,55 +270,40 @@ function createNewTodo() {
     })
     return
   }
-  if (todos.value === null) {
-    todos.value = [
-      { desciption: todoContent.value, isComplete: false, dates: date.value, color: 'teal' }
-    ]
-  } else {
-    todos.value.push({
-      desciption: todoContent.value,
-      isComplete: false,
-      dates: date.value,
-      color: 'rose'
-    })
-  }
 
-  sortTodos()
-  editTodos()
+  const { data, error } = await supabase
+    .from('todos')
+    .insert([
+      {
+        cat_id: catsStore.state.currentCat.id,
+        content: todoContent.value,
+        date: date.value
+      }
+    ])
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    // console.log(data)
+  }
+  getTodos()
   todoContent.value = ''
   addNewTodo.value = false
 }
-// todos: [ {dates: "", }]
+
 function sortTodos() {
   todos.value = todos.value.sort(compareDateCreated)
 
   function compareDateCreated(a, b) {
-    if (a.dates < b.dates) {
+    if (a.date < b.date) {
       return -1
-    } else if (a.dates > b.dates) {
+    } else if (a.date > b.date) {
       return 1
     }
     return 0
   }
 }
-const todos = ref([
-  {
-    // desciption: '',
-    // text: '',
-    // isComplete: false,
-    // dates: new Date(),
-    // color: 'pink',
-    //time: ""
-  }
-])
-
-// function getDate(day, month, year) {
-//   return day + '.' + month + '.' + year
-// }
-
-// function getTime(hour, minute) {
-//   return hour + ':' + minute + ' ' + 'Uhr'
-// }
 
 const attributes = computed(() => {
   if (todos.value === null) {
@@ -303,13 +311,13 @@ const attributes = computed(() => {
   } else {
     return [
       ...todos.value.map((todo) => ({
-        dates: todo.dates,
+        dates: todo.date,
         dot: {
-          color: todo.color,
-          ...(todo.isComplete && { class: 'opacit-75' })
+          color: todo.completed ? 'primary' : 'rose',
+          ...(todo.completed && { class: 'opacit-75' })
         },
         popover: {
-          label: todo.desciption
+          label: todo.content
         }
       }))
     ]
@@ -340,28 +348,6 @@ const deleteTodoDialog = (todo) => {
 onBeforeMount(() => {
   getTodos()
 })
-// const attributes = ref([
-//   {
-//     highlight: true,
-//     dates: new Date(2023, 11, 16),
-//     customData: {
-//       header: 'blabliblubb',
-//       text: 'efwsfrgergrgggrg wefef '
-//     },
-//     popover: {
-//       label: 'bla'
-//     }
-//   },
-//   {
-//     dot: true,
-//     dates: new Date(2023, 12, 24),
-//     customData: {
-//       header: 'blabliblubb',
-//       text: 'efwsfrgergrgggrg wefef '
-//     }
-//   }
-// ])
-// const date = new Date()
 </script>
 <style scoped>
 .content-wrapper-calendar {
@@ -403,14 +389,14 @@ onBeforeMount(() => {
 }
 
 .input-area:focus + .float-label_label {
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg);
   transform: translateY(0.55rem);
   color: var(--primary);
 }
 
 .labelUp {
   color: var(--text-off);
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg);
   transform: translateY(0.55rem);
 }
 
@@ -438,6 +424,21 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+  position: relative;
+}
+
+.no-todos > p {
+  color: var(--text);
+  font-family: 'Roboto-Slab';
+  position: absolute;
+  margin: 0;
+  top: 49%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.todo-card-wrapper {
+  z-index: 2;
 }
 .todo-card {
   margin-block: 0.5rem;

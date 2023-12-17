@@ -222,14 +222,14 @@ form > * {
 }
 
 .input-field:focus + .float-label_label {
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg-on-background);
   transform: translateY(0.55rem);
   color: var(--primary);
 }
 
 .labelUp {
   color: var(--text-off);
-  background-color: var(--background-clr);
+  background: var(--hover-label-bg-on-background);
   transform: translateY(0.55rem);
 }
 

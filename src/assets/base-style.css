@@ -91,7 +91,8 @@
   --cat-card-background: var(--primary);
   --cat-card-background-hover: var(--primary-darker);
   --cat-card-text: hsl(0, 0%, 96%);
-  --hover-label-bg: white;
+  --hover-label-bg: rgb(255, 255, 255);
+  --hover-label-bg-on-background: rgb(255, 255, 255);
   --logo-bg: var(--old-rose-light);
   --logo-bg-hover: var(--primary);
   --burger-bg: var(--alert-dark);
@@ -190,6 +191,7 @@ body {
   --cat-card-background: var(--primary-darker-dark);
   --cat-card-background-hover: var(--primary-darkest);
   --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
+  --hover-label-bg-on-background: linear-gradient(hsl(0, 2%, 10%) 55%, hsl(192, 10%, 11%));
   --logo-bg: var(--old-rose);
   --logo-bg-hover: var(--primary);
   --burger-bg: var(--old-rose);
