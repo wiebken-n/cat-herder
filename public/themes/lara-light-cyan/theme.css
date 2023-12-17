@@ -812,7 +812,7 @@
   }
   .p-checkbox .p-checkbox-box {
     border: 2px solid #d1d5db;
-    background: #ffffff;
+    background: hsl(4, 15%, 93%);
     width: 22px;
     height: 22px;
     color: #4b5563;
@@ -833,8 +833,8 @@
     height: 14px;
   }
   .p-checkbox .p-checkbox-box.p-highlight {
-    border-color: hsla(192, 49%, 50%, 1);
-    background: hsla(192, 49%, 50%, 1);
+    border-color: hsla(145, 49%, 60%, 1);
+    background: hsl(145, 55%, 57%);
   }
   .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
     border-color: hsla(192, 49%, 50%, 1);
