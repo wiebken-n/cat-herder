@@ -21,6 +21,18 @@
 
         <p class="cat-name">{{ cat.name }}</p>
         <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
+
+        <svg
+          v-if="checkTodaysTodos(cat.todos)"
+          alt="todo alert"
+          class="alert-icon"
+          @click="handleTodoClick(cat.id)"
+        >
+          <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
+        </svg>
+        <div class="todo-tooltip">
+          <p>Für {{ cat.name }} gibt es heute offene Todos</p>
+        </div>
       </article>
 
       <PrimeButton
@@ -56,9 +68,14 @@
         <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
-
         <p class="cat-name">{{ cat.name }}</p>
         <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
+        <svg v-if="checkTodaysTodos(cat.todos)" alt="todo alert" class="alert-icon">
+          <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
+        </svg>
+        <div class="todo-tooltip">
+          <p>Für {{ cat.name }} gibt es heute offene Termine</p>
+        </div>
       </article>
       <!-- <article class="cat-info" data-cy="cat-info">
         <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
@@ -89,11 +106,11 @@
 </template>
 
 <script setup>
-import { useUserStore } from '../stores/useUserStore'
+import { useUserStore } from '@/stores/useUserStore'
 import { useRouter } from 'vue-router'
 import { onBeforeMount, ref } from 'vue'
 import { supabase } from '@/supabase'
-import { useCatsStore } from '../stores/useCatsStore'
+import { useCatsStore } from '@/stores/useCatsStore'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -110,6 +127,35 @@ userStore.$subscribe(() => {
 })
 function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
+}
+
+function checkTodaysTodos(todoarray) {
+  const yearNow = new Date().getFullYear()
+  const monthNow = new Date().getMonth() + 1
+  const dayNow = new Date().getDate()
+  // console.log(yearNow, monthNow, dayNow)
+
+  if (todoarray.length > 0) {
+    for (let todo of todoarray) {
+      if (
+        new Date(todo.date).getDate() === dayNow &&
+        new Date(todo.date).getMonth() + 1 === monthNow &&
+        new Date(todo.date).getFullYear() === yearNow &&
+        todo.completed === false
+      ) {
+        return true
+      }
+    }
+  }
+}
+
+function handleTodoClick(catId) {
+  catsStore.state.currentCatActiveMenuItems = {
+    menuOne: 1,
+    menuTwo: 1
+  }
+
+  router.push({ name: 'cat', params: { id: catId } })
 }
 
 onBeforeMount(async () => {
@@ -180,8 +226,47 @@ h2 {
   padding: 0.5rem;
   scale: 1;
   transition: all 200ms ease-in-out;
+  position: relative;
 }
 
+.alert-icon {
+  color: var(--old-rose-lighter-dark);
+  position: absolute;
+  height: 1rem;
+  width: 1rem;
+  top: 4px;
+  right: 5px;
+  scale: 1;
+  transition: all 200ms ease-in-out;
+}
+
+.alert-icon:hover {
+  color: var(--old-rose-darker);
+  scale: 1.2;
+}
+
+.todo-tooltip {
+  position: absolute;
+  font-family: 'Roboto-Slab';
+  font-weight: 450;
+  background-color: var(--tooltip-background);
+  border: 2px solid var(--tooltip-border);
+  color: var(--text);
+  border-radius: var(--border-radius);
+  font-size: 0.8rem;
+  width: 9rem;
+  padding-inline: 1rem;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+  transform: translate(50%, -103%);
+  transition: all 200ms ease-in-out;
+}
+.alert-icon:hover + .todo-tooltip {
+  opacity: 0.9;
+  visibility: visible;
+}
 .cat-info > * {
   margin: 0.125rem 0;
 }

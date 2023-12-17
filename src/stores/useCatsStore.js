@@ -32,14 +32,18 @@ export const useCatsStore = defineStore('cats', () => {
       // description: ''
     },
     orderBy: 'created_at',
-    fetchError: ''
+    fetchError: '',
+    currentCatActiveMenuItems: {
+      menuOne: 0,
+      menuTwo: 0
+    }
   })
 
   const fetchCats = async () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info)`
+        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), todos(id, cat_id, content, created_by, completed, date)`
       )
       .eq('user_id', userStore.state.userId)
 
@@ -59,7 +63,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username)`
+        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username), todos(id, cat_id, content, created_by, completed, date)`
       )
 
       .neq('user_id', userStore.state.userId)

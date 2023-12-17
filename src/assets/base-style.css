@@ -108,6 +108,8 @@
     hsla(4, 41%, 77%, 1) 70%,
     hsla(4, 41%, 60%, 1) 90%
   );
+  --tooltip-background: var(--nav-background);
+  --tooltip-border: var(--nav-border);
 }
 
 /* ----colors for calendar----- */
@@ -207,6 +209,8 @@ body {
     hsla(4, 35%, 55%, 1) 70%,
     hsla(4, 41%, 57%, 1) 90%
   );
+  --tooltip-background: var(--nav-background);
+  --tooltip-border: var(--nav-border);
 }
 h1,
 h2 {

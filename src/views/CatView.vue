@@ -198,7 +198,7 @@ function imageUrl(catAvatar) {
 
 const menuItems = ref([{ label: 'Infos' }, { label: 'Termine' }])
 
-const activeMenuItem = ref(0)
+const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const stateEdit = reactive({
   food: false,
   health: false,
@@ -346,6 +346,13 @@ onUnmounted(() => {
 
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
+})
+
+onUnmounted(() => {
+  catsStore.state.currentCatActiveMenuItems = {
+    menuOne: 0,
+    menuTwo: 0
+  }
 })
 </script>
 
