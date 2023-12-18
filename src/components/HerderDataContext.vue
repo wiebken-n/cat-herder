@@ -78,6 +78,11 @@
 import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { ref, onBeforeMount } from 'vue'
+import { useCatsStore } from '../stores/useCatsStore'
+import { useUserStore } from '../stores/useUserStore'
+
+const catsStore = useCatsStore()
+const userStore = useUserStore()
 
 const confirm = useConfirm()
 
@@ -180,14 +185,65 @@ async function deleteUserConnection(user) {
     .from('user_connections')
     .delete()
     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
+    .select()
+    .single()
 
   if (error) {
     console.log(error)
   }
   if (data) {
     // console.log(data)
+    if (data.connected) {
+      deleteHerderConnections(user.id)
+    }
   }
   return
+}
+
+async function deleteHerderConnections(userId) {
+  // delete connections of owned cats
+  for (let cat of catsStore.state.cats) {
+    for (let connection of cat.herder_connections) {
+      if (userId === connection.herder_id) {
+        const { data, error } = await supabase
+          .from('herder_connections')
+          .delete()
+          .eq('herder_id', userId)
+          .eq('cat_id', cat.id)
+          .select()
+          .single()
+        if (error) {
+          console.log(error)
+        }
+        if (data) {
+          // console.log(data)
+        }
+      }
+    }
+  }
+
+  // delete connections of cats owned by herder
+  for (let cat of catsStore.state.herdedCats) {
+    if (userId === cat.user_id) {
+      for (let connection of cat.herder_connections) {
+        if (userStore.state.userId === connection.herder_id) {
+          const { data, error } = await supabase
+            .from('herder_connections')
+            .delete()
+            .eq('herder_id', userStore.state.userId)
+            .eq('cat_id', cat.id)
+            .select()
+            .single()
+          if (error) {
+            console.log(error)
+          }
+          if (data) {
+            // console.log(data)
+          }
+        }
+      }
+    }
+  }
 }
 </script>
 

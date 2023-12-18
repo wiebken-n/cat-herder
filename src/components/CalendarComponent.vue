@@ -167,7 +167,7 @@ const todos = ref([
 
 const addNewTodo = ref(false)
 const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
-const activeMenuItem = ref(0)
+const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 
 const date = ref(new Date())
 const rules = ref({
@@ -432,7 +432,7 @@ onBeforeMount(() => {
   font-family: 'Roboto-Slab';
   position: absolute;
   margin: 0;
-  top: 49%;
+  top: 4.5rem;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
