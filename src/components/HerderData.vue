@@ -24,7 +24,7 @@
     <h2 class="username">{{ user.username }}</h2>
     <!-- {{ props.connectionStatus }} -->
 
-    <div
+    <!-- <div
       v-if="
         showButton &&
         (props.connectionStatus === 'no connection' ||
@@ -63,69 +63,69 @@
     </div>
     <div v-if="showButton && props.connectionStatus === 'connected'" class="buffer">
       Ihr seid verbunden
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
 // import { ref } from 'vue'
-import { supabase } from '../supabase'
+// import { supabase } from '../supabase'
 
 const props = defineProps({
   user: Object,
   connectionStatus: String,
   showButton: Boolean
 })
-const emit = defineEmits(['interaction'])
+// const emit = defineEmits(['interaction'])
 
-async function sendRequest(user) {
-  const { data, error } = await supabase
-    .from('user_connections')
-    .insert([{ user_passive: user.id }])
-    .select()
+// async function sendRequest(user) {
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .insert([{ user_passive: user.id }])
+//     .select()
 
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-  }
-  emit('interaction')
-  return
-}
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+//   emit('interaction')
+//   return
+// }
 
-async function acceptRequest(user) {
-  const userId = user.id
-  const { data, error } = await supabase
-    .from('user_connections')
-    .update({ connected: true })
-    .eq('user_active', userId)
+// async function acceptRequest(user) {
+//   const userId = user.id
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .update({ connected: true })
+//     .eq('user_active', userId)
 
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-  }
-  emit('interaction')
-  return
-}
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+//   emit('interaction')
+//   return
+// }
 
-async function deleteRequest(user) {
-  const { data, error } = await supabase
-    .from('user_connections')
-    .delete()
-    .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
+// async function deleteRequest(user) {
+//   const { data, error } = await supabase
+//     .from('user_connections')
+//     .delete()
+//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
 
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    console.log(data)
-  }
-  emit('interaction')
-  return
-}
+//   if (error) {
+//     console.log(error)
+//   }
+//   if (data) {
+//     console.log(data)
+//   }
+//   emit('interaction')
+//   return
+// }
 </script>
 
 <style scoped>
