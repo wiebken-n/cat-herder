@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/useUserStore'
 const userStore = useUserStore()
 const router = useRouter()
+export const feeding_times = reactive({})
 export const useCatsStore = defineStore('cats', () => {
   const state = reactive({
     cats: {},
@@ -15,9 +16,21 @@ export const useCatsStore = defineStore('cats', () => {
       name: '',
       avatar: '',
       birthday: '',
+      breed: '',
+
+      inoutdoor: '',
+      weight: '',
+      food_varieties: '', //JSON
+      feeding_times: '',
+      drugs: '',
+      drugs_info: '',
+      personality: '', //JSON
+      playtimes: '',
+      play_info: '',
       food_info: '',
       health_info: '',
       behaviour_info: '',
+
       herder_connections: '',
       catHerderProfiles: '',
       herders: '',

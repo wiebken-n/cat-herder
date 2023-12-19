@@ -24,7 +24,7 @@ import PrimeDropdown from 'primevue/dropdown'
 import PrimeConfirmDialog from 'primevue/confirmdialog'
 import PrimeTabMenu from 'primevue/tabmenu'
 import PrimeCheckbox from 'primevue/checkbox'
-import Tooltip from 'primevue/tooltip'
+import PrimeMultiSelect from 'primevue/multiselect'
 
 import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
@@ -38,7 +38,6 @@ app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
 app.use(ConfirmationService)
-app.directive('tooltip', Tooltip)
 
 app.use(setupCalendar, {})
 
@@ -56,6 +55,7 @@ app.component('PrimeConfirmDialog', PrimeConfirmDialog)
 app.component('Toast', Toast)
 app.component('PrimeTabMenu', PrimeTabMenu)
 app.component('PrimeCheckbox', PrimeCheckbox)
+app.component('PrimeMultiSelect', PrimeMultiSelect)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */
