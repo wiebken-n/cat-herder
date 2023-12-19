@@ -19,7 +19,7 @@
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
-              @click="addNewTodo = !addNewTodo"
+              @click="handleAddTodo"
             ></PrimeButton>
           </div>
         </template>
@@ -220,6 +220,15 @@ async function getTodos() {
 }
 
 async function handleEdit(todoHeader, todoDescription, todo) {
+  if (!date.value) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Kein Datum',
+      detail: 'Bitte wähle ein Datum aus',
+      life: 3000
+    })
+    return
+  }
   if (todoHeader.length < 1 || todoHeader.length > 30) {
     toast.add({
       severity: 'warn',
@@ -250,7 +259,14 @@ async function handleEdit(todoHeader, todoDescription, todo) {
     console.log(error)
   }
   if (data) {
+    toast.add({
+      severity: 'success',
+      summary: 'Termin geändert',
+      detail: 'Du hast den Termin geändert',
+      life: 3000
+    })
     todoContent.value = ''
+    todoHeaderContent.value = ''
     getTodos()
   }
 }
@@ -283,6 +299,19 @@ async function deleteTodo(todo) {
   if (data) {
     getTodos()
   }
+}
+
+async function handleAddTodo() {
+  if (!date.value) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Kein Datum',
+      detail: 'Bitte wähle ein Datum aus',
+      life: 3000
+    })
+    return
+  }
+  addNewTodo.value = !addNewTodo.value
 }
 
 async function createNewTodo() {
@@ -320,10 +349,16 @@ async function createNewTodo() {
     console.log(error)
   }
   if (data) {
-    // console.log(data)
+    toast.add({
+      severity: 'success',
+      summary: 'Termin angelegt',
+      detail: 'Du hast einen neuen Termin angelegt',
+      life: 3000
+    })
   }
   getTodos()
   todoContent.value = ''
+  todoHeaderContent.value = ''
   addNewTodo.value = false
 }
 
@@ -370,7 +405,7 @@ const deleteTodoDialog = (todo) => {
     accept: () => {
       deleteTodo(todo)
       toast.add({
-        severity: 'success',
+        severity: 'info',
         summary: 'Termin gelöscht',
         detail: 'Du hast den Termin gelöscht',
         life: 3000
