@@ -44,6 +44,7 @@
   --moonstone-dark: hsla(192, 49%, 40%, 1);
   --moonstone-darker: hsla(192, 49%, 30%, 1);
   --moonstone-light: hsla(192, 49%, 60%, 1);
+  --moonstone-superlight: hsla(192, 49%, 97%, 1);
   --jonquil: #f8cf18;
   --jasper: hsla(5, 61%, 53%, 1);
   --amaranth-purple: hsl(351, 52%, 43%);
@@ -64,6 +65,7 @@
   --primary-darker-dark: #0e7490;
   --primary-darkest: hsl(193, 82%, 27%);
   --primary-lighter: var(--moonstone-light);
+  --primary-superlight: var(--moonstone-superlight);
 
   --accent: var(--jonquil);
   --alert: var(--jasper);
@@ -137,6 +139,48 @@
   --vc-accent-800: hsl(4, 90%, 27%);
   --vc-accent-900: hsl(4, 80%, 24%);
 }
+
+.vc-header {
+  margin-bottom: 0.5rem;
+}
+.vc-pane {
+  border-bottom-color: red;
+}
+.vc-dark {
+  --vc-bg: var(--card-background);
+  --vc-border: var(--card-background-hover);
+  --vc-time-picker-border: var(--card-background-hover);
+}
+
+.vc-light {
+  --vc-bg: var(--card-background);
+}
+
+.vc-light .vc-title,
+.vc-light .vc-arrow {
+  background-color: var(--background-clr);
+}
+.vc-weeks {
+  margin-bottom: -2rem;
+}
+.vc-time-picker {
+  padding-block: 1rem;
+}
+.vc-dark .vc-title-wrapper {
+  background-color: var(--card-background);
+}
+
+.vc-dark .vc-title-wrapper .vc-title {
+  background-color: var(--cat-card-background-hover);
+}
+.vc-dark .vc-arrow {
+  background-color: var(--cat-card-background-hover);
+}
+.vc-pane-container .button-add-todo {
+  margin-inline: 10px;
+  margin-bottom: 10px;
+}
+/* ------------------- */
 
 * {
   --border-radius: 6px;
@@ -244,6 +288,7 @@ p {
     padding-top: 5rem;
   }
 }
+
 /* 
 button,
 input[type='submit'] {
