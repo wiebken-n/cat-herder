@@ -150,12 +150,33 @@
   --vc-bg: var(--card-background);
   --vc-border: var(--card-background-hover);
   --vc-time-picker-border: var(--card-background-hover);
+  --vc-popover-content-bg: var(--nav-background);
 }
 
 .vc-light {
   --vc-bg: var(--card-background);
+  --vc-popover-content-bg: var(--nav-background);
+  --vc-popover-content-color: var(--text);
+  --vc-day-popover-header-color: var(--text);
 }
 
+.vc-popover-content {
+  padding: 1rem;
+}
+.vc-day-popover-header {
+  font-family: 'Roboto-Slab';
+  --vc-text-xs: 1rem;
+  margin-bottom: 0.25rem;
+}
+.vc-day-popover-row {
+  font-family: 'Raleway';
+  margin-top: 0.5rem;
+  --vc-text-xs: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70vw;
+  max-height: 50vh;
+}
 .vc-light .vc-title,
 .vc-light .vc-arrow {
   background-color: var(--background-clr);

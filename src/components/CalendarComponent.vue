@@ -32,6 +32,19 @@
         :breakpoints="{ '650px': '500px', '600px': '90vw' }"
       >
         <div class="dialog-content">
+          <span class="p-float-label todo-input todo-input-header">
+            <PrimeInputText
+              class="input-field input"
+              id="todo-header"
+              v-model.trim="todoHeaderContent"
+            />
+            <label
+              class="float-label_label"
+              :class="{ labelUp: todoHeaderContent }"
+              for="todo-header"
+              >Art des Termins</label
+            >
+          </span>
           <span class="p-float-label todo-input">
             <PrimeTextArea
               id="todo-content"
@@ -41,8 +54,8 @@
               rows="10"
             ></PrimeTextArea>
             <label for="todo-content" :class="{ labelUp: todoContent }" class="float-label_label"
-              >Terminbeschreibung</label
-            >
+              >Terminbeschreibung
+            </label>
           </span>
           <PrimeButton class="button-send" label="Absenden" @click="createNewTodo"></PrimeButton>
         </div>
@@ -71,7 +84,9 @@
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="date = new Date(todo.date)"
-                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                  "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
@@ -100,7 +115,9 @@
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="date = new Date(todo.date)"
-                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                  "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
@@ -150,6 +167,7 @@ const catsStore = useCatsStore()
 
 const calendar = ref(null)
 
+const todoHeaderContent = ref('')
 const todoContent = ref('')
 
 const todos = ref([
@@ -188,7 +206,9 @@ function handleDidMove(pages) {
 async function getTodos() {
   const { data, error } = await supabase
     .from('todos')
-    .select(`id, cat_id, content, created_by, completed, created_at, date, profiles(id, username)`)
+    .select(
+      `id, cat_id, header, content, created_by, completed, created_at, date, profiles(id, username)`
+    )
     .eq('cat_id', catsStore.state.currentCat.id)
   if (error) {
     console.log(error)
@@ -199,25 +219,30 @@ async function getTodos() {
   }
 }
 
-async function handleEdit(todoDescription, todo) {
-  if (todoDescription.length < 1 || todoDescription.length > 500) {
+async function handleEdit(todoHeader, todoDescription, todo) {
+  if (todoHeader.length < 1 || todoHeader.length > 30) {
     toast.add({
       severity: 'warn',
-      summary: 'Text ungültig',
-      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      summary: 'Überschrift ungültig',
+      detail: 'Die Überschrift des Termins muss zwischen 1 und 30 Zeichen lang sein',
       life: 3000
     })
     return
   }
+  if (todoDescription.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Beschreibung ungültig',
+      detail: 'Die Beschreibung des Termins kann maximal 500 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  todoHeaderContent.value = todoHeader
   todoContent.value = todoDescription
   const { data, error } = await supabase
     .from('todos')
-    .update([
-      {
-        content: todoContent.value,
-        date: date.value
-      }
-    ])
+    .update([{ header: todoHeaderContent.value, content: todoContent.value, date: date.value }])
     .eq('id', todo.id)
     .select()
 
@@ -261,11 +286,20 @@ async function deleteTodo(todo) {
 }
 
 async function createNewTodo() {
-  if (todoContent.value.length < 1 || todoContent.value.length > 500) {
+  if (todoHeaderContent.value.length < 1 || todoHeaderContent.value.length > 30) {
     toast.add({
       severity: 'warn',
-      summary: 'Text ungültig',
-      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      summary: 'Überschrift ungültig',
+      detail: 'Die Überschrift des Termins kann zwischen 1 und 30 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  if (todoContent.value.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Beschreibung ungültig',
+      detail: 'Die Beschreibung des Termins kann maximal 500 Zeichen lang sein',
       life: 3000
     })
     return
@@ -276,6 +310,7 @@ async function createNewTodo() {
     .insert([
       {
         cat_id: catsStore.state.currentCat.id,
+        header: todoHeaderContent.value,
         content: todoContent.value,
         date: date.value
       }
@@ -317,7 +352,7 @@ const attributes = computed(() => {
           ...(todo.completed && { class: 'opacit-75' })
         },
         popover: {
-          label: todo.content
+          label: todo.header
         }
       }))
     ]
@@ -378,17 +413,29 @@ onBeforeMount(() => {
   margin-top: 1rem;
   width: 90%;
 }
+
+.todo-input-header {
+  margin-block: 1rem;
+  width: 90%;
+}
+.todo-input-header .input-field {
+  width: 100%;
+}
+
 .input-area {
   width: 100%;
   height: 7rem;
 }
+
 .float-label_label {
   color: var(--text);
   font-size: 1rem;
   padding-inline: 0.5rem;
 }
-
-.input-area:focus + .float-label_label {
+.input-area + .float-label_label {
+  transform: translateY(0.55rem);
+}
+.input:focus + .float-label_label {
   background: var(--hover-label-bg);
   transform: translateY(0.55rem);
   color: var(--primary);
