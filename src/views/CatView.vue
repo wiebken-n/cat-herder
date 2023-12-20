@@ -68,104 +68,76 @@
       </div>
     </div>
     <div v-if="activeMenuItem === 0" class="cat-content">
-      <div class="info-segment">
-        <div class="info-segment-header">
+      <CatDataCard
+        class="catdata"
+        :edit="stateEdit.food"
+        :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+        :content="catsStore.state.currentCat.cats_info[0].food_info"
+        headline="Futterinfo"
+        @editMode="handleCardEditModeOn('food')"
+        @dataSaved="handleCardDataSaved('food')"
+        ><template #icon>
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
           </svg>
-          <h2>Futterinfo</h2>
-        </div>
-        <p v-if="!stateEdit.food">{{ catsStore.state.currentCat.cats_info[0].food_info }}</p>
-        <PrimeTextArea
-          v-if="stateEdit.food"
-          id="input-cat-food"
-          class="input-cat-food input input-area"
-          v-model="catsStore.state.currentCat.cats_info[0].food_info"
-          autoResize
-        ></PrimeTextArea>
-        <svg
-          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-          @click="editFood()"
-          class="icon icon-edit"
-        >
-          <use
-            v-if="!stateEdit.food"
-            xlink:href="@/assets/icons.svg#edit"
-            fill="currentcolor"
-          ></use>
-          <use
+        </template>
+        <template #card-input>
+          <PrimeTextArea
             v-if="stateEdit.food"
-            xlink:href="@/assets/icons.svg#save-data"
-            fill="currentcolor"
-          ></use>
-        </svg>
-      </div>
-      <div class="info-segment">
-        <div class="info-segment-header">
+            class="input input-area"
+            v-model="catsStore.state.currentCat.cats_info[0].food_info"
+            autoResize
+          ></PrimeTextArea>
+        </template>
+        ></CatDataCard
+      >
+      <CatDataCard
+        class="catdata"
+        :edit="stateEdit.health"
+        :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+        :content="catsStore.state.currentCat.cats_info[0].health_info"
+        headline="Infos zur Gesundheit"
+        @editMode="handleCardEditModeOn('health')"
+        @dataSaved="handleCardDataSaved('health')"
+        ><template #icon>
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
           </svg>
-          <h2>Infos zur Gesundheit</h2>
-        </div>
-        <p v-if="!stateEdit.health">{{ catsStore.state.currentCat.cats_info[0].health_info }}</p>
-        <PrimeTextArea
-          v-if="stateEdit.health"
-          id="input-cat-health"
-          class="input-cat-health input input-area"
-          v-model="catsStore.state.currentCat.cats_info[0].health_info"
-          autoResize
-        ></PrimeTextArea>
-        <svg
-          @click="editHealth()"
-          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-          class="icon icon-edit"
-        >
-          <use
-            v-if="!stateEdit.health"
-            xlink:href="@/assets/icons.svg#edit"
-            fill="currentcolor"
-          ></use>
-          <use
+        </template>
+        <template #card-input>
+          <PrimeTextArea
             v-if="stateEdit.health"
-            xlink:href="@/assets/icons.svg#save-data"
-            fill="currentcolor"
-          ></use>
-        </svg>
-      </div>
-      <div class="info-segment">
-        <div class="info-segment-header">
+            id="input-cat-health"
+            class="input-cat-health input input-area"
+            v-model="catsStore.state.currentCat.cats_info[0].health_info"
+            autoResize
+          ></PrimeTextArea>
+        </template>
+        ></CatDataCard
+      >
+      <CatDataCard
+        class="catdata"
+        :edit="stateEdit.behaviour"
+        :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+        :content="catsStore.state.currentCat.cats_info[0].behaviour_info"
+        headline="Infos zum Verhalten"
+        @editMode="handleCardEditModeOn('behaviour')"
+        @dataSaved="handleCardDataSaved('behaviour')"
+        ><template #icon>
           <svg class="icon">
             <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
           </svg>
-          <h2>Infos zum Verhalten</h2>
-        </div>
-        <p v-if="!stateEdit.behaviour">
-          {{ catsStore.state.currentCat.cats_info[0].behaviour_info }}
-        </p>
-        <PrimeTextArea
-          v-if="stateEdit.behaviour"
-          id="input-cat-health"
-          class="input-cat-health input input-area"
-          v-model="catsStore.state.currentCat.cats_info[0].behaviour_info"
-          autoResize
-        ></PrimeTextArea>
-        <svg
-          @click="editBehaviour()"
-          class="icon icon-edit"
-          v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-        >
-          <use
-            v-if="!stateEdit.behaviour"
-            xlink:href="@/assets/icons.svg#edit"
-            fill="currentcolor"
-          ></use>
-          <use
+        </template>
+        <template #card-input>
+          <PrimeTextArea
             v-if="stateEdit.behaviour"
-            xlink:href="@/assets/icons.svg#save-data"
-            fill="currentcolor"
-          ></use>
-        </svg>
-      </div>
+            class="input input-area"
+            v-model="catsStore.state.currentCat.cats_info[0].behaviour_info"
+            autoResize
+          ></PrimeTextArea>
+        </template>
+        ></CatDataCard
+      >
     </div>
     <div v-if="activeMenuItem === 1">
       <CalendarComponent />
@@ -182,6 +154,7 @@ import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
+import CatDataCard from '../components/CatDataCard.vue'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -205,8 +178,14 @@ const stateEdit = reactive({
   behaviour: false
 })
 
-// const owner = computed(() => catsStore.state.currentCat.profiles)
-// const ownerName = ref('')
+function handleCardEditModeOn(status) {
+  stateEdit[status] = true
+}
+
+function handleCardDataSaved(status) {
+  editCatInfo()
+  stateEdit[status] = false
+}
 
 const herderProfiles = computed(() => {
   return catsStore.state.currentCat.catHerderProfiles
@@ -250,25 +229,25 @@ async function editCatInfo() {
     // console.log(data)
   }
 }
-async function editFood() {
-  if (stateEdit.food) {
-    await editCatInfo()
-  }
-  stateEdit.food = !stateEdit.food
-}
-async function editHealth() {
-  if (stateEdit.health) {
-    editCatInfo()
-  }
-  stateEdit.health = !stateEdit.health
-}
+// async function editFood() {
+//   if (stateEdit.food) {
+//     await editCatInfo()
+//   }
+//   stateEdit.food = !stateEdit.food
+// }
+// async function editHealth() {
+//   if (stateEdit.health) {
+//     editCatInfo()
+//   }
+//   stateEdit.health = !stateEdit.health
+// }
 
-async function editBehaviour() {
-  if (stateEdit.behaviour) {
-    editCatInfo()
-  }
-  stateEdit.behaviour = !stateEdit.behaviour
-}
+// async function editBehaviour() {
+//   if (stateEdit.behaviour) {
+//     editCatInfo()
+//   }
+//   stateEdit.behaviour = !stateEdit.behaviour
+// }
 
 async function addHerder(herderId) {
   if (selectedHerder.value === 'none') {
@@ -463,6 +442,9 @@ header {
   width: 100%;
 }
 
+.catdata {
+  width: 100%;
+}
 .cat-content {
   display: grid;
   justify-items: start;
@@ -471,40 +453,16 @@ header {
   position: relative;
 }
 
-.info-segment {
-  width: 80vw;
-  padding-inline: 1.25rem;
-  padding-bottom: 1rem;
-  /* border: 2px solid var(--primary); */
-  position: relative;
-  background-color: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: 0 0 4px 2px var(--card-shadow);
-}
-.info-segment-header {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-  height: max-content;
-}
-
 h2 {
   color: var(--primary);
   font-size: 1.1rem;
   top: -0.8rem;
 }
+
 .icon {
   width: 1.25rem;
   height: 1.25rem;
   color: var(--primary-darker);
-}
-.info-segment > p {
-  padding-bottom: 0.5rem;
-  padding-inline: 0.5rem;
-  inline-size: 100%;
-  overflow-wrap: break-word;
-  hyphens: manual;
 }
 
 .input-area {
@@ -512,27 +470,19 @@ h2 {
   width: 100%;
   margin-bottom: 1rem;
 }
-.icon-edit {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-}
+
 @media screen and (min-width: 700px) {
   header,
   .menu-wrapper,
   .user-content-container,
   .cat-content,
-  .info-segment {
+  .info-segment,
+  .catdata {
     width: 500px;
   }
 
   .dialog-container {
     width: 450px;
-  }
-
-  .info-segment-header {
-    gap: 0.5rem;
-    justify-content: flex-end;
   }
 }
 @media screen and (min-width: 1000px) {
@@ -540,7 +490,7 @@ h2 {
   .menu-wrapper,
   .user-content-container,
   .cat-content,
-  .info-segment,
+  .catdata,
   .content-wrapper-calendar {
     width: 700px;
   }
@@ -562,7 +512,7 @@ h2 {
     width: 1000px;
   }
 
-  .info-segment {
+  .catdata {
     width: 500px;
   }
   .herder-input-container {

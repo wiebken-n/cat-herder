@@ -612,18 +612,18 @@ const addCatInfo = async (catId) => {
     .insert([
       {
         cat_id: cat_id,
-        weight: cat.weight,
-        in_outdoor: cat.inoutdoor.content,
-        food_varieties: JSON.stringify(cat.food_varieties),
-        feeding_times: cat.feeding_times.content,
-        food_info: cat.food_info, //opt ae
-        drugs: cat.drugs.content,
-        drugs_info: cat.drugs_info, //opt ae
-        personality: JSON.stringify(cat.personality),
-        playtimes: cat.playtimes.content,
-        play_info: cat.play_info, //opt ae
-        health_info: cat.health_info, //opt ae
-        behaviour_info: cat.behaviour_info //opt ae
+        weight: cat.weight, // txt
+        in_outdoor: cat.inoutdoor.content, // txt
+        food_varieties: JSON.stringify(cat.food_varieties), //JSON   content-array > txt
+        feeding_times: cat.feeding_times.content, //num
+        food_info: cat.food_info, //opt ae txt
+        drugs: cat.drugs.content, //txt
+        drugs_info: cat.drugs_info, //opt ae txt
+        personality: JSON.stringify(cat.personality), //JSON content-array > txt
+        playtimes: cat.playtimes.content, //txt
+        play_info: cat.play_info, //opt ae txt
+        health_info: cat.health_info, //opt ae txt
+        behaviour_info: cat.behaviour_info //opt ae txt
       }
     ])
     .select()

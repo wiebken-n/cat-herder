@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="content-wrapper">
     <header><h1 class="headline" data-cy="headline">Füge eine Katze hinzu</h1></header>
     <form>
@@ -447,4 +447,4 @@ article > div {
     transform: rotate(0deg);
   }
 }
-</style>
+</style> -->
