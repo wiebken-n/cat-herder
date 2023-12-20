@@ -33,7 +33,6 @@
           class="site-one site-container"
           :class="{ containeractive: activeMenuItem === 0 }"
           v-if="activeMenuItem === 0"
-          @touchmove.right="activeMenuItem = 1"
         >
           <article class="input-avatar-wrapper">
             <div class="image-container">
@@ -110,7 +109,7 @@
             </div>
             <PrimeDropdown
               v-model="catsStore.state.currentCat.breed"
-              :options="catbreeds"
+              :options="resourcesStore.options.catbreeds"
               optionLabel="content"
               placeholder="Wähle eine Bezeichnung aus"
               id="catbreed-selection"
@@ -126,8 +125,8 @@
               >
             </div>
             <PrimeDropdown
-              v-model="catsStore.state.currentCat.inoutdoor"
-              :options="inoutdoor"
+              v-model="catsStore.state.currentCat.in_outdoor"
+              :options="resourcesStore.options.inoutdoor"
               optionLabel="content"
               placeholder="Wähle eine Option aus"
               id="input-cat-inoutdoor"
@@ -162,8 +161,6 @@
           class="site-one site-container"
           :class="{ containeractive: activeMenuItem === 1 }"
           v-if="activeMenuItem === 1"
-          @touchmove.left="activeMenuItem = 0"
-          @touchmove.right="activeMenuItem = 2"
         >
           <article class="input-food-wrapper">
             <div>
@@ -176,7 +173,7 @@
             </div>
             <PrimeMultiSelect
               v-model="catsStore.state.currentCat.food_varieties"
-              :options="foodVarieties"
+              :options="resourcesStore.options.foodVarieties"
               optionLabel="content"
               placeholder="Wähle die Futtervariante(n) aus"
               id="input-cat-inoutdoor"
@@ -195,7 +192,7 @@
             </div>
             <PrimeDropdown
               v-model="catsStore.state.currentCat.feeding_times"
-              :options="feedingTimes"
+              :options="resourcesStore.options.feedingTimes"
               optionLabel="content"
               placeholder="Wähle eine Anzahl aus"
               id="feeding-selection"
@@ -228,7 +225,7 @@
             </div>
             <PrimeDropdown
               v-model="catsStore.state.currentCat.drugs"
-              :options="drugs"
+              :options="resourcesStore.options.drugs"
               optionLabel="content"
               placeholder="Wähle eine Option aus"
               id="drugs"
@@ -272,7 +269,6 @@
           class="site-one site-container"
           :class="{ containeractive: activeMenuItem === 2 }"
           v-if="activeMenuItem === 2"
-          @touchmove.left="activeMenuItem = 1"
         >
           <article class="input-personality-wrapper">
             <div>
@@ -286,7 +282,7 @@
             <PrimeMultiSelect
               class="multiselect"
               v-model="catsStore.state.currentCat.personality"
-              :options="personality"
+              :options="resourcesStore.options.personality"
               optionLabel="content"
               placeholder="Wähle passende Optionen aus"
               id="input-cat-personality"
@@ -337,7 +333,7 @@
             </div>
             <PrimeDropdown
               v-model="catsStore.state.currentCat.playtimes"
-              :options="playtimes"
+              :options="resourcesStore.options.playtimes"
               optionLabel="content"
               placeholder="Wähle passende Optionen aus"
               id="input-cat-playtimes"
@@ -365,6 +361,7 @@
             class="btn-submit"
             label="Speichere deine Katze"
           ></PrimeButton>
+
           <div class="button-wrapper">
             <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
               <span>zurück</span
@@ -408,6 +405,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useCatsStore } from '../stores/useCatsStore'
+import { useResourcesStore } from '../stores/useResourcesStore'
 import { supabase } from '../supabase'
 import { onUnmounted, onBeforeMount } from 'vue'
 import router from '../router'
@@ -417,97 +415,72 @@ const toast = useToast()
 
 const formError = ref('')
 const catsStore = useCatsStore()
+const resourcesStore = useResourcesStore()
 
 const pickAvatarVisible = ref(false)
 const avatarNumbers = []
 
 const activeMenuItem = ref(0)
 
-const catbreeds = ref([
-  { content: 'Wald-und-Wiesen-Katze' },
-  { content: 'Kurzhaar-Mischung' },
-  { content: 'Europäisch Kurzhaar' },
-  { content: 'Britisch Kurzhaar' },
-  { content: 'Europäisch Langhaar' },
-  { content: 'Ragdoll' },
-  { content: 'Siamkatze' },
-  { content: 'Perser' },
-  { content: 'Maine Coon' },
-  { content: 'andere' }
-])
+// const catbreeds = ref([
+//   { content: 'Wald-und-Wiesen-Katze' },
+//   { content: 'Kurzhaar-Mischung' },
+//   { content: 'Europäisch Kurzhaar' },
+//   { content: 'Britisch Kurzhaar' },
+//   { content: 'Europäisch Langhaar' },
+//   { content: 'Ragdoll' },
+//   { content: 'Siamkatze' },
+//   { content: 'Perser' },
+//   { content: 'Maine Coon' },
+//   { content: 'andere' }
+// ])
 
-const inoutdoor = ref([
-  { content: 'Wohnungskatze' },
-  { content: 'Freigänger' },
-  { content: 'Reine Draußenkatze' }
-])
+// const inoutdoor = ref([
+//   { content: 'Wohnungskatze' },
+//   { content: 'Freigänger' },
+//   { content: 'Reine Draußenkatze' }
+// ])
 
-const foodVarieties = ref([
-  { content: 'Dosenfutter' },
-  { content: 'Trockenfutter' },
-  { content: 'Barf' },
-  { content: 'Kochbarf' }
-])
-// const numberOfFeedings = ref('')
+// const foodVarieties = ref([
+//   { content: 'Dosenfutter' },
+//   { content: 'Trockenfutter' },
+//   { content: 'Barf' },
+//   { content: 'Kochbarf' }
+// ])
+// // const numberOfFeedings = ref('')
 
-const feedingTimes = ref([
-  { content: 1 },
-  { content: 2 },
-  { content: 3 },
-  { content: 4 },
-  { content: 5 },
-  { content: 6 },
-  { content: 7 },
-  { content: 8 }
-])
+// const feedingTimes = ref([
+//   { content: 1 },
+//   { content: 2 },
+//   { content: 3 },
+//   { content: 4 },
+//   { content: 5 },
+//   { content: 6 },
+//   { content: 7 },
+//   { content: 8 }
+// ])
 
-const drugs = ref([{ content: 'Nein' }, { content: 'Ja, täglich' }, { content: 'Ja, aber selten' }])
+// const drugs = ref([{ content: 'Nein' }, { content: 'Ja, täglich' }, { content: 'Ja, aber selten' }])
 
-const personality = ref([
-  { content: 'ruhig' },
-  { content: 'ängstlich' },
-  { content: 'freundlich' },
-  { content: 'aktiv' },
-  { content: 'spielfreudig' },
-  { content: 'mutig' },
-  { content: 'unruhig' },
-  { content: 'entspannt' },
-  { content: 'aggressiv' }
-])
+// const personality = ref([
+//   { content: 'ruhig' },
+//   { content: 'ängstlich' },
+//   { content: 'freundlich' },
+//   { content: 'aktiv' },
+//   { content: 'spielfreudig' },
+//   { content: 'mutig' },
+//   { content: 'unruhig' },
+//   { content: 'entspannt' },
+//   { content: 'aggressiv' }
+// ])
 
-const playtimes = ref([
-  { content: 'gar nicht' },
-  { content: 'alle paar Tage' },
-  { content: 'einmal am Tag' },
-  { content: '2-3 mal am Tag' },
-  { content: '3-5 mal am Tag' },
-  { content: 'Pausenlos!' }
-])
-// const feedingTimeDetails = ref([])
-// const feedingTimeDetails_content = reactive({})
-
-// watch(numberOfFeedings, () => {
-//   console.log(numberOfFeedings.value)
-//   adjustFeedingTimeDetails()
-// })
-
-// function adjustFeedingTimeDetails() {
-//   feedingTimeDetails.value = []
-//   console.log(numberOfFeedings.value.name)
-//   let i = numberOfFeedings.value.name
-
-//   while (i > 0) {
-//     feedingTimeDetails.value.push(i)
-//     feedingTimeDetails_content[i] = ''
-//     i--
-//   }
-//   console.log(feedingTimeDetails.value)
-// }
-// const menuItems = ref([
-//   { label: 'Basic', icon: 'pi pi-home' },
-//   { label: 'Infos', icon: 'pi pi-chart-line' },
-//   { label: 'Products', icon: 'pi pi-list' },
-//   { label: 'Messages', icon: 'pi pi-inbox' }
+// const playtimes = ref([
+//   { content: 'gar nicht' },
+//   { content: 'alle paar Tage' },
+//   { content: 'einmal am Tag' },
+//   { content: '2-3 mal am Tag' },
+//   { content: '3-5 mal am Tag' },
+//   { content: 'Pausenlos!' }
 // ])
 
 const toastData = reactive({
@@ -548,7 +521,7 @@ const addCat = async () => {
     cat.birthday.length < 1 ||
     cat.avatar.length < 1 ||
     cat.weight.length < 1 ||
-    cat.inoutdoor.length < 1 ||
+    cat.in_outdoor.length < 1 ||
     cat.food_varieties.length < 1 ||
     cat.feeding_times.length < 1 ||
     cat.drugs.length < 1 ||
@@ -591,14 +564,13 @@ const addCat = async () => {
   if (data) {
     catsStore.state.currentCat.id = data.id
     formError.value = ''
-    addCatInfo(data.id)
+    await addCatInfo(data.id)
     toastData.severity = 'success'
     toastData.summary = 'Katze gespeichert'
     toastData.detail = 'Deine Katze wurde hinzugefügt!'
     addCatToast()
-
     setTimeout(() => {
-      router.push({ content: 'cat', params: { id: catsStore.state.currentCat.id } })
+      router.push({ name: 'cat', params: { id: catsStore.state.currentCat.id } })
     }, 1500)
   }
 }
@@ -611,16 +583,16 @@ const addCatInfo = async (catId) => {
     .from('cats_info')
     .insert([
       {
-        cat_id: cat_id,
+        cat_id: cat_id, // UUID
         weight: cat.weight, // txt
-        in_outdoor: cat.inoutdoor.content, // txt
-        food_varieties: JSON.stringify(cat.food_varieties), //JSON   content-array > txt
-        feeding_times: cat.feeding_times.content, //num
-        food_info: cat.food_info, //opt ae txt
-        drugs: cat.drugs.content, //txt
-        drugs_info: cat.drugs_info, //opt ae txt
+        in_outdoor: JSON.stringify(cat.in_outdoor), // JSON {content: txt}
+        food_varieties: JSON.stringify(cat.food_varieties), //JSON  [{content: txt}]
+        feeding_times: JSON.stringify(cat.feeding_times), // // {content: txt}
+        food_info: cat.food_info, // txt
+        drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
+        drugs_info: cat.drugs_info, //txt
         personality: JSON.stringify(cat.personality), //JSON content-array > txt
-        playtimes: cat.playtimes.content, //txt
+        playtimes: JSON.stringify(cat.playtimes), // JSON {content: txt}
         play_info: cat.play_info, //opt ae txt
         health_info: cat.health_info, //opt ae txt
         behaviour_info: cat.behaviour_info //opt ae txt
@@ -641,7 +613,6 @@ const addCatInfo = async (catId) => {
 function emptyCatData() {
   catsStore.state.currentCat = {
     user_id: '',
-    id: '',
     name: '',
     avatar: '',
     birthday: '',

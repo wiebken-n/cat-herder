@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/useUserStore'
 const userStore = useUserStore()
 const router = useRouter()
-export const feeding_times = reactive({})
 export const useCatsStore = defineStore('cats', () => {
   const state = reactive({
     cats: {},
@@ -18,18 +17,19 @@ export const useCatsStore = defineStore('cats', () => {
       birthday: '',
       breed: '',
 
-      inoutdoor: '',
-      weight: '',
-      food_varieties: '', //JSON
-      feeding_times: '',
-      drugs: '',
-      drugs_info: '',
-      personality: '', //JSON
-      playtimes: '',
-      play_info: '',
-      food_info: '',
-      health_info: '',
-      behaviour_info: '',
+      cat_id: '',
+      weight: { content: '' },
+      in_outdoor: { content: '' },
+      food_varieties: [{ content: '' }],
+      feeding_times: { content: '' },
+      food_info: { content: '' },
+      drugs: { content: '' },
+      drugs_info: { content: '' },
+      personality: [{ content: '' }],
+      playtimes: { content: '' },
+      play_info: { content: '' },
+      health_info: { content: '' },
+      behaviour_info: { content: '' },
 
       herder_connections: '',
       catHerderProfiles: '',
@@ -38,9 +38,23 @@ export const useCatsStore = defineStore('cats', () => {
       profiles: {
         id: '',
         username: ''
-      },
-      cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
-
+      }
+      // cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
+      // cats_info: {
+      //   cat_id: '',
+      //   weight: { content: '' },
+      //   in_outdoor: { content: '' },
+      //   food_varieties: [{ content: '' }],
+      //   feeding_times: { content: '' },
+      //   food_info: { content: '' },
+      //   drugs: { content: '' },
+      //   drugs_info: { content: '' },
+      //   personality: [{ content: '' }],
+      //   playtimes: { content: '' },
+      //   play_info: { content: '' },
+      //   health_info: { content: '' },
+      //   behaviour_info: { content: '' }
+      // }
       // age: '',
       // description: ''
     },
@@ -56,7 +70,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), todos(id, cat_id, content, created_by, completed, date)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), todos(id, cat_id, content, created_by, completed, date)`
       )
       .eq('user_id', userStore.state.userId)
 
@@ -76,7 +90,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username), todos(id, cat_id, content, created_by, completed, date)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), profiles(id, username), todos(id, cat_id, content, created_by, completed, date)`
       )
 
       .neq('user_id', userStore.state.userId)
@@ -96,7 +110,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), profiles(id, username)`
       )
       .eq('id', id)
       .single()

@@ -5704,6 +5704,7 @@
     background: #ffffff;
     color: #6b7280;
     padding: 1.25rem;
+    padding-block: 0.75rem;
     font-weight: 700;
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;

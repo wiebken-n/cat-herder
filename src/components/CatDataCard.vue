@@ -4,14 +4,27 @@
       <slot name="icon"></slot>
       <h2>{{ props.headline }}</h2>
     </div>
-    <div class="card-output" v-if="!props.edit">
-      <div v-if="typeof props.content === 'string' || typeof props.content === 'number'">
-        <p>{{ props.content }}</p>
+    <div class="output-container" v-if="!props.edit && props.dataContent">
+      <div class="card-output content-object" v-if="props.hasContent">
+        <div class="chip-container" v-if="props.isNoArray">
+          <span class="chips">{{ props.dataContent.content }}</span>
+        </div>
+        <div class="chip-container" v-else>
+          <span class="chips" v-for="element of props.dataContent" :key="element"
+            >{{ element.content }}
+          </span>
+        </div>
       </div>
-      <div v-else>
-        <p v-for="item of props.content" :key="item">{{ props.content }}</p>
+      <div v-else class="card-output no-content-object">
+        <div v-if="typeof props.dataContent === 'string' || typeof props.dataContent === 'number'">
+          <p>{{ props.dataContent }}</p>
+        </div>
+        <div v-else>
+          <p v-for="item of props.dataContent" :key="item">{{ item }}</p>
+        </div>
       </div>
     </div>
+    <div v-if="!props.edit && !props.dataContent"><p>(noch) keine Angabe vorhanden</p></div>
     <slot v-if="props.edit" name="card-input"> </slot>
 
     <svg v-if="props.userIsOwner && !props.edit" @click="emit('editMode')" class="icon icon-edit">
@@ -28,7 +41,9 @@ const props = defineProps({
   edit: Boolean,
   userIsOwner: Boolean,
   headline: String,
-  content: String
+  dataContent: [String, Object, Number, Array],
+  hasContent: Boolean,
+  isNoArray: Boolean
 })
 
 const emit = defineEmits(['editMode', 'dataSaved'])
@@ -45,17 +60,21 @@ const emit = defineEmits(['editMode', 'dataSaved'])
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px 2px var(--card-shadow);
 }
+.output-container {
+  width: 100%;
+}
 .info-segment-header {
   display: flex;
   gap: 1rem;
   align-items: center;
   justify-content: center;
   height: max-content;
+  width: 100%;
 }
 
 h2 {
   color: var(--primary);
-  font-size: 1.1rem;
+  font-size: 1rem;
   top: -0.8rem;
 }
 .icon {
@@ -63,7 +82,7 @@ h2 {
   height: 1.25rem;
   color: var(--primary-darker);
 }
-.info-segment > p {
+.info-segment p {
   padding-bottom: 0.5rem;
   padding-inline: 0.5rem;
   inline-size: 100%;
@@ -76,7 +95,21 @@ h2 {
   right: 8px;
   bottom: 8px;
 }
-
+.chip-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-evenly;
+}
+.chips {
+  background: var(--nav-background);
+  padding-inline: 1rem;
+  padding-block: 0.75rem;
+  margin-inline: 1rem;
+  border-radius: 30px;
+  width: fit-content;
+}
 @media screen and (min-width: 700px) {
   .info-segment-header {
     gap: 0.5rem;
