@@ -1,10 +1,6 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-// import { supabase } from '@/supabase'
-// import { useRouter } from 'vue-router'
-// import { useUserStore } from '../stores/useUserStore'
-// const userStore = useUserStore()
-// const router = useRouter()
+
 export const feeding_times = reactive({})
 export const useResourcesStore = defineStore('resources', () => {
   const options = reactive({

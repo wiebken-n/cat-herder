@@ -7,22 +7,25 @@
           @click="activeMenuItem = 0"
           rounded
           label="1"
-          class="w-2rem h-2rem p-0"
           :outlined="activeMenuItem !== 0"
         />
         <PrimeButton
           @click="activeMenuItem = 1"
           rounded
           label="2"
-          class="w-2rem h-2rem p-0"
           :outlined="activeMenuItem !== 1"
         />
         <PrimeButton
           @click="activeMenuItem = 2"
           rounded
           label="3"
-          class="w-2rem h-2rem p-0"
           :outlined="activeMenuItem !== 2"
+        />
+        <PrimeButton
+          @click="activeMenuItem = 3"
+          rounded
+          label="3"
+          :outlined="activeMenuItem !== 3"
         />
       </div>
       <!-- <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" /> -->
@@ -132,6 +135,23 @@
               id="input-cat-inoutdoor"
             />
           </article>
+
+          <div class="button-wrapper">
+            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 1">
+              <span>weiter</span
+              ><svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
+              </svg>
+            </PrimeButton>
+          </div>
+        </div>
+      </transition>
+      <transition name="menufade">
+        <div
+          class="site-one site-container"
+          :class="{ containeractive: activeMenuItem === 1 }"
+          v-if="activeMenuItem === 1"
+        >
           <article class="input-weight-wrapper">
             <div>
               <svg class="icon">
@@ -155,22 +175,6 @@
               v-model="catsStore.state.currentCat.weight"
             /> -->
           </article>
-          <div class="button-wrapper">
-            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 1">
-              <span>weiter</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
-              </svg>
-            </PrimeButton>
-          </div>
-        </div>
-      </transition>
-      <transition name="menufade">
-        <div
-          class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 1 }"
-          v-if="activeMenuItem === 1"
-        >
           <article class="input-food-wrapper">
             <div>
               <svg class="icon">
@@ -223,6 +227,29 @@
               class="input-cat-food input input-area"
             ></PrimeTextArea>
           </article>
+
+          <div class="button-wrapper">
+            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
+              <span>zurück</span
+              ><svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
+              </svg>
+            </PrimeButton>
+            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 2">
+              <span>weiter</span
+              ><svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
+              </svg>
+            </PrimeButton>
+          </div>
+        </div>
+      </transition>
+      <transition name="menufade">
+        <div
+          class="site-one site-container"
+          :class="{ containeractive: activeMenuItem === 2 }"
+          v-if="activeMenuItem === 2"
+        >
           <article>
             <div>
               <svg class="icon">
@@ -256,15 +283,31 @@
               id="drugs-details"
             />
           </article>
+          <article>
+            <div>
+              <svg class="icon">
+                <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
+              </svg>
+              <label class="label label-info" for="input-cat-health"
+                >Beschreibe hier eventuelle gesundheitliche Besonderheiten:
+                <span class="info-optional">(optional)</span></label
+              >
+            </div>
+            <PrimeTextArea
+              id="input-cat-health"
+              class="input-cat-health input input-area"
+              v-model="catsStore.state.currentCat.health_info"
+            ></PrimeTextArea>
+          </article>
 
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
+            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 1">
               <span>zurück</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
               </svg>
             </PrimeButton>
-            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 2">
+            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 3">
               <span>weiter</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -276,8 +319,8 @@
       <transition name="menufade">
         <div
           class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 2 }"
-          v-if="activeMenuItem === 2"
+          :class="{ containeractive: activeMenuItem === 3 }"
+          v-if="activeMenuItem === 3"
         >
           <article class="input-personality-wrapper">
             <div>
@@ -315,22 +358,7 @@
               v-model="catsStore.state.currentCat.behaviour_info"
             ></PrimeTextArea>
           </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-health"
-                >Beschreibe hier eventuelle gesundheitliche Besonderheiten:
-                <span class="info-optional">(optional)</span></label
-              >
-            </div>
-            <PrimeTextArea
-              id="input-cat-health"
-              class="input-cat-health input input-area"
-              v-model="catsStore.state.currentCat.health_info"
-            ></PrimeTextArea>
-          </article>
+
           <article class="input-playtimes-wrapper">
             <div>
               <svg class="icon">
@@ -364,26 +392,18 @@
               v-model="catsStore.state.currentCat.play_info"
             ></PrimeTextArea>
           </article>
-
           <PrimeButton
             @click="addCat"
             class="btn-submit"
             label="Speichere deine Katze"
           ></PrimeButton>
-
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
+            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 2">
               <span>zurück</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
               </svg>
             </PrimeButton>
-            <!-- <PrimeButton class="button-nav button-right" @click="activeMenuItem = 2">
-              <span>weiter</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
-              </svg>
-            </PrimeButton> -->
           </div>
         </div>
       </transition>
@@ -430,67 +450,6 @@ const pickAvatarVisible = ref(false)
 const avatarNumbers = []
 
 const activeMenuItem = ref(0)
-
-// const catbreeds = ref([
-//   { content: 'Wald-und-Wiesen-Katze' },
-//   { content: 'Kurzhaar-Mischung' },
-//   { content: 'Europäisch Kurzhaar' },
-//   { content: 'Britisch Kurzhaar' },
-//   { content: 'Europäisch Langhaar' },
-//   { content: 'Ragdoll' },
-//   { content: 'Siamkatze' },
-//   { content: 'Perser' },
-//   { content: 'Maine Coon' },
-//   { content: 'andere' }
-// ])
-
-// const inoutdoor = ref([
-//   { content: 'Wohnungskatze' },
-//   { content: 'Freigänger' },
-//   { content: 'Reine Draußenkatze' }
-// ])
-
-// const foodVarieties = ref([
-//   { content: 'Dosenfutter' },
-//   { content: 'Trockenfutter' },
-//   { content: 'Barf' },
-//   { content: 'Kochbarf' }
-// ])
-// // const numberOfFeedings = ref('')
-
-// const feedingTimes = ref([
-//   { content: 1 },
-//   { content: 2 },
-//   { content: 3 },
-//   { content: 4 },
-//   { content: 5 },
-//   { content: 6 },
-//   { content: 7 },
-//   { content: 8 }
-// ])
-
-// const drugs = ref([{ content: 'Nein' }, { content: 'Ja, täglich' }, { content: 'Ja, aber selten' }])
-
-// const personality = ref([
-//   { content: 'ruhig' },
-//   { content: 'ängstlich' },
-//   { content: 'freundlich' },
-//   { content: 'aktiv' },
-//   { content: 'spielfreudig' },
-//   { content: 'mutig' },
-//   { content: 'unruhig' },
-//   { content: 'entspannt' },
-//   { content: 'aggressiv' }
-// ])
-
-// const playtimes = ref([
-//   { content: 'gar nicht' },
-//   { content: 'alle paar Tage' },
-//   { content: 'einmal am Tag' },
-//   { content: '2-3 mal am Tag' },
-//   { content: '3-5 mal am Tag' },
-//   { content: 'Pausenlos!' }
-// ])
 
 const toastData = reactive({
   severity: 'warn',
@@ -688,7 +647,7 @@ form {
 }
 
 .site-container {
-  margin-top: 1.5rem;
+  margin-top: 3rem;
   display: grid;
   gap: 2rem;
   position: relative;
@@ -854,8 +813,8 @@ form > article > *,
 }
 
 .cat-avatar {
-  width: 7.5rem;
-  height: 7.5rem;
+  width: 6rem;
+  height: 6rem;
   background: var(--background-cat-avatar);
   border-radius: 100%;
   padding: 0.5rem;

@@ -65,13 +65,9 @@
 </template>
 
 <script setup>
-import { useCatsStore } from '../stores/useCatsStore'
-// import { useUserStore } from '../stores/useUserStore'
-
-// import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
+import { useCatsStore } from '@/stores/useCatsStore'
 
 const catsStore = useCatsStore()
-// const userStore = useUserStore()
 </script>
 
 <style scoped>
