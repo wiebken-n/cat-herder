@@ -2,16 +2,16 @@
   <div class="info-segment">
     <div class="info-segment-header">
       <slot name="icon"></slot>
-      <h2>{{ props.headline }}</h2>
+      <h2>{{ props?.headline }}</h2>
     </div>
-    <div class="output-container" v-if="!props.edit && props.dataContent">
-      <div class="card-output content-object" v-if="props.hasContent">
-        <div class="chip-container" v-if="props.isNoArray">
-          <span class="chips">{{ props.dataContent.content }} {{ props.suffix }} </span>
+    <div class="output-container" v-if="!props?.edit && props?.dataContent">
+      <div class="card-output content-object" v-if="props?.hasContent">
+        <div class="chip-container" v-if="props?.isNoArray">
+          <span class="chips">{{ props?.dataContent?.content }} {{ props?.suffix }} </span>
         </div>
         <div class="chip-container" v-else>
-          <span class="chips" v-for="element of props.dataContent" :key="element"
-            >{{ element.content }} {{ props.suffix }}
+          <span class="chips" v-for="element of props?.dataContent" :key="element"
+            >{{ element?.content }} {{ props?.suffix }}
           </span>
         </div>
       </div>
@@ -19,32 +19,34 @@
         <div
           class="chip-container"
           v-if="
-            (typeof props.dataContent === 'string' || typeof props.dataContent === 'number') &&
-            props.dataContent.length < 10
+            (typeof props?.dataContent === 'string' || typeof props?.dataContent === 'number') &&
+            props?.dataContent.length < 10
           "
         >
-          <span class="chips">{{ props.dataContent }} {{ props.suffix }}</span>
+          <span class="chips">{{ props?.dataContent }} {{ props?.suffix }}</span>
         </div>
         <div
           v-if="
-            (typeof props.dataContent === 'string' || typeof props.dataContent === 'number') &&
-            props.dataContent.length >= 10
+            (typeof props?.dataContent === 'string' || typeof props?.dataContent === 'number') &&
+            props?.dataContent.length >= 10
           "
         >
-          <p>{{ props.dataContent }}</p>
+          <p>{{ props?.dataContent }}</p>
         </div>
-        <div v-if="typeof props.dataContent !== 'string' && typeof props.dataContent !== 'number'">
-          <p v-for="item of props.dataContent" :key="item">{{ item }} {{ props.suffix }}</p>
+        <div
+          v-if="typeof props?.dataContent !== 'string' && typeof props?.dataContent !== 'number'"
+        >
+          <p v-for="item of props?.dataContent" :key="item">{{ item }} {{ props?.suffix }}</p>
         </div>
       </div>
     </div>
-    <div v-if="!props.edit && !props.dataContent"><p>(noch) keine Angabe vorhanden</p></div>
-    <slot v-if="props.edit" name="card-input"> </slot>
+    <div v-if="!props?.edit && !props?.dataContent"><p>(noch) keine Angabe vorhanden</p></div>
+    <slot v-if="props?.edit" name="card-input"> </slot>
 
-    <svg v-if="props.userIsOwner && !props.edit" @click="emit('editMode')" class="icon icon-edit">
+    <svg v-if="props?.userIsOwner && !props?.edit" @click="emit('editMode')" class="icon icon-edit">
       <use xlink:href="@/assets/icons.svg#edit" fill="currentcolor"></use>
     </svg>
-    <svg v-if="props.userIsOwner && props.edit" @click="emit('dataSaved')" class="icon icon-edit">
+    <svg v-if="props?.userIsOwner && props?.edit" @click="emit('dataSaved')" class="icon icon-edit">
       <use xlink:href="@/assets/icons.svg#save-data" fill="currentcolor"></use>
     </svg>
   </div>

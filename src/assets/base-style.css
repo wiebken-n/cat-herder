@@ -146,8 +146,13 @@
 .vc-header {
   margin-bottom: 0.5rem;
 }
-.vc-pane {
-  border-bottom-color: red;
+
+/* .vc-pane .vs-pane-layout .vc-pane-header-wrapper {
+  border-radius: var(--border-radius);
+} */
+.vc-pane-container {
+  box-shadow: 0 0 4px 2px var(--card-shadow);
+  border-radius: var(--border-radius);
 }
 .vc-dark {
   --vc-bg: var(--card-background);

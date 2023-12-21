@@ -5,16 +5,23 @@
       <div class="header-text-wrapper">
         <h1>{{ catsStore.state.currentCat.name }}</h1>
         <h2 class="subheader">
-          <span>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</span>
-          <!-- <span>{{ catsStore.state.currentCat.breed.content }}</span> -->
+          <!-- <span>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</span> -->
+          <span
+            ><span v-if="ownerId !== userStore.state.userId"
+              >{{ catsStore.state.currentCat.profiles.username }}'s Katze</span
+            >
+            <span v-else>Deine Katze</span>
+          </span>
         </h2>
       </div>
     </header>
     <div class="menu-wrapper site-menu-wrapper">
       <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
     </div>
-
-    <div v-if="activeMenuItem === 0">
+    <div v-if="activeMenuItem === 0" class="cat-overview-container">
+      <CatOverview></CatOverview>
+    </div>
+    <div v-if="activeMenuItem === 1">
       <div class="cat-info-menu-wrapper menu-wrapper">
         <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
         <div class="buffer"></div>
@@ -53,14 +60,6 @@
           class="menu-btn"
         />
         <div class="buffer"></div>
-
-        <!-- </div> -->
-        <!-- <PrimeTabMenu
-          class="cat-info-menu"
-          v-model:activeIndex="activeCatInfoMenuItem"
-          :model="catInfoMenuItems"
-          :scrollable="true"
-        /> -->
       </div>
       <div v-if="activeCatInfoMenuItem === 0" class="cat-content cat-content-food">
         <CatDataCard
@@ -386,10 +385,10 @@
         >
       </div>
     </div>
-    <div v-if="activeMenuItem === 1">
+    <div v-if="activeMenuItem === 2">
       <CalendarComponent />
     </div>
-    <div v-if="activeMenuItem === 2" class="herder-container">
+    <div v-if="activeMenuItem === 3" class="herder-container">
       <div v-if="ownerId !== userStore.state.userId" class="user-content-container">
         <div div class="herder-output-container">
           <PrimeTag
@@ -459,6 +458,7 @@ import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import CatDataCard from '@/components/CatDataCard.vue'
+import CatOverview from '@/components/CatOverview.vue'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -474,7 +474,12 @@ function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
-const menuItems = ref([{ label: 'Infos' }, { label: 'Termine' }, { label: 'Herder' }])
+const menuItems = ref([
+  { label: 'Überblick' },
+  { label: 'Infos' },
+  { label: 'Termine' },
+  { label: 'Herder' }
+])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const activeCatInfoMenuItem = ref(0)
 // const catInfoMenuItems = ref([

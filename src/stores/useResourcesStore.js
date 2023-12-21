@@ -41,7 +41,13 @@ export const useResourcesStore = defineStore('resources', () => {
       { content: 7 },
       { content: 8 }
     ],
-    drugs: [{ content: 'Nein' }, { content: 'Ja, täglich' }, { content: 'Ja, aber selten' }],
+    drugs: [
+      { content: 'nein' },
+      { content: 'täglich' },
+      { content: 'mehrmals täglich' },
+      { content: 'unregelmäßig' },
+      { content: 'selten' }
+    ],
     personality: [
       { content: 'ruhig' },
       { content: 'ängstlich' },
@@ -59,7 +65,7 @@ export const useResourcesStore = defineStore('resources', () => {
       { content: 'einmal am Tag' },
       { content: '2-3 mal am Tag' },
       { content: '3-5 mal am Tag' },
-      { content: 'Pausenlos!' }
+      { content: 'pausenlos!' }
     ]
   })
   return {
