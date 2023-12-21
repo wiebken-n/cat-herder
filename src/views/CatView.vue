@@ -16,11 +16,51 @@
 
     <div v-if="activeMenuItem === 0">
       <div class="cat-info-menu-wrapper menu-wrapper">
-        <PrimeTabMenu
+        <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
+        <div class="buffer"></div>
+        <PrimeButton
+          @click="activeCatInfoMenuItem = 0"
+          :class="{ activeMenuButton: activeCatInfoMenuItem === 0 }"
+          text
+          label="Futter"
+          class="menu-btn"
+        />
+        <div class="buffer"></div>
+
+        <PrimeButton
+          @click="activeCatInfoMenuItem = 1"
+          :class="{ activeMenuButton: activeCatInfoMenuItem === 1 }"
+          text
+          label="Gesundheit"
+          class="menu-btn"
+        />
+        <div class="buffer"></div>
+
+        <PrimeButton
+          @click="activeCatInfoMenuItem = 2"
+          :class="{ activeMenuButton: activeCatInfoMenuItem === 2 }"
+          text
+          label="Verhalten"
+          class="menu-btn"
+        />
+        <div class="buffer"></div>
+
+        <PrimeButton
+          @click="activeCatInfoMenuItem = 3"
+          :class="{ activeMenuButton: activeCatInfoMenuItem === 3 }"
+          text
+          label="Spiel"
+          class="menu-btn"
+        />
+        <div class="buffer"></div>
+
+        <!-- </div> -->
+        <!-- <PrimeTabMenu
           class="cat-info-menu"
           v-model:activeIndex="activeCatInfoMenuItem"
           :model="catInfoMenuItems"
-        />
+          :scrollable="true"
+        /> -->
       </div>
       <div v-if="activeCatInfoMenuItem === 0" class="cat-content cat-content-food">
         <CatDataCard
@@ -57,6 +97,7 @@
           :dataContent="catsStore.state.currentCat.feeding_times"
           :hasContent="true"
           :isNoArray="true"
+          suffix=" pro Tag"
           headline="Mahlzeiten pro Tag"
           @editMode="handleCardEditModeOn('feeding_times')"
           @dataSaved="handleCardDataSaved('feeding_times')"
@@ -77,13 +118,14 @@
           </template>
           ></CatDataCard
         >
-        <CatDataCard
+        <!-- <CatDataCard
           class="catdata"
           :edit="stateEdit.weight"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.weight"
           headline="Gewicht"
           :hasContent="false"
+          suffix="kg"
           @editMode="handleCardEditModeOn('weight')"
           @dataSaved="handleCardDataSaved('weight')"
           ><template #icon>
@@ -92,15 +134,17 @@
             </svg>
           </template>
           <template #card-input>
-            <PrimeInputText
-              id="input-cat-name"
-              class="input-cat-name input text-input"
-              data-cy="input-cat-name"
+            <PrimeInputNumber
+              class="input-box"
               v-model="catsStore.state.currentCat.weight"
+              inputId="weight"
+              suffix=" kg"
+              :minFractionDigits="1"
+              :maxFractionDigits="2"
             />
           </template>
           ></CatDataCard
-        >
+        > -->
         <CatDataCard
           class="catdata"
           :edit="stateEdit.food"
@@ -427,12 +471,12 @@ function imageUrl(catAvatar) {
 const menuItems = ref([{ label: 'Infos' }, { label: 'Termine' }, { label: 'Herder' }])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const activeCatInfoMenuItem = ref(0)
-const catInfoMenuItems = ref([
-  { label: 'Futter' },
-  { label: 'Gesundheit' },
-  { label: 'Verhalten' },
-  { label: 'Spiel' }
-])
+// const catInfoMenuItems = ref([
+//   { label: 'Futter' },
+//   { label: 'Gesundheit' },
+//   { label: 'Verhalten' },
+//   { label: 'Spiel' }
+// ])
 
 const stateEdit = reactive({
   food: false,
@@ -712,8 +756,36 @@ header {
 .site-menu-wrapper {
   margin-bottom: 2rem;
 }
-.cat-info-menu {
+.cat-info-menu-wrapper {
   margin-bottom: 1rem;
+  overflow-x: auto;
+  display: grid;
+  grid-template-columns: 2fr min-content 1fr min-content 1fr min-content 1fr min-content 2fr;
+  grid-template-rows: 1fr;
+}
+
+.menu-btn {
+  display: block;
+  padding-inline: 0.6rem;
+  border-bottom: 2px solid var(--card-background);
+  border-radius: 0;
+}
+.buffer {
+  width: auto;
+  border-bottom: 2px solid var(--card-background);
+}
+.activeMenuButton {
+  color: var(--primary-darker);
+
+  /* border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius); */
+  border-bottom: 2px solid var(--cat-card-background);
+}
+
+.activeMenuButton:focus {
+  background-color: var(--cat-card-background);
+  color: var(--cat-card-text);
+  border-radius: var(--border-radius);
 }
 .user-content-container {
   width: 80vw;
@@ -775,6 +847,7 @@ header {
 }
 
 .multiselect,
+.input-box,
 .dropdown {
   width: 100%;
   margin-bottom: 1rem;
@@ -787,14 +860,14 @@ header {
   gap: 1rem;
   position: relative;
 }
-
+/* 
 .info-segment {
   display: grid;
   justify-items: start;
   width: 80vw;
   gap: 0rem;
   position: relative;
-}
+} */
 
 h2 {
   color: var(--primary);
@@ -833,7 +906,6 @@ h2 {
   .menu-wrapper,
   .user-content-container,
   .cat-content,
-  .info-segment,
   .catdata {
     width: 500px;
   }
@@ -870,7 +942,7 @@ h2 {
   }
 
   .catdata {
-    width: 500px;
+    width: 490px;
   }
   .herder-input-container {
     gap: 1rem;

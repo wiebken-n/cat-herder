@@ -139,12 +139,21 @@
               </svg>
               <label class="label" for="input-cat-weight"> Wie viel wiegt deine Katze?</label>
             </div>
-            <PrimeInputText
+            <PrimeInputNumber
+              v-model="catsStore.state.currentCat.weight"
+              class="input input-text"
+              inputId="weight"
+              suffix=" kg"
+              :minFractionDigits="1"
+              :maxFractionDigits="2"
+            />
+
+            <!-- <PrimeInputText
               id="input-cat-name"
               class="input-cat-name input"
               data-cy="input-cat-name"
               v-model="catsStore.state.currentCat.weight"
-            />
+            /> -->
           </article>
           <div class="button-wrapper">
             <PrimeButton class="button-nav button-right" @click="activeMenuItem = 1">

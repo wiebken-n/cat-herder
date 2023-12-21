@@ -7,20 +7,34 @@
     <div class="output-container" v-if="!props.edit && props.dataContent">
       <div class="card-output content-object" v-if="props.hasContent">
         <div class="chip-container" v-if="props.isNoArray">
-          <span class="chips">{{ props.dataContent.content }}</span>
+          <span class="chips">{{ props.dataContent.content }} {{ props.suffix }} </span>
         </div>
         <div class="chip-container" v-else>
           <span class="chips" v-for="element of props.dataContent" :key="element"
-            >{{ element.content }}
+            >{{ element.content }} {{ props.suffix }}
           </span>
         </div>
       </div>
       <div v-else class="card-output no-content-object">
-        <div v-if="typeof props.dataContent === 'string' || typeof props.dataContent === 'number'">
+        <div
+          class="chip-container"
+          v-if="
+            (typeof props.dataContent === 'string' || typeof props.dataContent === 'number') &&
+            props.dataContent.length < 10
+          "
+        >
+          <span class="chips">{{ props.dataContent }} {{ props.suffix }}</span>
+        </div>
+        <div
+          v-if="
+            (typeof props.dataContent === 'string' || typeof props.dataContent === 'number') &&
+            props.dataContent.length >= 10
+          "
+        >
           <p>{{ props.dataContent }}</p>
         </div>
-        <div v-else>
-          <p v-for="item of props.dataContent" :key="item">{{ item }}</p>
+        <div v-if="typeof props.dataContent !== 'string' && typeof props.dataContent !== 'number'">
+          <p v-for="item of props.dataContent" :key="item">{{ item }} {{ props.suffix }}</p>
         </div>
       </div>
     </div>
@@ -43,7 +57,8 @@ const props = defineProps({
   headline: String,
   dataContent: [String, Object, Number, Array],
   hasContent: Boolean,
-  isNoArray: Boolean
+  isNoArray: Boolean,
+  suffix: String
 })
 
 const emit = defineEmits(['editMode', 'dataSaved'])
