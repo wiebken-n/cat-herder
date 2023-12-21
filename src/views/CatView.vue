@@ -757,6 +757,7 @@ header {
   margin-bottom: 2rem;
 }
 .cat-info-menu-wrapper {
+  padding-block: 0.25rem;
   margin-bottom: 1rem;
   overflow-x: auto;
   display: grid;
@@ -767,15 +768,15 @@ header {
 .menu-btn {
   display: block;
   padding-inline: 0.6rem;
-  border-bottom: 2px solid var(--card-background);
+  border-bottom: 2px solid #9ca3af50;
   border-radius: 0;
 }
 .buffer {
   width: auto;
-  border-bottom: 2px solid var(--card-background);
+  border-bottom: 2px solid #9ca3af50;
 }
 .activeMenuButton {
-  color: var(--primary-darker);
+  color: var(--text);
 
   /* border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius); */
@@ -860,7 +861,7 @@ header {
   gap: 1rem;
   position: relative;
 }
-/* 
+/*
 .info-segment {
   display: grid;
   justify-items: start;

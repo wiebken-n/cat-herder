@@ -695,7 +695,7 @@ form {
   /* opacity: 0; */
   /* transition: all 500ms ease-in-out; */
 }
-
+/*
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 300ms ease-in-out;
@@ -704,15 +704,20 @@ form {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
+} */
 .menufade-enter-active,
 .menufade-leave-active {
   opacity: 100;
-  transition: opacity 500ms ease;
+  transition: all 300ms ease-out;
+  transform: translateX(0);
 }
 
-.menufade-enter-from,
+.menufade-enter-from {
+  transform: translateX(-5vw);
+  opacity: 0;
+}
 .menufade-leave-to {
+  transform: translateX(5vw);
   opacity: 0;
 }
 .site-container > article {
@@ -720,7 +725,6 @@ form {
   gap: 0.4rem;
 }
 .containeractive {
-  /* opacity: 100; */
 }
 article > div {
   padding-left: 0.25rem;

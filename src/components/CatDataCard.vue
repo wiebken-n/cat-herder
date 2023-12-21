@@ -65,15 +65,26 @@ const emit = defineEmits(['editMode', 'dataSaved'])
 </script>
 
 <style scoped>
-.info-segment {
+/* .info-segment {
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1rem;
-  /* border: 2px solid var(--primary); */
   position: relative;
   background-color: var(--card-background);
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px 2px var(--card-shadow);
+} */
+.info-segment {
+  width: 100%;
+  padding-top: 0.25rem;
+  padding-inline: 1.25rem;
+  padding-bottom: 1.25rem;
+  /* border: 2px solid var(--primary); */
+  position: relative;
+  background-color: var(--background-catdata-card);
+  border: 2px solid var(--border-catdata-card);
+  border-radius: var(--border-radius);
+  /* box-shadow: 0 0 4px 2px var(--card-shadow); */
 }
 .output-container {
   width: 100%;
@@ -118,7 +129,7 @@ h2 {
   justify-content: space-evenly;
 }
 .chips {
-  background: var(--nav-background);
+  background: var(--chip-background);
   padding-inline: 1rem;
   padding-block: 0.75rem;
   margin-inline: 1rem;

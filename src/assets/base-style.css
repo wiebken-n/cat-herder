@@ -112,6 +112,9 @@
   );
   --tooltip-background: var(--nav-background);
   --tooltip-border: var(--nav-border);
+  --chip-background: var(--old-rose-lighter);
+  --background-catdata-card: var(--background-clr);
+  --border-catdata-card: var(--primary-lighter);
 }
 
 /* ----colors for calendar----- */
@@ -276,6 +279,9 @@ body {
   );
   --tooltip-background: var(--nav-background);
   --tooltip-border: var(--nav-border);
+  --chip-background: var(--primary-darker-dark);
+  --background-catdata-card: var(--background-clr);
+  --border-catdata-card: var(--primary-darker-dark);
 }
 h1,
 h2 {
