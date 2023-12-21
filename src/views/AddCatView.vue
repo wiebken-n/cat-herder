@@ -581,21 +581,23 @@ const addCatInfo = async (catId) => {
 function emptyCatData() {
   catsStore.state.currentCat = {
     user_id: '',
+    id: '',
     name: '',
     avatar: '',
     birthday: '',
     breed: '',
 
-    inoutdoor: '',
-    weight: '',
-    food_varieties: '', //JSON
-    feeding_times: '',
-    drugs: '',
-    drugs_info: '',
-    personality: '', //JSON
-    playtimes: '',
-    play_info: '',
+    cat_id: '',
+    weight: 0,
+    in_outdoor: { content: '' },
+    food_varieties: [{ content: '' }],
+    feeding_times: { content: '' },
     food_info: '',
+    drugs: { content: '' },
+    drugs_info: '',
+    personality: [{ content: '' }],
+    playtimes: { content: '' },
+    play_info: '',
     health_info: '',
     behaviour_info: ''
   }
