@@ -71,8 +71,9 @@
             <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
-                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.date).getFullYear() === shownDate.year
+                  (new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.date).getFullYear() === shownDate.year) ||
+                  todo.editActive === true
                 "
               >
                 <TodoCard
@@ -83,7 +84,7 @@
                   :creator-name="todo.profiles.username"
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.date)"
+                  @editActive="handleEditActive(todo)"
                   @editTodo="
                     (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
                   "
@@ -100,12 +101,15 @@
             <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
-                  new Date(todo.date).getDate() ===
+                  (new Date(todo.date).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
-                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.date).getFullYear() === shownDate.year
+                    new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.date).getFullYear() === shownDate.year) ||
+                  todo.editActive === true
                 "
               >
+                <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
+
                 <TodoCard
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
@@ -114,7 +118,7 @@
                   :creator-name="todo.profiles.username"
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.date)"
+                  @editActive="handleEditActive(todo)"
                   @editTodo="
                     (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
                   "
@@ -219,6 +223,11 @@ async function getTodos() {
   }
 }
 
+function handleEditActive(todo) {
+  todo.editActive = true
+  date.value = new Date(todo.date)
+}
+
 async function handleEdit(todoHeader, todoDescription, todo) {
   if (!date.value) {
     toast.add({
@@ -267,6 +276,8 @@ async function handleEdit(todoHeader, todoDescription, todo) {
     })
     todoContent.value = ''
     todoHeaderContent.value = ''
+    todo.editActive = false
+
     getTodos()
   }
 }

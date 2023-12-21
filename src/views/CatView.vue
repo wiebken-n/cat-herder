@@ -773,7 +773,7 @@ header {
 }
 .buffer {
   width: auto;
-  border-bottom: 2px solid #9ca3af50;
+  border-bottom: 2px solid transparent;
 }
 .activeMenuButton {
   color: var(--text);
