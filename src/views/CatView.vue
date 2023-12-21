@@ -118,7 +118,33 @@
           </template>
           ></CatDataCard
         >
-        <!-- <CatDataCard
+        <CatDataCard
+          class="catdata"
+          id="food_info"
+          :edit="stateEdit.food"
+          :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+          :dataContent="catsStore.state.currentCat.food_info"
+          headline="Futterinfo"
+          @editMode="handleCardEditModeOn('food')"
+          @dataSaved="handleCardDataSaved('food')"
+          ><template #icon>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
+            </svg>
+          </template>
+          <template #card-input>
+            <PrimeTextArea
+              v-if="stateEdit.food"
+              class="input input-area"
+              v-model="catsStore.state.currentCat.food_info"
+              autoResize
+            ></PrimeTextArea>
+          </template>
+          ></CatDataCard
+        >
+      </div>
+      <div v-if="activeCatInfoMenuItem === 1" class="cat-content cat-content-health">
+        <CatDataCard
           class="catdata"
           :edit="stateEdit.weight"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
@@ -144,32 +170,33 @@
             />
           </template>
           ></CatDataCard
-        > -->
+        >
         <CatDataCard
           class="catdata"
-          :edit="stateEdit.food"
+          id="health_info"
+          :edit="stateEdit.health"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
-          :dataContent="catsStore.state.currentCat.food_info"
-          headline="Futterinfo"
-          @editMode="handleCardEditModeOn('food')"
-          @dataSaved="handleCardDataSaved('food')"
+          :dataContent="catsStore.state.currentCat.health_info"
+          headline="Infos zur Gesundheit"
+          :hasContent="false"
+          @editMode="handleCardEditModeOn('health')"
+          @dataSaved="handleCardDataSaved('health')"
           ><template #icon>
             <svg class="icon">
-              <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
+              <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
             </svg>
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.food"
-              class="input input-area"
-              v-model="catsStore.state.currentCat.food_info"
+              v-if="stateEdit.health"
+              id="input-cat-health"
+              class="input-cat-health input input-area"
+              v-model="catsStore.state.currentCat.health_info"
               autoResize
             ></PrimeTextArea>
           </template>
           ></CatDataCard
         >
-      </div>
-      <div v-if="activeCatInfoMenuItem === 1" class="cat-content cat-content-health">
         <CatDataCard
           class="catdata"
           :edit="stateEdit.drugs"
@@ -197,8 +224,10 @@
           </template>
           ></CatDataCard
         >
+
         <CatDataCard
           class="catdata"
+          id="drugs_info"
           :edit="stateEdit.drugs_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.drugs_info"
@@ -216,31 +245,6 @@
               id="input-cat-health"
               class="input-cat-health input input-area"
               v-model="catsStore.state.currentCat.drugs_info"
-              autoResize
-            ></PrimeTextArea>
-          </template>
-          ></CatDataCard
-        >
-        <CatDataCard
-          class="catdata"
-          :edit="stateEdit.health"
-          :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
-          :dataContent="catsStore.state.currentCat.health_info"
-          headline="Infos zur Gesundheit"
-          :hasContent="false"
-          @editMode="handleCardEditModeOn('health')"
-          @dataSaved="handleCardDataSaved('health')"
-          ><template #icon>
-            <svg class="icon">
-              <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
-            </svg>
-          </template>
-          <template #card-input>
-            <PrimeTextArea
-              v-if="stateEdit.health"
-              id="input-cat-health"
-              class="input-cat-health input input-area"
-              v-model="catsStore.state.currentCat.health_info"
               autoResize
             ></PrimeTextArea>
           </template>
@@ -277,6 +281,7 @@
         >
         <CatDataCard
           class="catdata"
+          id="behaviour_info"
           :edit="stateEdit.behaviour"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.behaviour_info"
@@ -357,6 +362,7 @@
         >
         <CatDataCard
           class="catdata"
+          id="play_info"
           :edit="stateEdit.play_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.play_info"
@@ -452,7 +458,7 @@ import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
-import CatDataCard from '../components/CatDataCard.vue'
+import CatDataCard from '@/components/CatDataCard.vue'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -939,7 +945,26 @@ h2 {
 
   .cat-content {
     grid-template-columns: 1fr 1fr;
+    /* grid-template-rows: 1fr 1fr auto; */
     width: 1000px;
+    grid-auto-rows: minmax(0px, auto);
+  }
+
+  #food_info,
+  #behaviour_info,
+  #play_info {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+  }
+
+  #health_info {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  #drugs_info {
+    grid-row: 2 / span 3;
+    grid-column: 2;
   }
 
   .catdata {

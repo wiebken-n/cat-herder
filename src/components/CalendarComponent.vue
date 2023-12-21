@@ -161,7 +161,7 @@ import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useCatsStore } from '../stores/useCatsStore'
 import { useToast } from 'primevue/usetoast'
-import TodoCard from './TodoCard.vue'
+import TodoCard from '@/components/TodoCard.vue'
 
 const toast = useToast()
 const confirm = useConfirm()
