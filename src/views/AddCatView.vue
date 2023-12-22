@@ -24,7 +24,7 @@
         <PrimeButton
           @click="activeMenuItem = 3"
           rounded
-          label="3"
+          label="4"
           :outlined="activeMenuItem !== 3"
         />
       </div>
@@ -590,12 +590,12 @@ function emptyCatData() {
     cat_id: '',
     weight: 0,
     in_outdoor: { content: '' },
-    food_varieties: [{ content: '' }],
+    food_varieties: [],
     feeding_times: { content: '' },
     food_info: '',
     drugs: { content: '' },
     drugs_info: '',
-    personality: [{ content: '' }],
+    personality: [],
     playtimes: { content: '' },
     play_info: '',
     health_info: '',
