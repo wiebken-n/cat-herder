@@ -230,10 +230,9 @@
 
           <div class="button-wrapper">
             <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
-              <span>zurück</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
-              </svg>
+              <svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+              ><span>zurück</span>
             </PrimeButton>
             <PrimeButton class="button-nav button-right" @click="activeMenuItem = 2">
               <span>weiter</span
@@ -302,10 +301,9 @@
 
           <div class="button-wrapper">
             <PrimeButton class="button-nav button-left" @click="activeMenuItem = 1">
-              <span>zurück</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
-              </svg>
+              <svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+              ><span>zurück</span>
             </PrimeButton>
             <PrimeButton class="button-nav button-right" @click="activeMenuItem = 3">
               <span>weiter</span
@@ -399,10 +397,9 @@
           ></PrimeButton>
           <div class="button-wrapper">
             <PrimeButton class="button-nav button-left" @click="activeMenuItem = 2">
-              <span>zurück</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
-              </svg>
+              <svg class="icon">
+                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+              ><span>zurück</span>
             </PrimeButton>
           </div>
         </div>
@@ -411,7 +408,7 @@
     <PrimeDialog
       v-model:visible="pickAvatarVisible"
       modal
-      header="Wähle einen Avatarbild aus"
+      header="Wähle ein Avatarbild aus"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     >
@@ -483,7 +480,9 @@ function imageUrl(catAvatar) {
 
 const addCat = async () => {
   let cat = catsStore.state.currentCat
-
+  if (cat.weight === null || undefined) {
+    cat.weight = 0
+  }
   if (
     cat.name.length < 1 ||
     cat.birthday.length < 1 ||
@@ -494,7 +493,8 @@ const addCat = async () => {
     cat.feeding_times.length < 1 ||
     cat.drugs.length < 1 ||
     cat.personality.length < 1 ||
-    cat.playtimes.length < 1
+    cat.playtimes.length < 1 ||
+    cat.breed.length < 1
   ) {
     toastData.summary = 'Nicht alle Daten vorhanden'
     toastData.detail = 'Bitte fülle alle Pflichtfelder aus!'
@@ -508,13 +508,15 @@ const addCat = async () => {
     return
   }
   if (
-    cat.food_info.length > 2000 ||
-    cat.health_info.length > 2000 ||
-    cat.behaviour_info.length > 2000
+    cat.food_info.length > 3000 ||
+    cat.health_info.length > 3000 ||
+    cat.behaviour_info.length > 3000 ||
+    cat.drugs_info.length > 3000 ||
+    cat.play_info.length > 3000
   ) {
     toastData.summary = 'Text zu lang'
     toastData.detail =
-      'Die Texte zu Futter, Gesundheit und Verhalten dürfen jeweils maximal 2000 Zeichen lang sein!'
+      'Die Texte zu Futter, Gesundheit, Medikamenten, Verhalten und Spielen dürfen jeweils maximal 3000 Zeichen lang sein!'
     addCatToast()
     return
   }
@@ -611,6 +613,7 @@ onUnmounted(() => {
   emptyCatData()
 })
 </script>
+
 <style scoped>
 .content-wrapper {
   padding-inline: 2rem;
@@ -630,15 +633,17 @@ header {
 }
 .number-menu-container {
   display: flex;
-  gap: 0.5rem;
-  justify-content: space-evenly;
+  gap: calc(1.5vw + 1rem);
+  justify-content: center;
 }
 .number-menu-container > button {
-  width: 1rem;
-  height: 1rem;
-  padding: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 1.25rem;
   display: flex;
   justify-content: center;
+  font-family: 'Roboto-Medium';
+  box-shadow: 0 0 3px 1px var(--card-shadow);
 }
 form {
   display: grid;
@@ -683,7 +688,7 @@ form {
 }
 .site-container > article {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 .containeractive {
 }
@@ -692,6 +697,10 @@ article > div {
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+.label {
+  font-family: 'Roboto-Regular';
+  font-size: 1.025rem;
 }
 .label-info {
   width: 100%;
@@ -721,7 +730,6 @@ article > div {
   display: flex;
   justify-content: space-between;
   width: 8rem;
-  font-family: 'Roboto-Slab';
   transition: all 200ms ease-in-out;
 }
 .button-nav:hover {

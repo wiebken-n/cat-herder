@@ -81,6 +81,11 @@
   font-family: 'Roboto-Black';
   src: url('./fonts/Roboto-Black.ttf');
 }
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter-Roman';
+  src: url('./fonts/Inter-roman.var.woff2');
+}
 
 /* ----------------------- colors ----------- */
 
@@ -190,17 +195,20 @@
   --vc-accent-900: hsl(4, 80%, 24%);
 }
 
-.vc-header {
-  margin-bottom: 0.5rem;
-}
-
 /* .vc-pane .vs-pane-layout .vc-pane-header-wrapper {
   border-radius: var(--border-radius);
 } */
 .vc-pane-container {
   box-shadow: 0 0 4px 2px var(--card-shadow);
   border-radius: var(--border-radius);
+  font-family: 'Roboto-Medium';
 }
+
+.vc-header {
+  font-family: 'Roboto-Slab';
+  margin-bottom: 0.5rem;
+}
+
 .vc-dark {
   --vc-bg: var(--card-background);
   --vc-border: var(--card-background-hover);
@@ -249,6 +257,11 @@
 .vc-dark .vc-title-wrapper .vc-title {
   background-color: var(--cat-card-background-hover);
 }
+.vc-title-wrapper .vc-title span {
+  font-size: 1.1rem;
+  line-height: 30px;
+}
+
 .vc-dark .vc-arrow {
   background-color: var(--cat-card-background-hover);
 }
@@ -278,7 +291,10 @@ html {
   --url-logo-grey: '';
   --url-logo-color: '';
 }
-
+/* p,
+span {
+  font-size: 0.9rem;
+} */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-family: 'Raleway';
@@ -293,15 +309,44 @@ body {
 
 .p-button,
 .p-menuitem-text {
-  font-family: 'Roboto-Light';
-  letter-spacing: 0.25px;
   font-weight: 500;
 }
-
+.p-button {
+  font-family: 'Inter-Roman';
+}
+.p-button-label {
+  font-weight: 400;
+}
 .p-menuitem-text {
   letter-spacing: -0.125px;
 
   font-family: 'Roboto-Medium';
+}
+
+.p-multiselect-label,
+.p-multiselect-item,
+.p-dropdown-label,
+.p-dropdown-item {
+  font-family: 'Roboto-Regular';
+  font-size: 1.01rem;
+}
+
+.p-dialog-title {
+  font-size: 1.125rem;
+  font-family: 'Roboto-Regular';
+}
+
+.p-dialog-content {
+  font-size: 1rem;
+  font-family: 'Roboto-light';
+}
+.dialog-header {
+  font-size: 1.125rem;
+  font-family: 'Roboto-Regular';
+}
+.dialog-text {
+  font-size: 1rem;
+  font-family: 'Roboto-light';
 }
 /* .p-tabmenu {
   width: 100%;

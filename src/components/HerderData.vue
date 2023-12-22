@@ -154,7 +154,7 @@ const props = defineProps({
 }
 .username {
   color: var(--cat-card-text);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   padding-left: 1.5rem;
   margin-right: auto;
   margin-block: 0;

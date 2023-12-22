@@ -1,5 +1,6 @@
 <template>
   <div class="content-wrapper">
+    <Toast />
     <header>
       <img class="cat-avatar" :src="imageUrl(catsStore.state.currentCat.avatar)" alt="cat avatar" />
       <div class="header-text-wrapper">
@@ -411,7 +412,6 @@
             </PrimeButton>
           </div>
 
-          <Toast />
           <PrimeConfirmDialog group="headless">
             <template #container="{ message, acceptCallback, rejectCallback }">
               <div class="dialog-container">
@@ -475,11 +475,12 @@ function imageUrl(catAvatar) {
 }
 
 const menuItems = ref([
-  { label: 'Überblick' },
-  { label: 'Infos' },
-  { label: 'Termine' },
-  { label: 'Herder' }
+  // { label: 'Überblick' },
+  // { label: 'Infos' },
+  // { label: 'Termine' },
+  // { label: 'Herder' }
 ])
+
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const activeCatInfoMenuItem = ref(0)
 // const catInfoMenuItems = ref([
@@ -509,7 +510,7 @@ function handleCardEditModeOn(status) {
 }
 
 function handleCardDataSaved(status) {
-  editCatInfo()
+  editCatInfo(status)
   stateEdit[status] = false
 }
 
@@ -537,8 +538,71 @@ const confirmRemoveHerder = (herder) => {
   })
 }
 
-async function editCatInfo() {
+async function editCatInfo(status) {
   let cat = catsStore.state.currentCat
+  const mandatoryFields = {
+    name: 'Name',
+    birthday: 'Geburtstag',
+    weight: 'Gewicht',
+    in_outdoor: 'Drinnen- oder Draußenkatze?',
+    food_varieties: 'Fütterungsform',
+    feeding_times: 'Mahlzeiten pro Tag',
+    drugs: 'Medikamentengabe',
+    personality: 'Persönlichkeit',
+    playtimes: 'Spielbedarf'
+  }
+
+  if (cat.weight === null || undefined) {
+    cat.weight = 0
+  }
+  if (
+    cat.name.length < 1 ||
+    cat.birthday.length < 1 ||
+    cat.avatar.length < 1 ||
+    cat.weight.length < 1 ||
+    cat.in_outdoor.length < 1 ||
+    cat.food_varieties.length < 1 ||
+    cat.feeding_times.length < 1 ||
+    cat.drugs.length < 1 ||
+    cat.personality.length < 1 ||
+    cat.playtimes.length < 1
+    // || cat.breed.length < 1
+  ) {
+    toast.add({
+      severity: 'warn',
+      summary: `${mandatoryFields[status]} ist ein Pflichtfeld`,
+      detail: 'Bitte fülle alle Pflichtfelder aus!',
+      life: 3000
+    })
+    return
+  }
+  if (cat.length > 20) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Name zu lang',
+      detail: 'Der Name darf maximal 20 Zeichen lang sein',
+      life: 3000
+    })
+
+    return
+  }
+  if (
+    cat.food_info.length > 3000 ||
+    cat.health_info.length > 3000 ||
+    cat.behaviour_info.length > 3000 ||
+    cat.drugs_info.length > 3000 ||
+    cat.play_info.length > 3000
+  ) {
+    toast.add({
+      severity: 'warn',
+      summary: `Text zu lang`,
+      detail:
+        'Die Texte zu Futter, Gesundheit, Medikamenten, Verhalten und Spielen dürfen jeweils maximal 3000 Zeichen lang sein!',
+      life: 3000
+    })
+
+    return
+  }
 
   const { data, error } = await supabase
     .from('cats_info')
@@ -696,9 +760,22 @@ onUnmounted(() => {
   }
 })
 
+function fillMenu() {
+  if (catsStore.state.currentCat.user_id === userStore.state.userId) {
+    menuItems.value = [
+      { label: 'Überblick' },
+      { label: 'Infos' },
+      { label: 'Termine' },
+      { label: 'Herder' }
+    ]
+  } else {
+    menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
+  }
+}
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
   await fetchCatInfos(route.params.id)
+  fillMenu()
 })
 
 onUnmounted(() => {
@@ -713,8 +790,9 @@ onUnmounted(() => {
 .user-tag {
   font-size: 1rem;
   padding-inline: 1rem;
-  font-family: 'Roboto-Light';
+  font-family: 'Roboto-Slab';
 }
+
 .content-wrapper {
   padding-inline: 2rem;
   display: grid;

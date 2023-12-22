@@ -317,6 +317,7 @@ h2 {
   font-weight: 550;
 }
 .cat-age {
+  font-family: 'Roboto-light';
   grid-column: 2;
   grid-row: 2;
 }
@@ -345,7 +346,8 @@ h2 {
   margin-top: 3rem;
 }
 .btn-add-cat {
-  font-family: 'Roboto-Regular';
+  font-family: 'Raleway';
+  font-weight: 550;
   width: 270px;
   display: flex;
   justify-content: space-evenly;

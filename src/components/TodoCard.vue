@@ -145,7 +145,9 @@ function getTime(hour, minute) {
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
-
+p {
+  font-size: 0.95rem;
+}
 .user-tag {
   color: var(--cat-card-text);
   background-color: var(--primary-darkest);
