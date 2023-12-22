@@ -151,7 +151,7 @@ function checkTodaysTodos(todoarray) {
 
 function handleTodoClick(catId) {
   catsStore.state.currentCatActiveMenuItems = {
-    menuOne: 1,
+    menuOne: 2,
     menuTwo: 1
   }
 
