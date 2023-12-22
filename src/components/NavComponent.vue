@@ -140,7 +140,7 @@ li {
   line-height: 2.5rem;
   font-family: 'Roboto-Slab';
   border-bottom: 0px transparent solid;
-  transition: all 300ms ease-in-out;
+  transition: all 200ms ease-in-out;
 }
 ul {
   padding-top: 1.5rem;
@@ -157,7 +157,7 @@ li:hover {
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 200ms ease;
 }
 
 .v-enter-from,
@@ -192,33 +192,37 @@ const themeInfo = reactive({
   currentDark: false
 })
 
+const props = defineProps({
+  session: Object
+})
+
 const activateMenu = function () {
   menuActive.value = !menuActive.value
 }
 const deactivateMenu = function () {
   setTimeout(() => {
     menuActive.value = false
-  }, '1000')
+  }, 1500)
 }
 const goToPage = function (path) {
   router.push(path)
   menuActive.value = !menuActive.value
 }
 
-function toggleDarkmode() {
+async function toggleDarkmode() {
   if (!userStore.state.darkmode) {
-    document.body.classList.toggle('darkmode')
+    document.body.classList.add('darkmode')
     PrimeVue.changeTheme(themeInfo.light.name, themeInfo.dark.name, themeInfo.dark.link, () => {})
     userStore.state.darkmode = !userStore.state.darkmode
-    changeDarkmodeSetting()
+    await changeDarkmodeSetting()
 
     return
   }
   if (userStore.state.darkmode) {
-    document.body.classList.toggle('darkmode')
+    document.body.classList.remove('darkmode')
     PrimeVue.changeTheme(themeInfo.dark.name, themeInfo.light.name, themeInfo.light.link, () => {})
     userStore.state.darkmode = !userStore.state.darkmode
-    changeDarkmodeSetting()
+    await changeDarkmodeSetting()
 
     return
   }
@@ -235,12 +239,36 @@ async function changeDarkmodeSetting() {
   }
 }
 
-onMounted(() => {
-  setTimeout(() => {
-    if (userStore.state.darkmode) {
-      document.body.classList.toggle('darkmode')
-      PrimeVue.changeTheme(themeInfo.light.name, themeInfo.dark.name, themeInfo.dark.link, () => {})
+async function fetchDarkmodeSetting() {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', props.session.user.id)
+    .single()
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    userStore.state.darkmode = data.darkmode
+  }
+}
+
+async function adjustDarkMode() {
+  if (userStore.state.darkmode) {
+    document.body.classList.add('darkmode')
+    PrimeVue.changeTheme(themeInfo.light.name, themeInfo.dark.name, themeInfo.dark.link, () => {})
+  }
+  if (!userStore.state.darkmode) {
+    if (document.body.classList.contains('darkmode')) {
+      document.body.classList.remove('darkmode')
     }
-  }, 1000)
+    PrimeVue.changeTheme(themeInfo.dark.name, themeInfo.light.name, themeInfo.light.link, () => {})
+  }
+}
+
+onMounted(async () => {
+  await fetchDarkmodeSetting()
+  await adjustDarkMode()
 })
 </script>

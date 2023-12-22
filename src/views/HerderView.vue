@@ -12,6 +12,9 @@
       </form>
 
       <div class="user-info-container">
+        <div class="info-no-connections" v-if="userStore.connectionData.users.userdata.length == 0">
+          <p>Du bist noch nicht mit anderen Herdern verbunden</p>
+        </div>
         <div class="user-info" v-for="user of userStore.connectionData.users.userdata" :key="user">
           <HerderData
             :user="user"
@@ -83,7 +86,7 @@ import { ref, reactive, onBeforeMount } from 'vue'
 import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useToast } from 'primevue/usetoast'
-import HerderDataContext from '../components/HerderDataContext.vue'
+import HerderDataContext from '@/components/HerderDataContext.vue'
 import HerderData from '@/components/HerderData.vue'
 
 const toast = useToast()
@@ -399,7 +402,9 @@ onBeforeMount(async () => {
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px 2px var(--card-shadow);
 }
-
+.info-no-connections {
+  font-weight: 500;
+}
 .usersearch-input {
   width: 100%;
 }
@@ -429,6 +434,10 @@ onBeforeMount(async () => {
   }
   .user-info-container {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .info-no-connections {
+    grid-column: 1 / 3;
   }
   .justOneUser {
     grid-template-columns: 1fr;

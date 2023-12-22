@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-contentwrapper">
+  <div class="todo-content-container">
     <div class="header-wrapper">
       <PrimeTag class="user-tag" :value="props.creatorName" rounded></PrimeTag>
 
@@ -9,7 +9,6 @@
             getTime(new Date(props.todo.date).getHours(), new Date(todo.date).getMinutes())
           }}</span
         >
-
         <span>|</span>
         <span>
           {{
@@ -22,18 +21,39 @@
         >
       </p>
     </div>
+    <div class="todo-header-wrapper">
+      <p v-if="!editState" class="todo-header">{{ props.todo.header }}</p>
+      <label for="todo-header" v-if="editState" class="label">Art des Termins </label>
+      <PrimeInputText
+        v-if="editState"
+        class="input-field input"
+        id="todo-header"
+        v-model.trim="todoHeader"
+      />
 
-    <p class="todo-date"></p>
-
-    <p v-if="!editState" class="todo-description">{{ props.todo.content }}</p>
-    <PrimeTextArea
-      v-if="editState"
+      <!-- <PrimeTextArea
+   
       id="todo-content"
       class="input input-area"
       v-model="todoDescription"
-      label="Termininhalt"
+      label="Terminbeschreibung"
       rows="10"
-    ></PrimeTextArea>
+    ></PrimeTextArea> -->
+    </div>
+    <div class="todo-content-wrapper">
+      <p v-if="!editState" class="todo-description">{{ props.todo.content }}</p>
+
+      <label for="todo-content" v-if="editState" class="label">Terminbeschreibung</label>
+
+      <PrimeTextArea
+        v-if="editState"
+        id="todo-content"
+        class="input input-area"
+        v-model="todoDescription"
+        label="Termininhalt"
+        rows="10"
+      ></PrimeTextArea>
+    </div>
     <div class="interaction-wrapper">
       <PrimeCheckbox
         v-model="checkboxState"
@@ -80,13 +100,14 @@ const checkboxState = ref(props.completed)
 const editState = ref(false)
 
 let todoDescription = props.todo.content
+let todoHeader = props.todo.header
 
 function editClicked() {
   if (!editState.value) {
     emit('editActive')
   }
   if (editState.value) {
-    emit('editTodo', todoDescription)
+    emit('editTodo', todoHeader, todoDescription)
   }
   editState.value = !editState.value
 }
@@ -101,7 +122,7 @@ function getTime(hour, minute) {
 </script>
 
 <style scoped>
-.todo-contentwrapper {
+.todo-content-container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -112,10 +133,10 @@ function getTime(hour, minute) {
   transition: all 200ms ease-in-out;
 }
 
-.todo-contentwrapper:hover {
+.todo-content-container:hover {
   background-color: var(--cat-card-background-hover);
 }
-.todo-contentwrapper > p {
+.todo-content-container > p {
   margin: 0;
 }
 
@@ -130,7 +151,7 @@ function getTime(hour, minute) {
   background-color: var(--primary-darkest);
   transition: all 200ms ease-in-out;
 }
-.todo-contentwrapper:hover * .user-tag {
+.todo-content-container:hover * .user-tag {
   background-color: var(--primary-darker-dark);
 }
 .todo-date {
@@ -139,6 +160,31 @@ function getTime(hour, minute) {
   flex-direction: row;
   gap: 0.5rem;
   margin: 0;
+}
+.todo-content-wrapper,
+.todo-header-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.label {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  text-align: end;
+}
+.todo-header-wrapper {
+  margin-top: 1rem;
+}
+.todo-content-wrapper {
+  margin-bottom: 1rem;
+}
+.todo-header,
+.todo-description {
+  margin: 0;
+}
+
+.todo-header {
+  font-family: 'Roboto-Slab';
 }
 .todo-description {
   align-self: flex-start;

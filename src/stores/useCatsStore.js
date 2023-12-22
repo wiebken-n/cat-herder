@@ -15,9 +15,24 @@ export const useCatsStore = defineStore('cats', () => {
       name: '',
       avatar: '',
       birthday: '',
+      breed: '',
+
+      cat_id: '',
+      weight: 0,
+      in_outdoor: { content: '' },
+      // food_varieties: [{ content: '' }],
+      food_varieties: [],
+
+      feeding_times: { content: '' },
       food_info: '',
+      drugs: { content: '' },
+      drugs_info: '',
+      personality: [],
+      playtimes: { content: '' },
+      play_info: '',
       health_info: '',
       behaviour_info: '',
+
       herder_connections: '',
       catHerderProfiles: '',
       herders: '',
@@ -25,9 +40,23 @@ export const useCatsStore = defineStore('cats', () => {
       profiles: {
         id: '',
         username: ''
-      },
-      cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
-
+      }
+      // cats_info: [{ food_info: '' }, { health_info: '' }, { behaviour_info: '' }]
+      // cats_info: {
+      //   cat_id: '',
+      //   weight: { content: '' },
+      //   in_outdoor: { content: '' },
+      //   food_varieties: [{ content: '' }],
+      //   feeding_times: { content: '' },
+      //   food_info: { content: '' },
+      //   drugs: { content: '' },
+      //   drugs_info: { content: '' },
+      //   personality: [{ content: '' }],
+      //   playtimes: { content: '' },
+      //   play_info: { content: '' },
+      //   health_info: { content: '' },
+      //   behaviour_info: { content: '' }
+      // }
       // age: '',
       // description: ''
     },
@@ -43,7 +72,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), todos(id, cat_id, content, created_by, completed, date)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), todos(id, cat_id, content, created_by, completed, date)`
       )
       .eq('user_id', userStore.state.userId)
 
@@ -63,7 +92,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username), todos(id, cat_id, content, created_by, completed, date)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), profiles(id, username), todos(id, cat_id, content, created_by, completed, date)`
       )
 
       .neq('user_id', userStore.state.userId)
@@ -83,7 +112,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, herder_connections(id, herder_id, cat_id), cats_info(food_info, health_info, behaviour_info), profiles(id, username)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), profiles(id, username)`
       )
       .eq('id', id)
       .single()

@@ -19,7 +19,7 @@
             <PrimeButton
               class="button-add-todo"
               label="Neuer Termin"
-              @click="addNewTodo = !addNewTodo"
+              @click="handleAddTodo"
             ></PrimeButton>
           </div>
         </template>
@@ -32,6 +32,19 @@
         :breakpoints="{ '650px': '500px', '600px': '90vw' }"
       >
         <div class="dialog-content">
+          <span class="p-float-label todo-input todo-input-header">
+            <PrimeInputText
+              class="input-field input"
+              id="todo-header"
+              v-model.trim="todoHeaderContent"
+            />
+            <label
+              class="float-label_label"
+              :class="{ labelUp: todoHeaderContent }"
+              for="todo-header"
+              >Art des Termins</label
+            >
+          </span>
           <span class="p-float-label todo-input">
             <PrimeTextArea
               id="todo-content"
@@ -41,8 +54,8 @@
               rows="10"
             ></PrimeTextArea>
             <label for="todo-content" :class="{ labelUp: todoContent }" class="float-label_label"
-              >Terminbeschreibung</label
-            >
+              >Terminbeschreibung
+            </label>
           </span>
           <PrimeButton class="button-send" label="Absenden" @click="createNewTodo"></PrimeButton>
         </div>
@@ -58,8 +71,9 @@
             <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
-                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.date).getFullYear() === shownDate.year
+                  (new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.date).getFullYear() === shownDate.year) ||
+                  todo.editActive === true
                 "
               >
                 <TodoCard
@@ -70,8 +84,10 @@
                   :creator-name="todo.profiles.username"
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.date)"
-                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @editActive="handleEditActive(todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                  "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
@@ -85,12 +101,15 @@
             <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
-                  new Date(todo.date).getDate() ===
+                  (new Date(todo.date).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
-                  new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                  new Date(todo.date).getFullYear() === shownDate.year
+                    new Date(todo.date).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.date).getFullYear() === shownDate.year) ||
+                  todo.editActive === true
                 "
               >
+                <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
+
                 <TodoCard
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
@@ -99,8 +118,10 @@
                   :creator-name="todo.profiles.username"
                   :completed="todo.completed"
                   @deleteTodo="deleteTodoDialog(todo)"
-                  @editActive="date = new Date(todo.date)"
-                  @editTodo="(todoDescription) => handleEdit(todoDescription, todo)"
+                  @editActive="handleEditActive(todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                  "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
                 ></TodoCard>
@@ -140,7 +161,7 @@ import { supabase } from '../supabase'
 import { useUserStore } from '../stores/useUserStore'
 import { useCatsStore } from '../stores/useCatsStore'
 import { useToast } from 'primevue/usetoast'
-import TodoCard from './TodoCard.vue'
+import TodoCard from '@/components/TodoCard.vue'
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -150,6 +171,7 @@ const catsStore = useCatsStore()
 
 const calendar = ref(null)
 
+const todoHeaderContent = ref('')
 const todoContent = ref('')
 
 const todos = ref([
@@ -188,7 +210,9 @@ function handleDidMove(pages) {
 async function getTodos() {
   const { data, error } = await supabase
     .from('todos')
-    .select(`id, cat_id, content, created_by, completed, created_at, date, profiles(id, username)`)
+    .select(
+      `id, cat_id, header, content, created_by, completed, created_at, date, profiles(id, username)`
+    )
     .eq('cat_id', catsStore.state.currentCat.id)
   if (error) {
     console.log(error)
@@ -199,25 +223,44 @@ async function getTodos() {
   }
 }
 
-async function handleEdit(todoDescription, todo) {
-  if (todoDescription.length < 1 || todoDescription.length > 500) {
+function handleEditActive(todo) {
+  todo.editActive = true
+  date.value = new Date(todo.date)
+}
+
+async function handleEdit(todoHeader, todoDescription, todo) {
+  if (!date.value) {
     toast.add({
       severity: 'warn',
-      summary: 'Text ungültig',
-      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      summary: 'Kein Datum',
+      detail: 'Bitte wähle ein Datum aus',
       life: 3000
     })
     return
   }
+  if (todoHeader.length < 1 || todoHeader.length > 30) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Überschrift ungültig',
+      detail: 'Die Überschrift des Termins muss zwischen 1 und 30 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  if (todoDescription.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Beschreibung ungültig',
+      detail: 'Die Beschreibung des Termins kann maximal 500 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  todoHeaderContent.value = todoHeader
   todoContent.value = todoDescription
   const { data, error } = await supabase
     .from('todos')
-    .update([
-      {
-        content: todoContent.value,
-        date: date.value
-      }
-    ])
+    .update([{ header: todoHeaderContent.value, content: todoContent.value, date: date.value }])
     .eq('id', todo.id)
     .select()
 
@@ -225,7 +268,16 @@ async function handleEdit(todoDescription, todo) {
     console.log(error)
   }
   if (data) {
+    toast.add({
+      severity: 'success',
+      summary: 'Termin geändert',
+      detail: 'Du hast den Termin geändert',
+      life: 3000
+    })
     todoContent.value = ''
+    todoHeaderContent.value = ''
+    todo.editActive = false
+
     getTodos()
   }
 }
@@ -260,12 +312,34 @@ async function deleteTodo(todo) {
   }
 }
 
-async function createNewTodo() {
-  if (todoContent.value.length < 1 || todoContent.value.length > 500) {
+async function handleAddTodo() {
+  if (!date.value) {
     toast.add({
       severity: 'warn',
-      summary: 'Text ungültig',
-      detail: 'Bitte gib einen zwischen 1 und 500 Zeichen langen Text ein ',
+      summary: 'Kein Datum',
+      detail: 'Bitte wähle ein Datum aus',
+      life: 3000
+    })
+    return
+  }
+  addNewTodo.value = !addNewTodo.value
+}
+
+async function createNewTodo() {
+  if (todoHeaderContent.value.length < 1 || todoHeaderContent.value.length > 30) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Überschrift ungültig',
+      detail: 'Die Überschrift des Termins kann zwischen 1 und 30 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  if (todoContent.value.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Beschreibung ungültig',
+      detail: 'Die Beschreibung des Termins kann maximal 500 Zeichen lang sein',
       life: 3000
     })
     return
@@ -276,6 +350,7 @@ async function createNewTodo() {
     .insert([
       {
         cat_id: catsStore.state.currentCat.id,
+        header: todoHeaderContent.value,
         content: todoContent.value,
         date: date.value
       }
@@ -285,10 +360,16 @@ async function createNewTodo() {
     console.log(error)
   }
   if (data) {
-    // console.log(data)
+    toast.add({
+      severity: 'success',
+      summary: 'Termin angelegt',
+      detail: 'Du hast einen neuen Termin angelegt',
+      life: 3000
+    })
   }
   getTodos()
   todoContent.value = ''
+  todoHeaderContent.value = ''
   addNewTodo.value = false
 }
 
@@ -317,7 +398,7 @@ const attributes = computed(() => {
           ...(todo.completed && { class: 'opacit-75' })
         },
         popover: {
-          label: todo.content
+          label: todo.header
         }
       }))
     ]
@@ -335,7 +416,7 @@ const deleteTodoDialog = (todo) => {
     accept: () => {
       deleteTodo(todo)
       toast.add({
-        severity: 'success',
+        severity: 'info',
         summary: 'Termin gelöscht',
         detail: 'Du hast den Termin gelöscht',
         life: 3000
@@ -378,17 +459,29 @@ onBeforeMount(() => {
   margin-top: 1rem;
   width: 90%;
 }
+
+.todo-input-header {
+  margin-block: 1rem;
+  width: 90%;
+}
+.todo-input-header .input-field {
+  width: 100%;
+}
+
 .input-area {
   width: 100%;
   height: 7rem;
 }
+
 .float-label_label {
   color: var(--text);
   font-size: 1rem;
   padding-inline: 0.5rem;
 }
-
-.input-area:focus + .float-label_label {
+.input-area + .float-label_label {
+  transform: translateY(0.55rem);
+}
+.input:focus + .float-label_label {
   background: var(--hover-label-bg);
   transform: translateY(0.55rem);
   color: var(--primary);
