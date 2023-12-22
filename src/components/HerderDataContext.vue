@@ -275,7 +275,7 @@ async function deleteHerderConnections(userId) {
 }
 .username {
   color: var(--text);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   padding-left: 1.5rem;
   margin-right: auto;
   margin-block: 0;

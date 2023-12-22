@@ -522,7 +522,8 @@ onBeforeMount(() => {
 
 .no-todos > p {
   color: var(--text);
-  font-family: 'Roboto-Slab';
+  font-weight: 500;
+  /* font-family: 'Roboto-Slab'; */
   position: absolute;
   margin: 0;
   top: 4.5rem;

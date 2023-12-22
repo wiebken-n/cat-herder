@@ -118,6 +118,10 @@ h2 {
   hyphens: manual;
 }
 
+span,
+p {
+  font-size: 0.95rem;
+}
 .icon-edit {
   position: absolute;
   right: 8px;

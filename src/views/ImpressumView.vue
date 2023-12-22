@@ -106,7 +106,7 @@ function imageUrl() {
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-size: 1rem;
-  font-family: 'Roboto-Slab';
+  font-family: 'Roboto-Regular';
   display: flex;
   flex-direction: column;
 }
@@ -120,6 +120,7 @@ img {
 }
 h2 {
   font-size: 1.125rem;
+  font-family: 'Roboto-Regular';
 }
 ul,
 li {
@@ -129,7 +130,7 @@ li {
   padding-left: 0px;
   font-size: 1rem;
   line-height: 2rem;
-  font-family: 'Roboto-Slab';
+  font-family: 'Roboto-Regular';
   text-indent: -1.5rem;
   margin-left: 1rem;
 }

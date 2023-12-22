@@ -151,7 +151,7 @@ function checkTodaysTodos(todoarray) {
 
 function handleTodoClick(catId) {
   catsStore.state.currentCatActiveMenuItems = {
-    menuOne: 1,
+    menuOne: 2,
     menuTwo: 1
   }
 
@@ -317,6 +317,7 @@ h2 {
   font-weight: 550;
 }
 .cat-age {
+  font-family: 'Roboto-light';
   grid-column: 2;
   grid-row: 2;
 }
@@ -345,6 +346,8 @@ h2 {
   margin-top: 3rem;
 }
 .btn-add-cat {
+  font-family: 'Raleway';
+  font-weight: 550;
   width: 270px;
   display: flex;
   justify-content: space-evenly;
