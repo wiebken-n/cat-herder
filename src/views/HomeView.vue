@@ -345,6 +345,7 @@ h2 {
   margin-top: 3rem;
 }
 .btn-add-cat {
+  font-family: 'Roboto-Regular';
   width: 270px;
   display: flex;
   justify-content: space-evenly;

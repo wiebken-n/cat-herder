@@ -28,7 +28,7 @@
         <PrimeButton
           @click="activeCatInfoMenuItem = 0"
           :class="{ activeMenuButton: activeCatInfoMenuItem === 0 }"
-          text
+          unstyled
           label="Futter"
           class="menu-btn"
         />
@@ -37,7 +37,7 @@
         <PrimeButton
           @click="activeCatInfoMenuItem = 1"
           :class="{ activeMenuButton: activeCatInfoMenuItem === 1 }"
-          text
+          unstyled
           label="Gesundheit"
           class="menu-btn"
         />
@@ -46,7 +46,7 @@
         <PrimeButton
           @click="activeCatInfoMenuItem = 2"
           :class="{ activeMenuButton: activeCatInfoMenuItem === 2 }"
-          text
+          unstyled
           label="Verhalten"
           class="menu-btn"
         />
@@ -55,7 +55,7 @@
         <PrimeButton
           @click="activeCatInfoMenuItem = 3"
           :class="{ activeMenuButton: activeCatInfoMenuItem === 3 }"
-          text
+          unstyled
           label="Spiel"
           class="menu-btn"
         />
@@ -713,6 +713,7 @@ onUnmounted(() => {
 .user-tag {
   font-size: 1rem;
   padding-inline: 1rem;
+  font-family: 'Roboto-Light';
 }
 .content-wrapper {
   padding-inline: 2rem;
@@ -751,8 +752,8 @@ header {
   align-items: center;
 }
 .header-text-wrapper > h1 {
-  font-size: 2rem;
-  margin-bottom: 0.25rem;
+  font-size: 1.75rem;
+  margin-bottom: 0.125rem;
 }
 
 .menu-wrapper,
@@ -764,11 +765,11 @@ header {
 }
 
 .site-menu-wrapper {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 .cat-info-menu-wrapper {
   padding-block: 0.25rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   overflow-x: auto;
   display: grid;
   grid-template-columns: 2fr min-content 1fr min-content 1fr min-content 1fr min-content 2fr;
@@ -776,28 +777,43 @@ header {
 }
 
 .menu-btn {
+  background: none;
+  border: none;
   display: block;
   padding-inline: 0.6rem;
-  border-bottom: 2px solid #9ca3af50;
+  /* border-top: 2px solid var(--underline-inactive-menu); */
+  border-bottom: 2px solid var(--underline-inactive-menu);
   border-radius: 0;
+  font-size: 0.98rem;
+  color: var(--text-inactive);
+  font-family: 'Roboto-Medium';
+  /* font-weight: 600; */
+  letter-spacing: -0.125px;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  padding-block: 0.6rem;
+}
+
+.menu-btn:active {
+  color: var(--text-inactive);
+  background-color: rgba(65, 165, 190, 0.384);
 }
 .buffer {
   width: auto;
   border-bottom: 2px solid transparent;
+  /* border-bottom: 2px solid var(--underline-inactive-menu); */
 }
 .activeMenuButton {
   color: var(--text);
-
   /* border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius); */
   border-bottom: 2px solid var(--cat-card-background);
 }
 
-.activeMenuButton:focus {
-  background-color: var(--cat-card-background);
-  color: var(--cat-card-text);
-  border-radius: var(--border-radius);
-}
+/* .activeMenuButton:focus {
+   color: var(--cat-card-text);
+   border-radius: var(--border-radius); 
+} */
 .user-content-container {
   width: 80vw;
   display: grid;
@@ -882,8 +898,8 @@ header {
 
 h2 {
   color: var(--primary);
-  font-size: 1.1rem;
-  top: -0.8rem;
+  font-size: 1.05rem;
+  padding-bottom: 0.5rem;
 }
 /* .subheader {
   display: flex;

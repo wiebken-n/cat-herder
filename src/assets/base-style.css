@@ -37,6 +37,51 @@
   font-family: 'Roboto-Slab';
   src: url('./fonts/RobotoSlab-VariableFont_wght.ttf');
 }
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+
+  font-family: 'Roboto-Condensed';
+  src: url('./fonts/RobotoCondensed-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+
+  font-family: 'Roboto-Condensed-Italic';
+  src: url('./fonts/RobotoCondensed-Italic-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+
+  font-family: 'Roboto-Regular';
+  src: url('./fonts/Roboto-Regular.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto-Medium';
+  src: url('./fonts/Roboto-Medium.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto-Bold';
+  src: url('./fonts/Roboto-Bold.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto-Light';
+  src: url('./fonts/Roboto-Light.ttf');
+}
+
+@font-face {
+  font-display: auto; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto-Black';
+  src: url('./fonts/Roboto-Black.ttf');
+}
+
 /* ----------------------- colors ----------- */
 
 :root {
@@ -78,6 +123,7 @@
   --text-off: rgb(29, 29, 29);
   --text-on-dark: hsl(0, 0%, 96%);
   --text-on-dark-off: rgb(223, 223, 223);
+  --text-inactive: rgb(82, 82, 82);
   --text-header: var(--dark);
   --positive: #52db40;
   --card-background: hsl(4, 15%, 93%);
@@ -115,6 +161,7 @@
   --chip-background: var(--old-rose-lighter);
   --background-catdata-card: var(--background-clr);
   --border-catdata-card: var(--primary-lighter);
+  --underline-inactive-menu: #e5e7eb;
 }
 
 /* ----colors for calendar----- */
@@ -243,6 +290,38 @@ body {
   color: hsl(0, 0%, 96%);
   background-color: var(--selection-bg);
 }
+
+.p-button,
+.p-menuitem-text {
+  font-family: 'Roboto-Light';
+  letter-spacing: 0.25px;
+  font-weight: 500;
+}
+
+.p-menuitem-text {
+  letter-spacing: -0.125px;
+
+  font-family: 'Roboto-Medium';
+}
+/* .p-tabmenu {
+  width: 100%;
+}
+.p-tabmenu-nav {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+} */
+.p-menuitem-text {
+  /* font-family: 'Roboto-Slab'; */
+  font-size: 1rem;
+  /* letter-spacing: 0.25px; */
+  color: var(--text-inactive);
+}
+
+.p-highlight .p-menuitem-text {
+  color: var(--text);
+}
+
 .darkmode {
   --hover-shadow: rgba(0, 0, 0, 0.404);
   /* --background-clr: rgb(31, 31, 31); */
@@ -287,6 +366,8 @@ body {
   --chip-background: var(--primary-darker-dark);
   --background-catdata-card: var(--background-clr);
   --border-catdata-card: var(--primary-darker-dark);
+  --text-inactive: rgb(189, 189, 189);
+  --underline-inactive-menu: #424b57;
 }
 h1,
 h2 {
