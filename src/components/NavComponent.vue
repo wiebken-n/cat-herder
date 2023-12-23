@@ -1,17 +1,20 @@
 <template>
   <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
-      <svg
-        tabindex="0"
-        @click="activateMenu"
-        @keyup.enter="activateMenu"
-        :class="{ burgeractive: menuActive }"
-        alt="burger-menu-icon"
-        class="burger"
-        data-cy="burger"
+      <PrimeButton
+        @click="activateMenu('click')"
+        @keyup.enter="activateMenu('enter')"
+        class="burger-button"
+        aria-label="Seitennavigation"
       >
-        <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
-      </svg>
+        <svg
+          :class="{ burgeractive: menuActive }"
+          alt="burger-menu-icon"
+          class="burger"
+          data-cy="burger"
+        >
+          <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use></svg
+      ></PrimeButton>
     </div>
     <transition>
       <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
@@ -103,24 +106,36 @@
   align-content: start;
 }
 .burger {
-  position: absolute;
   height: 2.75rem;
   width: 2.75rem;
-  right: 10px;
-  top: 10px;
   z-index: 3;
   transition: all 200ms ease;
   scale: 1;
   color: var(--burger-icons);
 }
+.burger-button {
+  height: 2.75rem;
+  width: 2.75rem;
+  padding: 0;
+  right: 10px;
+  top: 10px;
+  position: absolute;
+  border: transparent;
+  background-color: transparent;
+}
+.burger-button:focus-visible {
+  outline: none;
+}
 
-.burger:hover,
-.burger:focus {
+.burger-button:hover .burger,
+.burger-button:hover .burger {
   scale: 1.05;
   transform-origin: center;
   color: var(--burger-icons-hover);
   cursor: pointer;
+  border: none;
 }
+
 .burgeractive {
   color: var(--burger-bg);
 }
@@ -208,9 +223,14 @@ const props = defineProps({
   session: Object
 })
 
-const activateMenu = function () {
-  menuActive.value = !menuActive.value
+const activateMenu = function (method) {
+  if (method === 'enter') {
+    menuActive.value = true
+  } else {
+    menuActive.value = !menuActive.value
+  }
 }
+
 const deactivateMenu = function () {
   setTimeout(() => {
     menuActive.value = false
