@@ -738,11 +738,9 @@ async function fetchCatInfos(id) {
 }
 
 document.addEventListener('touchstart', (e) => {
-  // document.addEventListener('touchstart', (e) => {
   touchstartX = e.changedTouches[0].screenX
 })
 document.addEventListener('touchend', (e) => {
-  // document.addEventListener('touchend', (e) => {
   touchendX = e.changedTouches[0].screenX
 
   checkIfSwipe()
@@ -788,6 +786,7 @@ function checkIfSwipe() {
     }
   }
 }
+
 onUnmounted(() => {
   catsStore.state.currentCat = {
     user_id: '',
