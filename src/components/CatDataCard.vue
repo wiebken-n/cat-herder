@@ -109,6 +109,11 @@ h2 {
   width: 1.25rem;
   height: 1.25rem;
   color: var(--primary-darker);
+  transition: all 200ms ease-in-out;
+}
+
+.icon:hover {
+  color: var(--burger-icons);
 }
 .info-segment p {
   padding-bottom: 0.5rem;

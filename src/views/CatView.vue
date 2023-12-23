@@ -121,12 +121,12 @@
         <CatDataCard
           class="catdata"
           id="food_info"
-          :edit="stateEdit.food"
+          :edit="stateEdit.food_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.food_info"
           headline="Futterinfo"
-          @editMode="handleCardEditModeOn('food')"
-          @dataSaved="handleCardDataSaved('food')"
+          @editMode="handleCardEditModeOn('food_info')"
+          @dataSaved="handleCardDataSaved('food_info')"
           ><template #icon>
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
@@ -134,7 +134,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.food"
+              v-if="stateEdit.food_info"
               class="input input-area"
               v-model="catsStore.state.currentCat.food_info"
               autoResize
@@ -174,13 +174,13 @@
         <CatDataCard
           class="catdata"
           id="health_info"
-          :edit="stateEdit.health"
+          :edit="stateEdit.health_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.health_info"
           headline="Infos zur Gesundheit"
           :hasContent="false"
-          @editMode="handleCardEditModeOn('health')"
-          @dataSaved="handleCardDataSaved('health')"
+          @editMode="handleCardEditModeOn('health_info')"
+          @dataSaved="handleCardDataSaved('health_info')"
           ><template #icon>
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
@@ -188,7 +188,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.health"
+              v-if="stateEdit.health_info"
               id="input-cat-health"
               class="input-cat-health input input-area"
               v-model="catsStore.state.currentCat.health_info"
@@ -282,7 +282,7 @@
         <CatDataCard
           class="catdata"
           id="behaviour_info"
-          :edit="stateEdit.behaviour"
+          :edit="stateEdit.behaviour_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.behaviour_info"
           headline="Infos zum Verhalten"
@@ -296,7 +296,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.behaviour"
+              v-if="stateEdit.behaviour_info"
               class="input input-area"
               v-model="catsStore.state.currentCat.behaviour_info"
               autoResize
@@ -491,8 +491,8 @@ const activeCatInfoMenuItem = ref(0)
 // ])
 
 const stateEdit = reactive({
-  food: false,
-  health: false,
+  food_info: false,
+  health_info: false,
   behaviour: false,
   personality: false,
   feeding_times: false,
@@ -511,7 +511,6 @@ function handleCardEditModeOn(status) {
 
 function handleCardDataSaved(status) {
   editCatInfo(status)
-  stateEdit[status] = false
 }
 
 const herderProfiles = computed(() => {
@@ -552,6 +551,15 @@ async function editCatInfo(status) {
     playtimes: 'Spielbedarf'
   }
 
+  //// "!!!!!!"
+  const optionalFields = {
+    food_info: 'Infos zum Futter',
+    health_info: 'Infos zur Gesundheit',
+    behaviour_info: 'Infos zum Verhalten',
+    drugs_info: 'Infos zu Medikamenten',
+    play_info: 'Infos zum Spielen'
+  }
+
   if (cat.weight === null || undefined) {
     cat.weight = 0
   }
@@ -576,14 +584,15 @@ async function editCatInfo(status) {
     })
     return
   }
-  if (cat.length > 20) {
+
+  if (cat.name.length < 1) {
+    stateEdit[status] = true
     toast.add({
       severity: 'warn',
-      summary: 'Name zu lang',
+      summary: 'Name zu kurz',
       detail: 'Der Name darf maximal 20 Zeichen lang sein',
       life: 3000
     })
-
     return
   }
   if (
@@ -593,9 +602,10 @@ async function editCatInfo(status) {
     cat.drugs_info.length > 3000 ||
     cat.play_info.length > 3000
   ) {
+    stateEdit[status] = true
     toast.add({
       severity: 'warn',
-      summary: `Text zu lang`,
+      summary: `${optionalFields[status]} - Text zu lang`,
       detail:
         'Die Texte zu Futter, Gesundheit, Medikamenten, Verhalten und Spielen dürfen jeweils maximal 3000 Zeichen lang sein!',
       life: 3000
@@ -627,6 +637,7 @@ async function editCatInfo(status) {
     console.log(error)
   }
   if (data) {
+    stateEdit[status] = false
     // console.log(data)
   }
 }
