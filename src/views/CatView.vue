@@ -519,6 +519,7 @@ function imageUrl(catAvatar) {
 //   // { label: 'Termine' },
 //   // { label: 'Herder' }
 // ])
+
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 // const catInfoMenuItems = ref([

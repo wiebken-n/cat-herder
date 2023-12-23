@@ -167,6 +167,8 @@
   --background-catdata-card: var(--background-clr);
   --border-catdata-card: var(--primary-lighter);
   --underline-inactive-menu: #e5e7eb;
+  --background-card-message: hsl(4, 15%, 93%);
+  --connection-icon-on-dialog: var(--primary-darker);
 }
 
 /* ----colors for calendar----- */
@@ -413,6 +415,8 @@ body {
   --border-catdata-card: var(--primary-darker-dark);
   --text-inactive: rgb(189, 189, 189);
   --underline-inactive-menu: #424b57;
+  --background-card-message: hsl(192, 10%, 11%);
+  --connection-icon-on-dialog: var(--text);
 }
 h1,
 h2 {

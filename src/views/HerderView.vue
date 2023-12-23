@@ -75,6 +75,7 @@
                     @connectionEstablished="throwToastAdded(user)"
                     @requestSend="throwToastRequestSend(user)"
                     @requestDeleted="throwToastRequestDeleted(user)"
+                    @messageSend="throwToastMessageSend(user)"
                     :showButton="true"
                 /></PrimeDialog>
               </div>
@@ -151,6 +152,14 @@ const throwToastRequestSend = (user) => {
     severity: 'info',
     summary: 'Anfrage gesendet',
     detail: `Du hast eine Verbindungsanfrage an ${user.username} gesendet`,
+    life: 3000
+  })
+}
+const throwToastMessageSend = (user) => {
+  toast.add({
+    severity: 'info',
+    summary: 'Nachricht gesendet',
+    detail: `Du hast eine Nachricht an ${user.username} gesendet`,
     life: 3000
   })
 }

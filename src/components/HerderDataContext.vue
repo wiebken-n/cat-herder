@@ -27,6 +27,10 @@
       <p class="connetion-info">{{ userConnectionStatus }}</p>
       <!-- {{ props.connectionStatus }} -->
     </div>
+    <div class="message-text-wrapper" v-if="messageText && !requestSend">
+      <p>{{ messageText }}</p>
+    </div>
+
     <div v-if="showButton" class="button-wrapper">
       <PrimeButton
         class="connection-btn"
@@ -34,12 +38,15 @@
         @click="sendRequest(props.user)"
         label="Verbindung anfragen"
       ></PrimeButton>
+
       <PrimeButton
         class="connection-btn"
         v-if="props.connectionStatus === 'connected'"
         label="Verbindung trennen"
-        @click="deleteConnection(user)"
+        outlined
+        @click="deleteConnection(props.user)"
       ></PrimeButton>
+
       <div class="incoming-button-wrapper" v-if="props.connectionStatus === 'pending incoming'">
         <PrimeButton
           class="connection-btn"
@@ -49,7 +56,8 @@
         <PrimeButton
           class="connection-btn"
           label="Anfrage ablehnen"
-          @click="deleteConnection(user)"
+          outlined
+          @click="deleteConnection(props.user)"
         ></PrimeButton>
       </div>
 
@@ -57,7 +65,23 @@
         class="connection-btn"
         v-if="props.connectionStatus === 'pending outgoing'"
         label="Anfrage zurücknehmen"
+        outlined
         @click="deleteRequest(props.user)"
+      ></PrimeButton>
+    </div>
+    <div class="message-wrapper" v-if="requestSend">
+      <p>Du kannst deiner Anfrage eine Nachricht beifügen:</p>
+      <PrimeTextArea
+        id="message"
+        class="input input-area"
+        v-model="messageText"
+        label="Nachricht"
+        rows="4"
+      ></PrimeTextArea>
+      <PrimeButton
+        @click="sendMessage()"
+        class="connection-btn"
+        label="Nachricht senden"
       ></PrimeButton>
     </div>
     <div class="confimation-wrapper">
@@ -95,6 +119,10 @@ const confirm = useConfirm()
 
 const userConnectionStatus = ref('')
 
+const requestSend = ref(false)
+const messageText = ref('')
+const connectionId = ref('')
+
 const deleteConnection = (user) => {
   confirm.require({
     group: 'headless',
@@ -126,8 +154,32 @@ function connection() {
     } else return
   }, 100)
 }
-onBeforeMount(() => {
+
+async function fetchConnection() {
+  const { data, error } = await supabase
+    .from('user_connections')
+    .select()
+    .eq('user_active', props.user.id)
+
+    .single()
+
+  if (error) {
+    console.log(error)
+    return
+  }
+  if (data) {
+    // console.log(data)
+    if (data.message) {
+      messageText.value = data.message
+    }
+    // console.log(messageText.value)
+  }
+}
+onBeforeMount(async () => {
   connection()
+  if (props.connectionStatus === 'pending incoming') {
+    await fetchConnection()
+  }
 })
 
 const props = defineProps({
@@ -140,7 +192,8 @@ const emit = defineEmits([
   'connectionDeleted',
   'connectionEstablished',
   'requestSend',
-  'requestDeleted'
+  'requestDeleted',
+  'messageSend'
 ])
 
 async function sendRequest(user) {
@@ -148,19 +201,42 @@ async function sendRequest(user) {
     .from('user_connections')
     .insert([{ user_passive: user.id }])
     .select()
+    .single()
 
   if (error) {
     console.log(error)
   }
   if (data) {
+    connectionId.value = data.id
     // console.log(data)
   }
 
   emit('requestSend')
   emit('interaction')
+  requestSend.value = true
+  userConnectionStatus.value = 'Du hast eine Verbindungsanfrage gesendet'
+
   return
 }
 
+async function sendMessage() {
+  const { data, error } = await supabase
+    .from('user_connections')
+    .update({ message: messageText.value })
+    .eq('id', connectionId.value)
+    .select()
+
+  if (error) {
+    console.log(error)
+    return
+  }
+  if (data) {
+    // console.log(data)
+    emit('messageSend')
+    messageText.value = ''
+    requestSend.value = false
+  }
+}
 async function acceptRequest(user) {
   const userId = user.id
   const { data, error } = await supabase
@@ -274,7 +350,7 @@ async function deleteHerderConnections(userId) {
 
 .user-icon {
   margin-left: 0.5rem;
-  color: var(--text);
+  color: var(--connection-icon-on-dialog);
   height: 2rem;
   width: 2rem;
 }
@@ -308,12 +384,36 @@ async function deleteHerderConnections(userId) {
   gap: 0.4rem;
   position: relative;
   grid-column: 1 / 3;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 .connection-btn {
   width: 100%;
 }
 
+.message-text-wrapper {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--background-card-message);
+  border-radius: var(--border-radius);
+  width: 100%;
+  grid-column: 1 / 3;
+  font-family: 'Raleway';
+  font-style: italic;
+}
+.message-wrapper {
+  width: 100%;
+  grid-column: 1 / 3;
+}
+.message-wrapper * {
+  width: 100%;
+}
+.message-wrapper p {
+  padding-top: 1rem;
+  /* font-family: 'Roboto-Regular'; */
+}
+.message-wrapper .input-area {
+  margin-bottom: 0.5rem;
+}
 .dialog-container {
   border-radius: var(--border-radius);
   display: grid;
