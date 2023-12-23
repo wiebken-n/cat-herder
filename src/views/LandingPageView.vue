@@ -103,7 +103,8 @@ img {
   transform: translateX(-50%);
   transition: all 100ms ease-in-out;
 }
-.impressum-link:hover {
+.impressum-link:hover,
+.impressum-link:focus {
   cursor: pointer;
   font-weight: 500;
 }

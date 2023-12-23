@@ -2,7 +2,12 @@
   <div class="content-wrapper">
     <Toast />
     <header>
-      <img class="cat-avatar" :src="imageUrl(catsStore.state.currentCat.avatar)" alt="cat avatar" />
+      <img
+        tabindex="0"
+        class="cat-avatar"
+        :src="imageUrl(catsStore.state.currentCat.avatar)"
+        alt="cat avatar"
+      />
       <div class="header-text-wrapper">
         <h1>{{ catsStore.state.currentCat.name }}</h1>
         <h2 class="subheader">
@@ -16,15 +21,49 @@
         </h2>
       </div>
     </header>
-    <div class="menu-wrapper site-menu-wrapper">
-      <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
-    </div>
+    <!-- <div class="menu-wrapper site-menu-wrapper">
+      <PrimeTabMenu tabindex="0" v-model:activeIndex="activeMenuItem" :model="menuItems" />
+    </div> -->
+    <nav class="cat-view-menu-wrapper menu-wrapper">
+      <PrimeButton
+        @click="activeMenuItem = 0"
+        :class="{ activeMenuButton: activeMenuItem === 0 }"
+        unstyled
+        label="Überblick"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        @click="activeMenuItem = 1"
+        :class="{ activeMenuButton: activeMenuItem === 1 }"
+        unstyled
+        label="Infos"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        @click="activeMenuItem = 2"
+        :class="{ activeMenuButton: activeMenuItem === 2 }"
+        unstyled
+        label="Termine"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+        @click="activeMenuItem = 3"
+        :class="{ activeMenuButton: activeMenuItem === 3 }"
+        unstyled
+        label="Herder"
+        class="menu-btn"
+      />
+    </nav>
+
     <div v-if="activeMenuItem === 0" class="cat-overview-container">
       <CatOverview></CatOverview>
     </div>
     <div v-if="activeMenuItem === 1" class="cat-info-container">
-      <div class="cat-info-menu-wrapper menu-wrapper">
-        <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
+      <nav class="cat-info-menu-wrapper menu-wrapper">
         <div class="buffer"></div>
         <PrimeButton
           @click="activeCatInfoMenuItem = 0"
@@ -61,7 +100,7 @@
           class="menu-btn"
         />
         <div class="buffer"></div>
-      </div>
+      </nav>
       <div v-if="activeCatInfoMenuItem === 0" class="cat-content cat-content-food">
         <CatDataCard
           class="catdata"
@@ -474,13 +513,12 @@ function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
-const menuItems = ref([
-  // { label: 'Überblick' },
-  // { label: 'Infos' },
-  // { label: 'Termine' },
-  // { label: 'Herder' }
-])
-
+// const menuItems = ref([
+//   // { label: 'Überblick' },
+//   // { label: 'Infos' },
+//   // { label: 'Termine' },
+//   // { label: 'Herder' }
+// ])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
 const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 // const catInfoMenuItems = ref([
@@ -821,22 +859,22 @@ onUnmounted(() => {
   }
 })
 
-function fillMenu() {
-  if (catsStore.state.currentCat.user_id === userStore.state.userId) {
-    menuItems.value = [
-      { label: 'Überblick' },
-      { label: 'Infos' },
-      { label: 'Termine' },
-      { label: 'Herder' }
-    ]
-  } else {
-    menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
-  }
-}
+// function fillMenu() {
+//   if (catsStore.state.currentCat.user_id === userStore.state.userId) {
+//     menuItems.value = [
+//       { label: 'Überblick' },
+//       { label: 'Infos' },
+//       { label: 'Termine' },
+//       { label: 'Herder' }
+//     ]
+//   } else {
+//     menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
+//   }
+// }
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
   await fetchCatInfos(route.params.id)
-  fillMenu()
+  // fillMenu()
 })
 
 onUnmounted(() => {
@@ -882,9 +920,11 @@ header {
   padding: 0.5rem;
   box-shadow: 0 0 10px 2px var(--card-shadow);
 }
-.cat-avatar:hover {
+.cat-avatar:hover,
+.cat-avatar:focus {
   animation: tilt-shaking 0.25s 2 ease-in-out;
 }
+
 .header-text-wrapper {
   display: flex;
   flex-direction: column;
@@ -906,6 +946,27 @@ header {
 .site-menu-wrapper {
   margin-bottom: 1.5rem;
 }
+
+.cat-view-menu-wrapper {
+  padding-block: 0.25rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  display: grid;
+  width: 80vw;
+  grid-template-columns: min-content min-content min-content min-content min-content;
+  grid-template-rows: 1fr;
+  margin-bottom: 1.5rem;
+}
+.cat-view-menu-wrapper > .menu-btn {
+  font-size: 1rem;
+  padding-inline: calc(0.75rem + 1.125vw);
+}
+
+.cat-view-menu-wrapper .buffer {
+  width: auto;
+  border-bottom: 2px solid var(--underline-inactive-menu);
+}
+
 .cat-info-menu-wrapper {
   padding-block: 0.25rem;
   margin-bottom: 0.5rem;
@@ -951,7 +1012,7 @@ header {
 
 /* .activeMenuButton:focus {
    color: var(--cat-card-text);
-   border-radius: var(--border-radius); 
+   border-radius: var(--border-radius);
 } */
 .user-content-container {
   width: 80vw;

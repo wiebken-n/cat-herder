@@ -677,7 +677,8 @@ header {
   transition: all 200ms ease-in-out;
 }
 
-.number-menu-container > button:hover {
+.number-menu-container > button:hover,
+.number-menu-container > button:focus {
   box-shadow: 0 0 4px 0px var(--text-off);
 }
 
@@ -766,8 +767,7 @@ article > div {
   width: 8rem;
   transition: all 200ms ease-in-out;
 }
-.button-nav:hover {
-}
+
 .button-right {
   margin-left: auto;
 }
@@ -850,7 +850,8 @@ form > article > *,
   scale: 1;
   transition: all 200ms ease-in-out;
 }
-.cat-image-show:hover {
+.cat-image-show:hover,
+.cat-image-show:focus {
   scale: 1.05;
   box-shadow: 0 0 10px 2px var(--hover-shadow);
 }
@@ -877,7 +878,8 @@ form > article > *,
   background-color: transparent;
   border: 0 transparent solid;
 }
-.cat-image:hover {
+.cat-image:hover,
+.cat-image:focus {
   box-shadow: 0 0 10px 2px var(--hover-shadow);
   scale: 1.05;
   animation: tilt-shaking 0.25s 2 ease-in-out;

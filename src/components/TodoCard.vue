@@ -133,7 +133,8 @@ function getTime(hour, minute) {
   transition: all 200ms ease-in-out;
 }
 
-.todo-content-container:hover {
+.todo-content-container:hover,
+.todo-content-container:focus {
   background-color: var(--cat-card-background-hover);
 }
 .todo-content-container > p {
@@ -153,7 +154,8 @@ p {
   background-color: var(--primary-darkest);
   transition: all 200ms ease-in-out;
 }
-.todo-content-container:hover * .user-tag {
+.todo-content-container:hover * .user-tag,
+.todo-content-container:focus * .user-tag {
   background-color: var(--primary-darker-dark);
 }
 .todo-date {
@@ -215,7 +217,9 @@ p {
   transition: all 200ms ease-in-out;
 }
 .delete-todo-button:hover > .icon,
-.edit-todo-button:hover > .icon {
+.delete-todo-button:focus > .icon,
+.edit-todo-button:hover > .icon,
+.edit-todo-button:focus > .icon {
   scale: 1.05;
   color: var(--old-rose-darker);
 }

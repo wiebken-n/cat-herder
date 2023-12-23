@@ -2,7 +2,9 @@
   <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
       <svg
+        tabindex="0"
         @click="activateMenu"
+        @keyup.enter="activateMenu"
         :class="{ burgeractive: menuActive }"
         alt="burger-menu-icon"
         class="burger"
@@ -15,12 +17,19 @@
       <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
         <div class="nav-wrapper" :class="{ navactive: menuActive }">
           <ul>
-            <li @click="goToPage('/')">Home</li>
-            <li @click="goToPage('/add-cat')">Neue Katze</li>
-            <li @click="goToPage('/herder')">Cat Herder</li>
-            <li @click="goToPage('/user')">Einstellungen</li>
-            <li @click="goToPage('/impressum')">Impressum</li>
-            <li></li>
+            <li tabindex="0" @keyup.enter="goToPage('/')" @click="goToPage('/')">Home</li>
+            <li tabindex="0" @keyup.enter="goToPage('/add-cat')" @click="goToPage('/add-cat')">
+              Neue Katze
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/herder')" @click="goToPage('/herder')">
+              Cat Herder
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/user')" @click="goToPage('/user')">
+              Einstellungen
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/impressum')" @click="goToPage('/impressum')">
+              Impressum
+            </li>
           </ul>
         </div>
         <button @click="toggleDarkmode()" class="darkmode-toggle">
@@ -71,7 +80,8 @@
   color: var(--darkmode-icon);
   transition: all 200ms ease-in-out;
 }
-.darkmode-toggle:hover > .darkmode-toggle-icon {
+.darkmode-toggle:hover > .darkmode-toggle-icon,
+.darkmode-toggle:focus > .darkmode-toggle-icon {
   scale: 1.1;
   color: var(--burger-icons-hover);
 }
@@ -104,7 +114,8 @@
   color: var(--burger-icons);
 }
 
-.burger:hover {
+.burger:hover,
+.burger:focus {
   scale: 1.05;
   transform-origin: center;
   color: var(--burger-icons-hover);
@@ -149,7 +160,8 @@ li {
   color: var(--nav-text);
   width: 80%;
 }
-li:hover {
+li:hover,
+li:focus {
   color: var(--nav-text-hover);
   border-bottom: 10px var(--primary) solid;
   cursor: pointer;

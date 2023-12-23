@@ -3,9 +3,13 @@
     <header><h1>Deine Co-Herder</h1></header>
     <div class="connected-herders-info">
       <form class="form-search-user" @submit.prevent>
-        <PrimeInputText v-model="userName" class="usersearch-input"></PrimeInputText>
+        <PrimeInputText
+          @keyup.enter="searchUser"
+          v-model="userName"
+          class="usersearch-input"
+        ></PrimeInputText>
         <PrimeButton
-          @click="searchUser()"
+          @click="searchUser"
           label="Suche einen Herder"
           class="usersearch-button"
         ></PrimeButton>
@@ -190,81 +194,6 @@ function userInteraction(user) {
   userContextMenu.value = !userContextMenu.value
 }
 
-// function extractUserIdsFromConnections() {
-//   const ids = []
-//   for (let connection of allConnections.value) {
-//     if (connection.user_passive !== userStore.state.userId && connection.user_passive !== null) {
-//       ids.push(connection.user_passive)
-//     }
-//     if (connection.user_active !== userStore.state.userId && connection.user_active !== null)
-//       ids.push(connection.user_active)
-//   }
-//   allConnectionIds.value = ids
-// }
-
-// async function getUserData() {
-//   const { data, error } = await supabase.from('profiles').select().in('id', allConnectionIds.value)
-//   if (error) {
-//     console.log(error)
-//   }
-//   if (data) {
-//     console.log(data)
-//     allConnectionUsers.value = data
-//   }
-// }
-
-// async function fetchAllConnections() {
-//   await fetchConnections()
-//   await fetchActiveRequests()
-//   await fetchPassiveRequests()
-// }
-
-// async function fetchPassiveRequests() {
-//   let { data, error } = await supabase
-//     .from('user_connections')
-//     .select()
-//     .eq('user_passive', userStore.state.userId)
-//     .eq('connected', false)
-//   if (error) {
-//     console.log(error)
-//   }
-//   if (data) {
-//     passiveRequests.value = data
-//     loading.value++
-//   }
-// }
-
-// async function fetchActiveRequests() {
-//   let { data, error } = await supabase
-//     .from('user_connections')
-//     .select()
-//     .eq('user_active', userStore.state.userId)
-//     .eq('connected', false)
-
-//   if (error) {
-//     console.log(error)
-//   }
-
-//   if (data) {
-//     activeRequests.value = data
-//     loading.value++
-//     if (data.length > 0) {
-//       // const userData = await userStore.fetchUser(data[0].user_active)
-//     }
-//   }
-// }
-// async function fetchConnections() {
-//   let { data, error } = await supabase.from('user_connections').select().eq('connected', true)
-
-//   if (data) {
-//     connections.value = data
-//     loading.value++
-//   }
-//   if (error) {
-//     console.log(error)
-//   }
-// }
-
 function checkConnectionStatus(user) {
   const status = ref('no connection')
   // check if that user has send a request to current user
@@ -288,90 +217,8 @@ function checkConnectionStatus(user) {
   return status.value
 }
 
-// watch(loading, () => {
-//   if (loading.value === 3) {
-//     setTimeout(() => {
-//       combineConnectionData()
-//     }, 100)
-//   }
-// })
-
-// function combineConnectionData() {
-//   loading.value = 0
-//   const combinedConnections = passiveRequests.value
-//     .concat(activeRequests.value)
-//     .concat(connections.value)
-//   allConnections.value = combinedConnections
-
-//   extractUserIdsFromConnections()
-//   getUserData()
-// }
-
-// -------- doesn't work for using in for loop @template (fetch to slow -> renders before promise resolved) ------
-
-// async function fetchConnectionStatus(user) {
-//   let { data, error } = await supabase
-//     .from('user_connections')
-//     .select()
-//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
-//     .single()
-
-//   const status = ref('')
-//   console.log(user)
-//   if (data) {
-//     console.log(data)
-//     if (data.connected) {
-//       status.value = 'connection established'
-//       // return 'connection established'
-//     }
-//     if (!data.connected) {
-//       if (data.user_active === user.id) {
-//         status.value = 'incoming request'
-//         // return 'incoming request'
-//         // } else return 'outgoing request'
-//         status.value = 'outgoing request'
-//       }
-//     }
-//   }
-//   if (error) {
-//     status.value = 'no connection'
-//     // return 'no connection'
-//   }
-//   console.log(status.value)
-//   return status
-// }
-
-// async function fetchPendingConnectionStatus(user) {
-//   console.log(user)
-//   let { data, error } = await supabase
-//     .from('user_connections')
-//     .select()
-//     .eq('connected', false)
-//     .or(`user_active.eq.${user.id},user_passive.eq.${user.id}`)
-//     .single()
-
-//   if (data) {
-//     console.log(data)
-//     if (data.user_active === user.id) {
-//       return 'incoming request'
-//     }
-//     if (data.user_passive === user.id) {
-//       return 'outgoing request'
-//     }
-//   }
-
-//   if (error) {
-//     console.log(error)
-//   }
-// }
-
 onBeforeMount(async () => {
   await userStore.fetchAllConnections()
-  // await fetchAllConnections()
-  // await fetchConnections()
-  // await fetchActiveRequests()
-
-  // await fetchPassiveRequests()
 })
 </script>
 <style scoped>

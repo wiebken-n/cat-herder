@@ -295,14 +295,9 @@ async function deleteHerderConnections(userId) {
   margin-top: 1rem;
 }
 .connection-btn {
-  /* color: var(--inline-button-text); */
   width: 100%;
-  /* background-color: var(--card-background); */
-  /* transition: all 100ms ease-in-out; */
 }
-/* .connection-btn:hover {
-  background-color: var(--card-background-hover);
-} */
+
 .dialog-container {
   border-radius: var(--border-radius);
   display: grid;

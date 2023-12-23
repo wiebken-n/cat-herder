@@ -43,10 +43,22 @@
     <div v-if="!props?.edit && !props?.dataContent"><p>(noch) keine Angabe vorhanden</p></div>
     <slot v-if="props?.edit" name="card-input"> </slot>
 
-    <svg v-if="props?.userIsOwner && !props?.edit" @click="emit('editMode')" class="icon icon-edit">
+    <svg
+      v-if="props?.userIsOwner && !props?.edit"
+      tabindex="0"
+      @click="emit('editMode')"
+      @keyup.enter="emit('editMode')"
+      class="icon icon-edit"
+    >
       <use xlink:href="@/assets/icons.svg#edit" fill="currentcolor"></use>
     </svg>
-    <svg v-if="props?.userIsOwner && props?.edit" @click="emit('dataSaved')" class="icon icon-edit">
+    <svg
+      v-if="props?.userIsOwner && props?.edit"
+      tabindex="0"
+      @keyup.enter="emit('dataSaved')"
+      @click="emit('dataSaved')"
+      class="icon icon-edit"
+    >
       <use xlink:href="@/assets/icons.svg#save-data" fill="currentcolor"></use>
     </svg>
   </div>
@@ -112,7 +124,8 @@ h2 {
   transition: all 200ms ease-in-out;
 }
 
-.icon:hover {
+.icon:hover,
+.icon:focus {
   color: var(--burger-icons);
 }
 .info-segment p {

@@ -12,6 +12,8 @@
         class="cat-info"
         data-cy="cat-info"
         :key="cat.id"
+        tabindex="0"
+        @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
         <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
@@ -26,6 +28,8 @@
           v-if="checkTodaysTodos(cat.todos)"
           alt="todo alert"
           class="alert-icon"
+          tabindex="0"
+          @keyup.enter="handleTodoClick(cat.id)"
           @click="handleTodoClick(cat.id)"
         >
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
@@ -62,6 +66,8 @@
         class="cat-info"
         data-cy="cat-info"
         :key="cat.id"
+        tabindex="0"
+        @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
         <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
@@ -70,7 +76,13 @@
         </svg>
         <p class="cat-name">{{ cat.name }}</p>
         <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
-        <svg v-if="checkTodaysTodos(cat.todos)" alt="todo alert" class="alert-icon">
+        <svg
+          v-if="checkTodaysTodos(cat.todos)"
+          alt="todo alert"
+          class="alert-icon"
+          tabindex="0"
+          @keyup.enter="handleTodoClick(cat.id)"
+        >
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
         </svg>
         <div class="todo-tooltip">
@@ -240,7 +252,8 @@ h2 {
   transition: all 200ms ease-in-out;
 }
 
-.alert-icon:hover {
+.alert-icon:hover,
+.alert-icon:focus {
   color: var(--old-rose-darker);
   scale: 1.2;
 }
@@ -263,20 +276,23 @@ h2 {
   transform: translate(50%, -103%);
   transition: all 200ms ease-in-out;
 }
-.alert-icon:hover + .todo-tooltip {
+.alert-icon:hover + .todo-tooltip,
+.alert-icon:focus + .todo-tooltip {
   opacity: 0.9;
   visibility: visible;
 }
 .cat-info > * {
   margin: 0.125rem 0;
 }
-.cat-info:hover {
+.cat-info:hover,
+.cat-info:focus {
   background-color: var(--cat-card-background-hover);
   box-shadow: 2px 2px 5px 0 var(--hover-shadow);
   scale: 1.02;
 }
 
-.cat-info:hover > .cat-avatar {
+.cat-info:hover > .cat-avatar,
+.cat-info:focus > .cat-avatar {
   scale: 1.1;
   animation: tilt-shaking 0.25s 2 ease-in-out;
 }
@@ -355,7 +371,8 @@ h2 {
   transition: all 200ms ease-in-out;
 }
 
-.btn-add-cat:hover {
+.btn-add-cat:hover,
+.btn-add-cat:focus {
   scale: 1.02;
 }
 @media screen and (min-width: 630px) {

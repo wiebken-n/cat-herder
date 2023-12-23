@@ -1,11 +1,12 @@
 <template>
   <div class="logo-content-wrapper">
-    <div
+    <button
       class="logo"
       alt="Eine Katze mit einem Cowboy-Hut"
       @click="router.push('/')"
       data-cy="logo"
-    ></div>
+      tabindex="0"
+    ></button>
     <!-- <svg class="icon logo" @click="router.push('/')" data-cy="logo">
       <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg> -->
@@ -39,8 +40,10 @@ onBeforeMount(() => imageUrl())
   background-size: 55%;
   background-position: center;
   border-radius: 90%;
+  border: none;
 }
-.logo:hover {
+.logo:hover,
+.logo:focus {
   color: var(--alert-dark);
   scale: 1.1;
   cursor: pointer;

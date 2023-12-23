@@ -144,7 +144,8 @@ const props = defineProps({
   border-radius: var(--border-radius);
   transition: all 200ms ease-in-out;
 }
-.user-info-element:hover {
+.user-info-element:hover,
+.user-info-element:focus {
   background-color: var(--cat-card-background-hover);
 }
 .user-icon {
@@ -181,7 +182,8 @@ const props = defineProps({
   background-color: var(--card-background);
   transition: all 100ms ease-in-out;
 }
-.connection-btn:hover {
+.connection-btn:hover,
+.connection-btn:focus {
   background-color: var(--card-background-hover);
 }
 </style>
