@@ -40,12 +40,19 @@
         label="Verbindung trennen"
         @click="deleteConnection(user)"
       ></PrimeButton>
-      <PrimeButton
-        class="connection-btn"
-        v-if="props.connectionStatus === 'pending incoming'"
-        @click="acceptRequest(props.user)"
-        label="Anfrage annehmen"
-      ></PrimeButton>
+      <div class="incoming-button-wrapper" v-if="props.connectionStatus === 'pending incoming'">
+        <PrimeButton
+          class="connection-btn"
+          @click="acceptRequest(props.user)"
+          label="Anfrage annehmen"
+        ></PrimeButton>
+        <PrimeButton
+          class="connection-btn"
+          label="Anfrage ablehnen"
+          @click="deleteConnection(user)"
+        ></PrimeButton>
+      </div>
+
       <PrimeButton
         class="connection-btn"
         v-if="props.connectionStatus === 'pending outgoing'"
@@ -264,9 +271,7 @@ async function deleteHerderConnections(userId) {
   border-radius: var(--border-radius);
   transition: all 200ms ease-in-out;
 }
-/* .user-info-element:hover {
-  background-color: var(--cat-card-background-hover);
-} */
+
 .user-icon {
   margin-left: 0.5rem;
   color: var(--text);
@@ -290,6 +295,17 @@ async function deleteHerderConnections(userId) {
 .button-wrapper {
   width: 70vw;
   display: flex;
+  position: relative;
+  grid-column: 1 / 3;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.incoming-button-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   position: relative;
   grid-column: 1 / 3;
   margin-top: 1rem;
