@@ -22,7 +22,7 @@
     <div v-if="activeMenuItem === 0" class="cat-overview-container">
       <CatOverview></CatOverview>
     </div>
-    <div v-if="activeMenuItem === 1">
+    <div v-if="activeMenuItem === 1" class="cat-info-container">
       <div class="cat-info-menu-wrapper menu-wrapper">
         <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
         <div class="buffer"></div>
@@ -482,7 +482,7 @@ const menuItems = ref([
 ])
 
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
-const activeCatInfoMenuItem = ref(0)
+const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 // const catInfoMenuItems = ref([
 //   { label: 'Futter' },
 //   { label: 'Gesundheit' },
@@ -737,6 +737,57 @@ async function fetchCatInfos(id) {
   }
 }
 
+document.addEventListener('touchstart', (e) => {
+  // document.addEventListener('touchstart', (e) => {
+  touchstartX = e.changedTouches[0].screenX
+})
+document.addEventListener('touchend', (e) => {
+  // document.addEventListener('touchend', (e) => {
+  touchendX = e.changedTouches[0].screenX
+
+  checkIfSwipe()
+})
+
+let touchstartX = 0
+let touchendX = 0
+
+function checkIfSwipe() {
+  if (activeMenuItem.value === 1) {
+    if (touchendX < touchstartX) {
+      if (touchendX + 200 < touchstartX) {
+        if (activeCatInfoMenuItem.value < 3) {
+          activeCatInfoMenuItem.value++
+        } else if (activeCatInfoMenuItem.value === 3) {
+          activeMenuItem.value++
+        }
+      }
+    }
+    if (touchendX > touchstartX) {
+      if (touchendX - 200 > touchstartX) {
+        if (activeCatInfoMenuItem.value > 0) {
+          activeCatInfoMenuItem.value--
+        } else if (activeCatInfoMenuItem.value === 0) {
+          activeMenuItem.value--
+        }
+      }
+    }
+  } else {
+    if (touchendX < touchstartX) {
+      if (touchendX + 200 < touchstartX) {
+        if (activeMenuItem.value < 3) {
+          activeMenuItem.value++
+        }
+      }
+    }
+    if (touchendX > touchstartX) {
+      if (touchendX - 200 > touchstartX) {
+        if (activeMenuItem.value > 0) {
+          activeMenuItem.value--
+        }
+      }
+    }
+  }
+}
 onUnmounted(() => {
   catsStore.state.currentCat = {
     user_id: '',

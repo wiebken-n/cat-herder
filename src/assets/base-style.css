@@ -153,7 +153,7 @@
   --inline-button-text: var(--primary-darker);
   --burger-icons: var(--old-rose);
   --burger-icons-hover: var(--primary-darker);
-  --cat-avatar-dummy: var(--old-rose-light-less-sat);
+  --cat-avatar-dummy: var(--background-clr);
   --selection-bg: var(--primary-darker);
   --background-cat-avatar: hsl(4, 13%, 87%);
   --background-cat-avatar: radial-gradient(
@@ -368,7 +368,7 @@ body {
 }
 
 .darkmode {
-  --hover-shadow: rgba(0, 0, 0, 0.404);
+  --hover-shadow: rgba(0, 0, 0, 0.568);
   /* --background-clr: rgb(31, 31, 31); */
   --background-clr: hsl(0, 2%, 10%);
   --text: hsl(0, 0%, 96%);
