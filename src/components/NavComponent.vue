@@ -2,6 +2,7 @@
   <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
       <PrimeButton
+        :class="{ burgeractive: menuActive }"
         @click="activateMenu('click')"
         @keyup.enter="activateMenu('enter')"
         class="burger-button"
@@ -122,9 +123,22 @@
   position: absolute;
   border: transparent;
   background-color: transparent;
-}
-.burger-button:focus-visible {
   outline: none;
+  scale: 1;
+  z-index: 4;
+  transition: all 200ms ease;
+}
+
+.burger-button:hover,
+.burger-button:focus {
+  scale: 1.05;
+  transform-origin: center;
+}
+.burger-button:focus .burger {
+  color: var(--burger-bg);
+}
+.burger-button:focus {
+  box-shadow: none;
 }
 
 .burger-button:hover .burger,
@@ -134,6 +148,7 @@
   color: var(--burger-icons-hover);
   cursor: pointer;
   border: none;
+  outline: none;
 }
 
 .burgeractive {

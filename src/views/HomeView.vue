@@ -242,10 +242,12 @@ h2 {
 }
 
 .alert-icon {
+  background-color: var(--primary-darkest);
+  border-radius: 100%;
   color: var(--old-rose-lighter-dark);
   position: absolute;
-  height: 1rem;
-  width: 1rem;
+  height: 1.75rem;
+  width: 1.75rem;
   top: 4px;
   right: 5px;
   scale: 1;
@@ -260,8 +262,8 @@ h2 {
 
 .todo-tooltip {
   position: absolute;
-  font-family: 'Roboto-Slab';
-  font-weight: 450;
+  font-family: 'Roboto-Medium';
+  font-weight: 500;
   background-color: var(--tooltip-background);
   border: 2px solid var(--tooltip-border);
   color: var(--text);
@@ -273,8 +275,20 @@ h2 {
   top: 0;
   right: 0;
   visibility: hidden;
-  transform: translate(50%, -103%);
+  transform: translate(50%, -102%);
+  translate: -9% -10%;
   transition: all 200ms ease-in-out;
+}
+.todo-tooltip:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 1.75rem 0 1.75rem;
+  border-color: var(--tooltip-border) transparent transparent transparent;
+  left: 2.6rem;
+  bottom: -11px;
 }
 .alert-icon:hover + .todo-tooltip,
 .alert-icon:focus + .todo-tooltip {
@@ -387,6 +401,16 @@ h2 {
     width: 540px;
     margin-inline: 0.5rem;
     grid-column: 1/ 3;
+  }
+
+  .alert-icon {
+    box-shadow: none;
+    background-color: var(--primary-darkest);
+    border-radius: 100px;
+    color: var(--old-rose-lighter-dark);
+    position: absolute;
+    height: 1.25rem;
+    width: 1.25rem;
   }
 }
 

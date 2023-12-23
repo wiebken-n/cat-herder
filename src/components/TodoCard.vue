@@ -5,17 +5,15 @@
 
       <p class="todo-date">
         <span>
-          {{
-            getTime(new Date(props.todo.date).getHours(), new Date(todo.date).getMinutes())
-          }}</span
+          {{ getTime(new Date(currentDate).getHours(), new Date(currentDate).getMinutes()) }}</span
         >
         <span>|</span>
         <span>
           {{
             getDate(
-              new Date(props.todo.date).getDate(),
-              new Date(props.todo.date).getMonth() + 1,
-              new Date(props.todo.date).getFullYear()
+              new Date(currentDate).getDate(),
+              new Date(currentDate).getMonth() + 1,
+              new Date(currentDate).getFullYear()
             )
           }}</span
         >
@@ -101,6 +99,12 @@ const editState = ref(false)
 
 let todoDescription = props.todo.content
 let todoHeader = props.todo.header
+
+const currentDate = ref(null)
+
+if (props.todo.dates.start) {
+  currentDate.value = props.todo.dates.start
+} else currentDate.value = props.todo.dates
 
 function editClicked() {
   if (!editState.value) {

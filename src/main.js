@@ -28,6 +28,7 @@ import PrimeMultiSelect from 'primevue/multiselect'
 import PrimeTabView from 'primevue/tabview'
 import PrimeTabPanel from 'primevue/tabpanel'
 import PrimeInputNumber from 'primevue/inputnumber'
+import PrimeInputSwitch from 'primevue/inputswitch'
 
 import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
@@ -62,6 +63,7 @@ app.component('PrimeMultiSelect', PrimeMultiSelect)
 app.component('PrimeTabView', PrimeTabView)
 app.component('PrimeTabPanel', PrimeTabPanel)
 app.component('PrimeInputNumber', PrimeInputNumber)
+app.component('PrimeInputSwitch', PrimeInputSwitch)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */

@@ -10,6 +10,7 @@
         :attributes="attributes"
         :rules="rules"
         :is-dark="userStore.state.darkmode"
+        highlight="true"
         expanded
         ref="calendar"
         @didMove="handleDidMove"
@@ -57,6 +58,42 @@
               >Terminbeschreibung
             </label>
           </span>
+          <div>
+            <PrimeInputSwitch v-model="repeatingDate" id="repeatingDateToggle" /><label
+              for="repeatingDateToggle"
+              >Termin wiederholt sich</label
+            >
+          </div>
+          <div v-if="repeatingDate">
+            <PrimeInputNumber
+              v-model="repeatNumber"
+              class="input input-text"
+              inputId="repeatNumber"
+              mode="decimal"
+              showButtons
+              :min="repeatMinMax.min"
+              :max="repeatMinMax.max"
+            />
+            <PrimeDropdown
+              v-model="repeatCategory"
+              :options="repeatCategoryOptions"
+              optionLabel="content"
+              placeholder="Wähle eine Bezeichnung aus"
+              id="catbreed-selection"
+            />
+
+            <PrimeMultiSelect
+              v-if="repeatCategory.content === 'Wochen' || repeatCategory.content === 'Monate'"
+              v-model="selectedWeekdays"
+              :options="repeatWeekdayCategoryOptions"
+              optionLabel="content"
+              placeholder="Wähle die Futtervariante(n) aus"
+              id="input-cat-inoutdoor"
+              :maxSelectedLabels="4"
+              class="multiselect"
+            />
+          </div>
+
           <PrimeButton class="button-send" label="Absenden" @click="createNewTodo"></PrimeButton>
         </div>
       </PrimeDialog>
@@ -71,9 +108,11 @@
             <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
-                  (new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                    new Date(todo.date).getFullYear() === shownDate.year) ||
-                  todo.editActive === true
+                  (new Date(todo.dates.start).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates?.start).getFullYear() === shownDate.year) ||
+                  todo.editActive === true ||
+                  (new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates).getFullYear() === shownDate.year)
                 "
               >
                 <TodoCard
@@ -101,11 +140,15 @@
             <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
-                  (new Date(todo.date).getDate() ===
+                  (new Date(todo.dates.start).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
-                    new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                    new Date(todo.date).getFullYear() === shownDate.year) ||
-                  todo.editActive === true
+                    new Date(todo.dates.start).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates.start).getFullYear() === shownDate.year) ||
+                  todo.editActive === true ||
+                  (new Date(todo.dates).getDate() ===
+                    new Date(new Date(date).setHours(10)).getDate() &&
+                    new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates).getFullYear() === shownDate.year)
                 "
               >
                 <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
@@ -150,6 +193,7 @@
       </div>
     </div>
   </div>
+  {{ currentRepeatingDate }}
 </template>
 
 <script setup>
@@ -191,11 +235,85 @@ const addNewTodo = ref(false)
 const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 
+let repeatingDate = ref(false)
+// let repeatingDateLabel = ref('Einmaliger Termin')
 const date = ref(new Date())
 const rules = ref({
   minutes: [0, 15, 30, 45]
 })
 
+const repeatCategory = ref('')
+const repeatCategoryOptions = ref([
+  { content: 'Tage' },
+  { content: 'Wochen' },
+  { content: 'Monate' }
+])
+
+const repeatNumber = ref(0)
+
+const repeatWeekdayCategoryOptions = [
+  { content: 'Montag' },
+  { content: 'Dienstag' },
+  { content: 'Mittwoch' },
+  { content: 'Donnerstag' },
+  { content: 'Freitag' },
+  { content: 'Samstag' },
+  { content: 'Sonntag' }
+]
+
+const selectedWeekdays = ref([])
+
+const repeatMinMax = computed(() => {
+  if (repeatCategory.value.content === 'Tage') {
+    return { min: 1, max: 30 }
+  }
+  if (repeatCategory.value.content === 'Wochen') {
+    return { min: 1, max: 30 }
+  }
+  if (repeatCategory.value.content === 'Monate') {
+    return { min: 1, max: 30 }
+  } else return { min: 0, max: 0 }
+})
+
+const calculateRepeatingDate = computed(() => {
+  const weekdayDictionary = {
+    Montag: 2,
+    Dienstag: 3,
+    Mittwoch: 4,
+    Donnerstag: 5,
+    Freitag: 6,
+    Samstag: 7,
+    Sonntag: 8
+  }
+
+  if (repeatCategory.value.content === 'Tage') {
+    const dates = {
+      start: date.value,
+      repeat: {
+        every: [repeatNumber.value, 'days']
+      }
+    }
+    return dates
+  }
+
+  if (repeatCategory.value.content === 'Wochen' || repeatCategory.value.content === 'Monate') {
+    let weekdayArray = []
+    let weeksOrMonth = repeatCategory.value.content === 'Wochen' ? 'weeks' : 'months'
+    for (let item of selectedWeekdays.value) {
+      weekdayArray.push(weekdayDictionary[item.content])
+    }
+    const dates = {
+      start: date.value,
+      repeat: {
+        every: [repeatNumber.value, weeksOrMonth],
+        weekdays: weekdayArray
+      }
+    }
+    return dates
+  }
+  return null
+})
+const currentRepeatingDate = ref(calculateRepeatingDate)
 const shownDate = ref({
   year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
@@ -207,11 +325,15 @@ function handleDidMove(pages) {
   shownDate.value.year = pages[0].year
 }
 
+// function toggleRepeatingDate() {
+//   repeatingDate.value = !repeatingDate.value
+//   repeatingDateLabel.value = !repeatingDate.value ? 'Einmaliger Termin' : 'Termin wiederholt sich'
+// }
 async function getTodos() {
   const { data, error } = await supabase
     .from('todos')
     .select(
-      `id, cat_id, header, content, created_by, completed, created_at, date, profiles(id, username)`
+      `id, cat_id, header, content, created_by, completed, created_at, dates, profiles(id, username)`
     )
     .eq('cat_id', catsStore.state.currentCat.id)
   if (error) {
@@ -225,7 +347,7 @@ async function getTodos() {
 
 function handleEditActive(todo) {
   todo.editActive = true
-  date.value = new Date(todo.date)
+  date.value = new Date(todo.dates)
 }
 
 async function handleEdit(todoHeader, todoDescription, todo) {
@@ -260,7 +382,7 @@ async function handleEdit(todoHeader, todoDescription, todo) {
   todoContent.value = todoDescription
   const { data, error } = await supabase
     .from('todos')
-    .update([{ header: todoHeaderContent.value, content: todoContent.value, date: date.value }])
+    .update([{ header: todoHeaderContent.value, content: todoContent.value, dates: date.value }])
     .eq('id', todo.id)
     .select()
 
@@ -322,6 +444,7 @@ async function handleAddTodo() {
     })
     return
   }
+
   addNewTodo.value = !addNewTodo.value
 }
 
@@ -345,6 +468,19 @@ async function createNewTodo() {
     return
   }
 
+  if (repeatingDate.value === true) {
+    date.value = currentRepeatingDate.value
+    if (currentRepeatingDate.value === null) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Fehlende Angaben',
+        detail: 'Bitte wähle Angaben zur Terminwiederholung aus',
+        life: 3000
+      })
+      return
+    }
+  }
+
   const { data, error } = await supabase
     .from('todos')
     .insert([
@@ -352,7 +488,7 @@ async function createNewTodo() {
         cat_id: catsStore.state.currentCat.id,
         header: todoHeaderContent.value,
         content: todoContent.value,
-        date: date.value
+        dates: JSON.stringify(date.value)
       }
     ])
     .select()
@@ -360,6 +496,7 @@ async function createNewTodo() {
     console.log(error)
   }
   if (data) {
+    console.log(data)
     toast.add({
       severity: 'success',
       summary: 'Termin angelegt',
@@ -384,7 +521,25 @@ function sortTodos() {
     }
     return 0
   }
+
+  for (let todo of todos.value) {
+    todo.dates = JSON.parse(todo.dates)
+  }
 }
+// const attributes = [
+//   {
+//     key: 'test',
+
+//     dot: 'purple',
+//     dates: {
+//       start: new Date(2023, 12, 1),
+//       repeat: {
+//         every: [2, 'months'],
+//         weekdays: [1, 2]
+//       }
+//     }
+//   }
+// ]
 
 const attributes = computed(() => {
   if (todos.value === null) {
@@ -392,7 +547,7 @@ const attributes = computed(() => {
   } else {
     return [
       ...todos.value.map((todo) => ({
-        dates: todo.date,
+        dates: todo.dates,
         dot: {
           color: todo.completed ? 'primary' : 'rose',
           ...(todo.completed && { class: 'opacit-75' })
