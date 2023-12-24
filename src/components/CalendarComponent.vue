@@ -58,40 +58,72 @@
               >Terminbeschreibung
             </label>
           </span>
-          <div>
+          <div class="date-selector-wrapper">
+            <label v-if="repeatingDate" for="date-selector">Terminstart:</label>
+            <label v-else for="date-selector">Terminzeitpunkt:</label>
+
+            <PrimeCalendar
+              class="input"
+              id="date-selectior"
+              v-model="date"
+              dateFormat="dd/mm/yy"
+              showTime
+              hourFormat="24"
+              showIcon
+            />
+          </div>
+
+          <div class="toggle-wrapper">
             <PrimeInputSwitch v-model="repeatingDate" id="repeatingDateToggle" /><label
               for="repeatingDateToggle"
               >Termin wiederholt sich</label
             >
           </div>
-          <div v-if="repeatingDate">
-            <PrimeInputNumber
-              v-model="repeatNumber"
-              class="input input-text"
-              inputId="repeatNumber"
-              mode="decimal"
-              showButtons
-              :min="repeatMinMax.min"
-              :max="repeatMinMax.max"
-            />
-            <PrimeDropdown
-              v-model="repeatCategory"
-              :options="repeatCategoryOptions"
-              optionLabel="content"
-              placeholder="Wähle eine Bezeichnung aus"
-              id="catbreed-selection"
-            />
 
-            <PrimeMultiSelect
-              v-if="repeatCategory.content === 'Wochen' || repeatCategory.content === 'Monate'"
-              v-model="selectedWeekdays"
-              :options="repeatWeekdayCategoryOptions"
-              optionLabel="content"
-              placeholder="Wähle die Futtervariante(n) aus"
-              id="input-cat-inoutdoor"
-              :maxSelectedLabels="4"
-              class="multiselect"
-            />
+          <div v-if="repeatingDate" class="repeating-date-container">
+            <!-- <p id="description-frequency">Gib hier die Wiederholungsfrequenz an:</p> -->
+            <div class="freqency-selection-wrapper">
+              <PrimeInputNumber
+                v-model="repeatNumber"
+                mode="decimal"
+                showButtons
+                id="repeat-number"
+                prefix=" Wiederholung alle "
+                :min="repeatMinMax.min"
+                :max="repeatMinMax.max"
+              />
+
+              <PrimeDropdown
+                v-model="repeatCategory"
+                :options="repeatCategoryOptions"
+                optionLabel="content"
+                placeholder="Tage, Wochen, Monate...?"
+                id="repeat-category"
+              />
+
+              <PrimeMultiSelect
+                v-if="repeatCategory.content === 'Wochen' || repeatCategory.content === 'Monate'"
+                v-model="selectedWeekdays"
+                :options="repeatWeekdayCategoryOptions"
+                optionLabel="content"
+                placeholder="Jeweils am:"
+                id="repeat-weekdays"
+                :maxSelectedLabels="4"
+                class="multiselect"
+              />
+              <label class="label-repeat-end" for="input-repeat-end"
+                >Ende der Wiederholungen:</label
+              >
+              <PrimeCalendar
+                class="input"
+                id="input-repeat-end"
+                showTime
+                hourFormat="24"
+                v-model="repeatingDateEnd"
+                dateFormat="dd/mm/yy"
+                showIcon
+              />
+            </div>
           </div>
 
           <PrimeButton class="button-send" label="Absenden" @click="createNewTodo"></PrimeButton>
@@ -235,9 +267,11 @@ const addNewTodo = ref(false)
 const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 
-let repeatingDate = ref(false)
+const repeatingDate = ref(false)
 // let repeatingDateLabel = ref('Einmaliger Termin')
 const date = ref(new Date())
+
+const repeatingDateEnd = ref(new Date(date.value + 1))
 const rules = ref({
   minutes: [0, 15, 30, 45]
 })
@@ -290,7 +324,8 @@ const calculateRepeatingDate = computed(() => {
     const dates = {
       start: date.value,
       repeat: {
-        every: [repeatNumber.value, 'days']
+        every: [repeatNumber.value, 'days'],
+        until: repeatingDateEnd.value
       }
     }
     return dates
@@ -306,7 +341,8 @@ const calculateRepeatingDate = computed(() => {
       start: date.value,
       repeat: {
         every: [repeatNumber.value, weeksOrMonth],
-        weekdays: weekdayArray
+        weekdays: weekdayArray,
+        until: repeatingDateEnd.value
       }
     }
     return dates
@@ -496,7 +532,6 @@ async function createNewTodo() {
     console.log(error)
   }
   if (data) {
-    console.log(data)
     toast.add({
       severity: 'success',
       summary: 'Termin angelegt',
@@ -508,6 +543,12 @@ async function createNewTodo() {
   todoContent.value = ''
   todoHeaderContent.value = ''
   addNewTodo.value = false
+  date.value = new Date()
+  repeatingDateEnd.value = new Date(date.value + 1)
+  repeatingDate.value = false
+  repeatCategory.value = ''
+  repeatNumber.value = 0
+  selectedWeekdays.value = []
 }
 
 function sortTodos() {
@@ -524,6 +565,9 @@ function sortTodos() {
 
   for (let todo of todos.value) {
     todo.dates = JSON.parse(todo.dates)
+    if (todo.dates.repeat) {
+      todo.dates.repeat.until = new Date(todo.dates.repeat.until)
+    }
   }
 }
 // const attributes = [
@@ -532,11 +576,8 @@ function sortTodos() {
 
 //     dot: 'purple',
 //     dates: {
-//       start: new Date(2023, 12, 1),
-//       repeat: {
-//         every: [2, 'months'],
-//         weekdays: [1, 2]
-//       }
+//       start: '2024-01-01T12:00:20.000Z',
+//       repeat: { every: [1, 'weeks'], weekdays: [2], until: new Date('2024-01-30T12:05:20.000Z') }
 //     }
 //   }
 // ]
@@ -611,7 +652,7 @@ onBeforeMount(() => {
 }
 
 .todo-input {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   width: 90%;
 }
 
@@ -631,7 +672,6 @@ onBeforeMount(() => {
 .float-label_label {
   color: var(--text);
   font-size: 1rem;
-  padding-inline: 0.5rem;
 }
 .input-area + .float-label_label {
   transform: translateY(0.55rem);
@@ -649,7 +689,7 @@ onBeforeMount(() => {
 }
 
 .button-send {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   width: 90%;
 }
 .todo-output-container {
@@ -715,12 +755,66 @@ onBeforeMount(() => {
   text-align: left;
   font-weight: 500;
 }
+.date-selector-wrapper {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  margin-block: 0.5rem;
+  gap: 0.25rem;
+}
+.date-selector-wrapper label {
+  margin-top: 0rem;
+  margin-bottom: 0;
+  padding-left: 0.5rem;
+}
 .button-container {
   padding-bottom: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
+
+.toggle-wrapper {
+  width: 90%;
+  display: flex;
+  padding-block: 0.75rem;
+  gap: 1rem;
+  align-items: center;
+  font-family: 'Roboto-Regular';
+  position: relative;
+}
+.repeating-date-container {
+  /* background-color: var(--card-background); */
+  padding: 1rem;
+  padding-block: 1rem;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary);
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  width: 93%;
+  position: relative;
+  align-items: center;
+  margin-block: 0.5rem;
+}
+
+/* .repeating-date-container > p {
+  margin-block: 0.5rem;
+  font-family: 'Roboto-Medium';
+} */
+.freqency-selection-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
+}
+.label-repeat-end {
+  margin-top: 0.25rem;
+  margin-bottom: -0.5rem;
+  padding-left: 0.5rem;
+}
+
 @media screen and (min-width: 600px) {
   .calendar-container,
   .dialog-container {
