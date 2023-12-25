@@ -610,14 +610,14 @@ let touchendX = 0
 function checkIfSwipe() {
   console.log(touchstartX, touchendX)
   if (touchendX < touchstartX) {
-    if (touchendX + 200 < touchstartX) {
+    if (touchendX + 150 < touchstartX) {
       if (activeMenuItem.value < 3) {
         activeMenuItem.value++
       }
     }
   }
   if (touchendX > touchstartX) {
-    if (touchendX - 200 > touchstartX) {
+    if (touchendX - 150 > touchstartX) {
       if (activeMenuItem.value > 0) {
         activeMenuItem.value--
       }
@@ -711,7 +711,7 @@ form {
 .menufade-enter-active,
 .menufade-leave-active {
   opacity: 100;
-  transition: all 300ms ease-out;
+  transition: all 150ms ease-out;
   transform: translateX(0);
 }
 
@@ -727,8 +727,7 @@ form {
   display: grid;
   gap: 0.5rem;
 }
-.containeractive {
-}
+
 article > div {
   padding-left: 0.25rem;
   display: flex;

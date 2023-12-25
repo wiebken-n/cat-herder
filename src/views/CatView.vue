@@ -791,7 +791,7 @@ let touchendX = 0
 function checkIfSwipe() {
   if (activeMenuItem.value === 1) {
     if (touchendX < touchstartX) {
-      if (touchendX + 200 < touchstartX) {
+      if (touchendX + 150 < touchstartX) {
         if (activeCatInfoMenuItem.value < 3) {
           activeCatInfoMenuItem.value++
         } else if (activeCatInfoMenuItem.value === 3) {
@@ -800,7 +800,7 @@ function checkIfSwipe() {
       }
     }
     if (touchendX > touchstartX) {
-      if (touchendX - 200 > touchstartX) {
+      if (touchendX - 150 > touchstartX) {
         if (activeCatInfoMenuItem.value > 0) {
           activeCatInfoMenuItem.value--
         } else if (activeCatInfoMenuItem.value === 0) {
@@ -810,14 +810,14 @@ function checkIfSwipe() {
     }
   } else {
     if (touchendX < touchstartX) {
-      if (touchendX + 200 < touchstartX) {
+      if (touchendX + 150 < touchstartX) {
         if (activeMenuItem.value < 3) {
           activeMenuItem.value++
         }
       }
     }
     if (touchendX > touchstartX) {
-      if (touchendX - 200 > touchstartX) {
+      if (touchendX - 150 > touchstartX) {
         if (activeMenuItem.value > 0) {
           activeMenuItem.value--
         }

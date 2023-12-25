@@ -246,9 +246,7 @@
 .vc-light .vc-arrow {
   background-color: var(--background-clr);
 }
-.vc-weeks {
-  margin-bottom: -2rem;
-}
+
 .vc-time-picker {
   padding-block: 1rem;
 }
@@ -367,6 +365,11 @@ body {
 
 .p-highlight .p-menuitem-text {
   color: var(--text);
+}
+
+.todo-card-datepicker .p-button {
+  background-color: var(--primary-darker-dark);
+  border-color: var(--primary-darker-dark);
 }
 
 .darkmode {

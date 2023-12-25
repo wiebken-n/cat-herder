@@ -1,9 +1,10 @@
 <template>
-  <div class="todo-content-container">
+  <div class="todo-content-container" v-if="props.todo">
     <div class="header-wrapper">
       <PrimeTag class="user-tag" :value="props.creatorName" rounded></PrimeTag>
 
       <p class="todo-date">
+        <span>Start: </span>
         <span>
           {{ getTime(new Date(currentDate).getHours(), new Date(currentDate).getMinutes()) }}</span
         >
@@ -18,6 +19,39 @@
           }}</span
         >
       </p>
+      <p class="todo-date">
+        <span>Ende: </span>
+        <span>
+          {{
+            getTime(new Date(currentEndDate).getHours(), new Date(currentEndDate).getMinutes())
+          }}</span
+        >
+        <span>|</span>
+        <span>
+          {{
+            getDate(
+              new Date(currentEndDate).getDate(),
+              new Date(currentEndDate).getMonth() + 1,
+              new Date(currentEndDate).getFullYear()
+            )
+          }}</span
+        >
+      </p>
+      <div class="repeating-info">
+        <p>
+          Wiederholung alle
+          <span class="repeat-info-number">{{ props.todo?.dates?.repeat?.every?.[0] }}</span>
+          <span>{{ repeatCategories[props.todo?.dates?.repeat?.every?.[1]] }}</span>
+        </p>
+      </div>
+      <div class="weekdays-container">
+        <PrimeTag
+          class="repeat-info-weekdays"
+          v-for="day of props.todo?.dates?.repeat?.weekdays"
+          :key="day"
+          >{{ repeatDays[day] }}</PrimeTag
+        >
+      </div>
     </div>
     <div class="todo-header-wrapper">
       <p v-if="!editState" class="todo-header">{{ props.todo.header }}</p>
@@ -53,20 +87,34 @@
       ></PrimeTextArea>
     </div>
 
-    <div class="todo-date-edit-wrapper" v-if="editState">
-      <label for="input-repeat-start" class="label">Terminzeitpunkt</label>
+    <div class="date-edit-container" v-if="editState">
+      <div>
+        <label for="input-repeat-start" class="label">Start der Wiederholungen</label>
 
-      <PrimeCalendar
-        class="input todo-card-datepicker"
-        id="input-repeat-start"
-        showTime
-        hourFormat="24"
-        v-model="currentDate"
-        dateFormat="dd/mm/yy"
-        showIcon
-      />
+        <PrimeCalendar
+          class="input todo-card-datepicker"
+          id="input-repeat-start"
+          showTime
+          hourFormat="24"
+          v-model="currentDate"
+          dateFormat="dd/mm/yy"
+          showIcon
+        />
+      </div>
+      <div>
+        <label for="input-repeat-start" class="label">Ende der Wiederholungen</label>
+
+        <PrimeCalendar
+          class="input todo-card-datepicker"
+          id="input-repeat-end"
+          showTime
+          hourFormat="24"
+          v-model="currentEndDate"
+          dateFormat="dd/mm/yy"
+          showIcon
+        />
+      </div>
     </div>
-
     <div class="interaction-wrapper">
       <PrimeCheckbox
         v-if="!editState"
@@ -118,16 +166,21 @@ let todoHeader = props.todo.header
 
 const currentDate = ref(null)
 
+const currentEndDate = ref(null)
+
 if (props.todo.dates.start) {
-  currentDate.value = props.todo.dates.start
+  currentDate.value = new Date(props.todo.dates.start)
 } else currentDate.value = props.todo.dates
 
+if (props.todo.dates.repeat.until) {
+  currentEndDate.value = props.todo.dates.repeat.until
+}
 function editClicked() {
   if (!editState.value) {
     emit('editActive')
   }
   if (editState.value) {
-    emit('editTodo', todoHeader, todoDescription)
+    emit('editTodo', todoHeader, todoDescription, currentDate, currentEndDate)
   }
   editState.value = !editState.value
 }
@@ -138,6 +191,21 @@ function getDate(day, month, year) {
 
 function getTime(hour, minute) {
   return hour + ':' + minute + ' ' + 'Uhr'
+}
+
+const repeatCategories = {
+  days: 'Tage',
+  weeks: 'Wochen',
+  months: 'Monate'
+}
+const repeatDays = {
+  1: 'Sonntag',
+  2: 'Montag',
+  3: 'Dienstag',
+  4: 'Mittwoch',
+  5: 'Donnerstag',
+  6: 'Freitag',
+  7: 'Samstag'
 }
 </script>
 
@@ -162,10 +230,12 @@ function getTime(hour, minute) {
 }
 
 .header-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
+
 p {
   font-size: 0.95rem;
 }
@@ -173,6 +243,10 @@ p {
   color: var(--cat-card-text);
   background-color: var(--primary-darkest);
   transition: all 200ms ease-in-out;
+  grid-column: 1;
+  justify-self: start;
+  padding: 0.4rem;
+  padding-inline: 0.75rem;
 }
 /* .todo-content-container:hover * .user-tag,
 .todo-content-container:focus * .user-tag {
@@ -184,10 +258,53 @@ p {
   flex-direction: row;
   gap: 0.5rem;
   margin: 0;
+  grid-column: 2;
+  justify-self: end;
 }
+.repeating-info {
+  font-family: 'Roboto-Slab';
+  grid-row: 3;
+  grid-column: 1/3;
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+.repeating-info p {
+  text-align: end;
+  margin: 0;
+}
+.repeat-info-number::after {
+  content: ' ';
+}
+.weekdays-container {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  grid-column: 2;
+  gap: 0.3rem;
+}
+.repeat-info-weekdays {
+  color: var(--cat-card-text);
+  background-color: var(--primary-darkest);
+  transition: all 200ms ease-in-out;
+  border-radius: 20px;
+  /* margin-top: 0.3rem; */
+}
+
+/* .todo-content-container:focus * .repeat-info-weekdays,
+.todo-content-container:hover * .repeat-info-weekdays {
+  background-color: var(--primary-darker-dark);
+} */
+
+/* .repeat-info-weekdays + .repeat-info-weekdays {
+  margin-left: 0.25rem;
+} */
 .todo-content-wrapper,
-.todo-header-wrapper,
-.todo-date-edit-wrapper {
+.todo-header-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -216,13 +333,21 @@ p {
   padding-block: 0.25rem;
 }
 
-.todo-date-edit-wrapper {
-  margin-bottom: 1.25rem;
+.date-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
+.date-edit-container > div {
+  gap: 0.125rem;
+  display: flex;
+  flex-direction: column;
+}
+
 .interaction-wrapper {
   display: flex;
   justify-content: space-between;
-  width: 100%;
 }
 .button-wrapper {
   margin-left: auto;
