@@ -28,17 +28,21 @@ import PrimeMultiSelect from 'primevue/multiselect'
 import PrimeTabView from 'primevue/tabview'
 import PrimeTabPanel from 'primevue/tabpanel'
 import PrimeInputNumber from 'primevue/inputnumber'
+import PrimeInputSwitch from 'primevue/inputswitch'
 
 import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
 
-import './assets/base-style.css'
+import primevuede from '@/assets/primevuede.json'
 /* <<<<<<<<<<<< Prime Vue Component imports */
+import './assets/base-style.css'
+
+const primevueDeLoc = primevuede.de
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue)
+app.use(PrimeVue, { locale: primevueDeLoc })
 app.use(ToastService)
 app.use(ConfirmationService)
 
@@ -62,6 +66,7 @@ app.component('PrimeMultiSelect', PrimeMultiSelect)
 app.component('PrimeTabView', PrimeTabView)
 app.component('PrimeTabPanel', PrimeTabPanel)
 app.component('PrimeInputNumber', PrimeInputNumber)
+app.component('PrimeInputSwitch', PrimeInputSwitch)
 // app.component('FileUpload', FileUpload)
 
 /* <<<<<<< Prime Vue Components */

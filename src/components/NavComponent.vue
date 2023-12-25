@@ -1,26 +1,39 @@
 <template>
   <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
     <div class="burger-container">
-      <svg
-        @click="activateMenu"
+      <PrimeButton
         :class="{ burgeractive: menuActive }"
-        alt="burger-menu-icon"
-        class="burger"
-        data-cy="burger"
+        @click="activateMenu('click')"
+        @keyup.enter="activateMenu('enter')"
+        class="burger-button"
+        aria-label="Seitennavigation"
       >
-        <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
-      </svg>
+        <svg
+          :class="{ burgeractive: menuActive }"
+          alt="burger-menu-icon"
+          class="burger"
+          data-cy="burger"
+        >
+          <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use></svg
+      ></PrimeButton>
     </div>
     <transition>
       <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
         <div class="nav-wrapper" :class="{ navactive: menuActive }">
           <ul>
-            <li @click="goToPage('/')">Home</li>
-            <li @click="goToPage('/add-cat')">Neue Katze</li>
-            <li @click="goToPage('/herder')">Cat Herder</li>
-            <li @click="goToPage('/user')">Einstellungen</li>
-            <li @click="goToPage('/impressum')">Impressum</li>
-            <li></li>
+            <li tabindex="0" @keyup.enter="goToPage('/')" @click="goToPage('/')">Home</li>
+            <li tabindex="0" @keyup.enter="goToPage('/add-cat')" @click="goToPage('/add-cat')">
+              Neue Katze
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/herder')" @click="goToPage('/herder')">
+              Cat Herder
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/user')" @click="goToPage('/user')">
+              Einstellungen
+            </li>
+            <li tabindex="0" @keyup.enter="goToPage('/impressum')" @click="goToPage('/impressum')">
+              Impressum
+            </li>
           </ul>
         </div>
         <button @click="toggleDarkmode()" class="darkmode-toggle">
@@ -71,7 +84,8 @@
   color: var(--darkmode-icon);
   transition: all 200ms ease-in-out;
 }
-.darkmode-toggle:hover > .darkmode-toggle-icon {
+.darkmode-toggle:hover > .darkmode-toggle-icon,
+.darkmode-toggle:focus > .darkmode-toggle-icon {
   scale: 1.1;
   color: var(--burger-icons-hover);
 }
@@ -93,23 +107,50 @@
   align-content: start;
 }
 .burger {
-  position: absolute;
   height: 2.75rem;
   width: 2.75rem;
-  right: 10px;
-  top: 10px;
   z-index: 3;
   transition: all 200ms ease;
   scale: 1;
   color: var(--burger-icons);
 }
+.burger-button {
+  height: 2.75rem;
+  width: 2.75rem;
+  padding: 0;
+  right: 10px;
+  top: 10px;
+  position: absolute;
+  border: transparent;
+  background-color: transparent;
+  outline: none;
+  scale: 1;
+  z-index: 4;
+  transition: all 200ms ease;
+}
 
-.burger:hover {
+.burger-button:hover,
+.burger-button:focus {
+  scale: 1.05;
+  transform-origin: center;
+}
+.burger-button:focus .burger {
+  color: var(--burger-bg);
+}
+.burger-button:focus {
+  box-shadow: none;
+}
+
+.burger-button:hover .burger,
+.burger-button:hover .burger {
   scale: 1.05;
   transform-origin: center;
   color: var(--burger-icons-hover);
   cursor: pointer;
+  border: none;
+  outline: none;
 }
+
 .burgeractive {
   color: var(--burger-bg);
 }
@@ -149,7 +190,8 @@ li {
   color: var(--nav-text);
   width: 80%;
 }
-li:hover {
+li:hover,
+li:focus {
   color: var(--nav-text-hover);
   border-bottom: 10px var(--primary) solid;
   cursor: pointer;
@@ -196,9 +238,14 @@ const props = defineProps({
   session: Object
 })
 
-const activateMenu = function () {
-  menuActive.value = !menuActive.value
+const activateMenu = function (method) {
+  if (method === 'enter') {
+    menuActive.value = true
+  } else {
+    menuActive.value = !menuActive.value
+  }
 }
+
 const deactivateMenu = function () {
   setTimeout(() => {
     menuActive.value = false

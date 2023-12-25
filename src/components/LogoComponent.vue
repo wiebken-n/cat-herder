@@ -1,11 +1,12 @@
 <template>
   <div class="logo-content-wrapper">
-    <div
+    <button
       class="logo"
       alt="Eine Katze mit einem Cowboy-Hut"
       @click="router.push('/')"
       data-cy="logo"
-    ></div>
+      tabindex="0"
+    ></button>
     <!-- <svg class="icon logo" @click="router.push('/')" data-cy="logo">
       <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor" />
     </svg> -->
@@ -39,16 +40,18 @@ onBeforeMount(() => imageUrl())
   background-size: 55%;
   background-position: center;
   border-radius: 90%;
+  border: none;
 }
-.logo:hover {
+.logo:hover,
+.logo:focus {
   color: var(--alert-dark);
   scale: 1.1;
   cursor: pointer;
   background-color: var(--logo-bg-hover);
   background-image: url('/catwithhat_small.webp');
-  animation: tilt-shaking 0.25s 2 ease-in-out;
+  /* animation: tilt-shaking 0.25s 2 ease-in-out; */
 }
-
+/* 
 @keyframes tilt-shaking {
   0% {
     transform: rotate(0deg);
@@ -65,7 +68,7 @@ onBeforeMount(() => imageUrl())
   100% {
     transform: rotate(0deg);
   }
-}
+} */
 
 .home-button {
   background: none;

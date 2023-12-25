@@ -66,7 +66,6 @@
               label="Wähle einen Avatar aus"
               icon="pi pi-external-link"
               @click="pickAvatarVisible = true"
-              outlined
             />
           </article>
 
@@ -137,7 +136,7 @@
           </article>
 
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 1">
+            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 1">
               <span>weiter</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -229,12 +228,12 @@
           </article>
 
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 0">
+            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 0">
               <svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
               ><span>zurück</span>
             </PrimeButton>
-            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 2">
+            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 2">
               <span>weiter</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -300,12 +299,12 @@
           </article>
 
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 1">
+            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
               <svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
               ><span>zurück</span>
             </PrimeButton>
-            <PrimeButton class="button-nav button-right" @click="activeMenuItem = 3">
+            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 3">
               <span>weiter</span
               ><svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -396,7 +395,7 @@
             label="Speichere deine Katze"
           ></PrimeButton>
           <div class="button-wrapper">
-            <PrimeButton class="button-nav button-left" @click="activeMenuItem = 2">
+            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
               <svg class="icon">
                 <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
               ><span>zurück</span>
@@ -604,6 +603,37 @@ function emptyCatData() {
     behaviour_info: ''
   }
 }
+
+let touchstartX = 0
+let touchendX = 0
+
+function checkIfSwipe() {
+  console.log(touchstartX, touchendX)
+  if (touchendX < touchstartX) {
+    if (touchendX + 150 < touchstartX) {
+      if (activeMenuItem.value < 3) {
+        activeMenuItem.value++
+      }
+    }
+  }
+  if (touchendX > touchstartX) {
+    if (touchendX - 150 > touchstartX) {
+      if (activeMenuItem.value > 0) {
+        activeMenuItem.value--
+      }
+    }
+  }
+}
+
+document.addEventListener('touchstart', (e) => {
+  touchstartX = e.changedTouches[0].screenX
+})
+
+document.addEventListener('touchend', (e) => {
+  touchendX = e.changedTouches[0].screenX
+  checkIfSwipe()
+})
+
 onBeforeMount(() => {
   createAvatarNumbers()
   emptyCatData()
@@ -644,7 +674,14 @@ header {
   justify-content: center;
   font-family: 'Roboto-Medium';
   box-shadow: 0 0 3px 1px var(--card-shadow);
+  transition: all 200ms ease-in-out;
 }
+
+.number-menu-container > button:hover,
+.number-menu-container > button:focus {
+  box-shadow: 0 0 4px 0px var(--text-off);
+}
+
 form {
   display: grid;
   grid-template-columns: 1fr;
@@ -674,7 +711,7 @@ form {
 .menufade-enter-active,
 .menufade-leave-active {
   opacity: 100;
-  transition: all 300ms ease-out;
+  transition: all 150ms ease-out;
   transform: translateX(0);
 }
 
@@ -690,8 +727,7 @@ form {
   display: grid;
   gap: 0.5rem;
 }
-.containeractive {
-}
+
 article > div {
   padding-left: 0.25rem;
   display: flex;
@@ -725,21 +761,17 @@ article > div {
   display: flex;
 }
 .button-nav {
-  border-color: var(--old-rose-darker);
-  background-color: var(--old-rose-darker);
   display: flex;
   justify-content: space-between;
   width: 8rem;
   transition: all 200ms ease-in-out;
 }
-.button-nav:hover {
-  background-color: var(--old-rose-light);
-}
+
 .button-right {
   margin-left: auto;
 }
 .button-nav > svg {
-  color: var(--background-clr);
+  color: var(--primary);
 }
 header,
 .menu-container,
@@ -817,7 +849,8 @@ form > article > *,
   scale: 1;
   transition: all 200ms ease-in-out;
 }
-.cat-image-show:hover {
+.cat-image-show:hover,
+.cat-image-show:focus {
   scale: 1.05;
   box-shadow: 0 0 10px 2px var(--hover-shadow);
 }
@@ -833,7 +866,7 @@ form > article > *,
 
 .cat-avatar-dummy {
   color: var(--cat-avatar-dummy);
-  background: var(--old-rose-darker);
+  background: var(--background-cat-avatar);
 }
 .svg-img {
   scale: 0.5;
@@ -844,7 +877,8 @@ form > article > *,
   background-color: transparent;
   border: 0 transparent solid;
 }
-.cat-image:hover {
+.cat-image:hover,
+.cat-image:focus {
   box-shadow: 0 0 10px 2px var(--hover-shadow);
   scale: 1.05;
   animation: tilt-shaking 0.25s 2 ease-in-out;

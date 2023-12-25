@@ -8,7 +8,6 @@ import { useUserStore } from './stores/useUserStore'
 import NavComponent from '@/components/NavComponent.vue'
 import LandingPageView from '@/views/LandingPageView.vue'
 import LogoComponent from '@/components/LogoComponent.vue'
-
 const userStore = useUserStore()
 
 const session = ref('')

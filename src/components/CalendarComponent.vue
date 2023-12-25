@@ -4,12 +4,12 @@
       <DatePicker
         class="calendar"
         v-model="date"
-        mode="dateTime"
         is24hr
         :color="selectedColor"
         :attributes="attributes"
         :rules="rules"
         :is-dark="userStore.state.darkmode"
+        highlight="true"
         expanded
         ref="calendar"
         @didMove="handleDidMove"
@@ -57,6 +57,84 @@
               >Terminbeschreibung
             </label>
           </span>
+          <div class="date-selector-wrapper">
+            <label v-if="repeatingDate" for="date-selector">Terminstart:</label>
+            <label v-else for="date-selector">Terminzeitpunkt:</label>
+
+            <PrimeCalendar
+              class="input"
+              id="date-selectior"
+              v-model="date"
+              dateFormat="dd/mm/yy"
+              showTime
+              hourFormat="24"
+              showIcon
+            />
+          </div>
+
+          <div class="toggle-wrapper">
+            <PrimeInputSwitch v-model="repeatingDate" id="repeatingDateToggle" /><label
+              for="repeatingDateToggle"
+              >Termin wiederholt sich</label
+            >
+          </div>
+
+          <div v-if="repeatingDate" class="repeating-date-container">
+            <!-- <p id="description-frequency">Gib hier die Wiederholungsfrequenz an:</p> -->
+            <div class="freqency-selection-wrapper">
+              <PrimeInputNumber
+                v-model="repeatNumber"
+                mode="decimal"
+                showButtons
+                id="repeat-number"
+                prefix=" Wiederholung alle "
+                :min="repeatMinMax.min"
+                :max="repeatMinMax.max"
+              />
+
+              <PrimeDropdown
+                v-model="repeatCategory"
+                :options="repeatCategoryOptions"
+                optionLabel="content"
+                placeholder="Tage, Wochen, Monate...?"
+                id="repeat-category"
+              />
+
+              <PrimeMultiSelect
+                v-if="repeatCategory.content === 'Wochen'"
+                v-model="selectedWeekdays"
+                :options="repeatWeekdayCategoryOptions"
+                optionLabel="content"
+                placeholder="Jeweils am:"
+                id="repeat-weekdays"
+                :maxSelectedLabels="4"
+                class="multiselect"
+              />
+              <!-- <PrimeInputNumber
+                v-model="repeatNumber"
+                mode="decimal"
+                showButtons
+                id="repeat-number"
+                prefix=" Wiederholung alle "
+                :min="repeatMinMax.min"
+                :max="repeatMinMax.max"
+              /> -->
+
+              <label class="label-repeat-end" for="input-repeat-end"
+                >Ende der Wiederholungen:</label
+              >
+              <PrimeCalendar
+                class="input"
+                id="input-repeat-end"
+                showTime
+                hourFormat="24"
+                v-model="repeatingDateEnd"
+                dateFormat="dd/mm/yy"
+                showIcon
+              />
+            </div>
+          </div>
+
           <PrimeButton class="button-send" label="Absenden" @click="createNewTodo"></PrimeButton>
         </div>
       </PrimeDialog>
@@ -71,12 +149,15 @@
             <div class="todo-card-wrapper" v-for="todo of todos" :key="todo">
               <div
                 v-if="
-                  (new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                    new Date(todo.date).getFullYear() === shownDate.year) ||
-                  todo.editActive === true
+                  (new Date(todo.dates.start).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates?.start).getFullYear() === shownDate.year) ||
+                  todo.editActive === true ||
+                  (new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates).getFullYear() === shownDate.year)
                 "
               >
-                <TodoCard
+                <TodoCardRepeatingDate
+                  v-if="todo.dates?.start"
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
                   :user-id="userStore.state.userId"
@@ -86,7 +167,31 @@
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="handleEditActive(todo)"
                   @editTodo="
-                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                    (todoHeader, todoDescription, currentDate, currentEndDate) =>
+                      handleEditRepeating(
+                        todoHeader,
+                        todoDescription,
+                        currentDate,
+                        currentEndDate,
+                        todo
+                      )
+                  "
+                  @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
+                  class="todo-card"
+                ></TodoCardRepeatingDate>
+                <TodoCard
+                  v-else
+                  :todo="todo"
+                  :cat-user-id="catsStore.state.currentCat.user_id"
+                  :user-id="userStore.state.userId"
+                  :created-by="todo.created_by"
+                  :creator-name="todo.profiles.username"
+                  :completed="todo.completed"
+                  @deleteTodo="deleteTodoDialog(todo)"
+                  @editActive="handleEditActive(todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription, currentDate) =>
+                      handleEdit(todoHeader, todoDescription, currentDate, todo)
                   "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
@@ -101,16 +206,22 @@
             <div v-for="todo of todos" :key="todo" class="todo-card-wrapper">
               <div
                 v-if="
-                  (new Date(todo.date).getDate() ===
+                  (new Date(todo.dates.start).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
-                    new Date(todo.date).getMonth() + 1 === shownDate.month &&
-                    new Date(todo.date).getFullYear() === shownDate.year) ||
-                  todo.editActive === true
+                    new Date(todo.dates.start).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates.start).getFullYear() === shownDate.year &&
+                    date !== null) ||
+                  todo.editActive === true ||
+                  (new Date(todo.dates).getDate() ===
+                    new Date(new Date(date).setHours(10)).getDate() &&
+                    new Date(todo.dates).getMonth() + 1 === shownDate.month &&
+                    new Date(todo.dates).getFullYear() === shownDate.year)
                 "
               >
                 <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
 
-                <TodoCard
+                <TodoCardRepeatingDate
+                  v-if="todo.dates?.start"
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
                   :user-id="userStore.state.userId"
@@ -120,7 +231,31 @@
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="handleEditActive(todo)"
                   @editTodo="
-                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                    (todoHeader, todoDescription, currentDate, currentEndDate) =>
+                      handleEditRepeating(
+                        todoHeader,
+                        todoDescription,
+                        currentDate,
+                        currentEndDate,
+                        todo
+                      )
+                  "
+                  @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
+                  class="todo-card"
+                ></TodoCardRepeatingDate>
+                <TodoCard
+                  v-else
+                  :todo="todo"
+                  :cat-user-id="catsStore.state.currentCat.user_id"
+                  :user-id="userStore.state.userId"
+                  :created-by="todo.created_by"
+                  :creator-name="todo.profiles.username"
+                  :completed="todo.completed"
+                  @deleteTodo="deleteTodoDialog(todo)"
+                  @editActive="handleEditActive(todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription, currentDate) =>
+                      handleEdit(todoHeader, todoDescription, currentDate, todo)
                   "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
@@ -162,6 +297,7 @@ import { useUserStore } from '../stores/useUserStore'
 import { useCatsStore } from '../stores/useCatsStore'
 import { useToast } from 'primevue/usetoast'
 import TodoCard from '@/components/TodoCard.vue'
+import TodoCardRepeatingDate from './TodoCardRepeatingDate.vue'
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -191,11 +327,110 @@ const addNewTodo = ref(false)
 const menuItems = ref([{ label: 'Termine in diesem Monat' }, { label: 'Termine an diesem Tag' }])
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 
+const repeatingDate = ref(false)
+// let repeatingDateLabel = ref('Einmaliger Termin')
 const date = ref(new Date())
+
+const repeatingDateEnd = ref(new Date(date.value + 1))
 const rules = ref({
   minutes: [0, 15, 30, 45]
 })
 
+const repeatCategory = ref('')
+const repeatCategoryOptions = ref([
+  { content: 'Tage' },
+  { content: 'Wochen' },
+  { content: 'Monate' }
+])
+
+const repeatNumber = ref(0)
+
+const repeatWeekdayCategoryOptions = [
+  { content: 'Montag' },
+  { content: 'Dienstag' },
+  { content: 'Mittwoch' },
+  { content: 'Donnerstag' },
+  { content: 'Freitag' },
+  { content: 'Samstag' },
+  { content: 'Sonntag' }
+]
+
+const selectedWeekdays = ref([])
+
+const repeatMinMax = computed(() => {
+  if (repeatCategory.value.content === 'Tage') {
+    return { min: 1, max: 30 }
+  }
+  if (repeatCategory.value.content === 'Wochen') {
+    return { min: 1, max: 30 }
+  }
+  if (repeatCategory.value.content === 'Monate') {
+    return { min: 1, max: 30 }
+  } else return { min: 0, max: 0 }
+})
+
+const calculateRepeatingDate = computed(() => {
+  const weekdayDictionary = {
+    Montag: 2,
+    Dienstag: 3,
+    Mittwoch: 4,
+    Donnerstag: 5,
+    Freitag: 6,
+    Samstag: 7,
+    Sonntag: 1
+  }
+
+  if (repeatCategory.value.content === 'Tage') {
+    const dates = {
+      start: date.value,
+      repeat: {
+        every: [repeatNumber.value, 'days'],
+        until: repeatingDateEnd.value
+      }
+    }
+    return dates
+  }
+
+  if (repeatCategory.value.content === 'Wochen') {
+    let weekDayArray = []
+    // let weeksOrMonth = repeatCategory.value.content === 'Wochen' ? 'weeks' : 'month'
+    for (let item of selectedWeekdays.value) {
+      weekDayArray.push(weekdayDictionary[item.content])
+    }
+    const dates = {
+      start: date.value,
+      repeat: {
+        every: [repeatNumber.value, 'weeks'],
+        weekdays: weekDayArray,
+        until: repeatingDateEnd.value
+      }
+    }
+
+    return dates
+  }
+
+  if (repeatCategory.value.content === 'Monate') {
+    // let dayArray = []
+    // let weeksOrMonth = repeatCategory.value.content === 'Wochen' ? 'weeks' : 'month'
+    // for (let item of selectedWeekdays.value) {
+    //   dayArray.push(weekdayDictionary[item.content])
+    // }
+    const day = new Date(date.value).getDate()
+    const dates = {
+      start: date.value,
+      repeat: {
+        every: [repeatNumber.value, 'months'],
+        days: day,
+        until: repeatingDateEnd.value
+      }
+    }
+    return dates
+  }
+
+  return null
+})
+
+const currentRepeatingDate = ref(calculateRepeatingDate)
 const shownDate = ref({
   year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
@@ -207,11 +442,15 @@ function handleDidMove(pages) {
   shownDate.value.year = pages[0].year
 }
 
+// function toggleRepeatingDate() {
+//   repeatingDate.value = !repeatingDate.value
+//   repeatingDateLabel.value = !repeatingDate.value ? 'Einmaliger Termin' : 'Termin wiederholt sich'
+// }
 async function getTodos() {
   const { data, error } = await supabase
     .from('todos')
     .select(
-      `id, cat_id, header, content, created_by, completed, created_at, date, profiles(id, username)`
+      `id, cat_id, header, content, created_by, completed, created_at, dates, profiles(id, username)`
     )
     .eq('cat_id', catsStore.state.currentCat.id)
   if (error) {
@@ -225,15 +464,24 @@ async function getTodos() {
 
 function handleEditActive(todo) {
   todo.editActive = true
-  date.value = new Date(todo.date)
+  date.value = new Date(todo.dates)
 }
 
-async function handleEdit(todoHeader, todoDescription, todo) {
-  if (!date.value) {
+async function handleEditRepeating(todoHeader, todoDescription, currentDate, currentEndDate, todo) {
+  // if (!date.value) {
+  //   toast.add({
+  //     severity: 'warn',
+  //     summary: 'Kein Datum',
+  //     detail: 'Bitte wähle ein Datum aus',
+  //     life: 3000
+  //   })
+  //   return
+  // }
+  if (new Date(currentDate.value) > new Date(currentEndDate.value)) {
     toast.add({
       severity: 'warn',
-      summary: 'Kein Datum',
-      detail: 'Bitte wähle ein Datum aus',
+      summary: 'Wiederholungszeitraum ungültig',
+      detail: 'Das Ende der Terminwiederholung muss vor dem ersten Termin liegen',
       life: 3000
     })
     return
@@ -258,9 +506,81 @@ async function handleEdit(todoHeader, todoDescription, todo) {
   }
   todoHeaderContent.value = todoHeader
   todoContent.value = todoDescription
+  const newTodoDates = {}
+
+  newTodoDates.repeat = todo.dates.repeat
+  newTodoDates.start = currentDate.value
+  newTodoDates.repeat.until = currentEndDate.value
   const { data, error } = await supabase
     .from('todos')
-    .update([{ header: todoHeaderContent.value, content: todoContent.value, date: date.value }])
+    .update([
+      {
+        header: todoHeaderContent.value,
+        content: todoContent.value,
+        dates: JSON.stringify(newTodoDates)
+      }
+    ])
+    .eq('id', todo.id)
+    .select()
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    toast.add({
+      severity: 'success',
+      summary: 'Termin geändert',
+      detail: 'Du hast den Termin geändert',
+      life: 3000
+    })
+    todoContent.value = ''
+    todoHeaderContent.value = ''
+    todo.editActive = false
+
+    getTodos()
+  }
+}
+
+async function handleEdit(todoHeader, todoDescription, currentDate, todo) {
+  if (!currentDate.value) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Kein Datum',
+      detail: 'Bitte wähle ein Datum aus',
+      life: 3000
+    })
+
+    return
+  }
+  if (todoHeader.length < 1 || todoHeader.length > 30) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Überschrift ungültig',
+      detail: 'Die Überschrift des Termins muss zwischen 1 und 30 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  if (todoDescription.length > 500) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Beschreibung ungültig',
+      detail: 'Die Beschreibung des Termins kann maximal 500 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  todoHeaderContent.value = todoHeader
+  todoContent.value = todoDescription
+  const { data, error } = await supabase
+    .from('todos')
+    .update([
+      {
+        header: todoHeaderContent.value,
+        content: todoContent.value,
+        dates: JSON.stringify(currentDate.value)
+      }
+    ])
     .eq('id', todo.id)
     .select()
 
@@ -313,15 +633,17 @@ async function deleteTodo(todo) {
 }
 
 async function handleAddTodo() {
-  if (!date.value) {
-    toast.add({
-      severity: 'warn',
-      summary: 'Kein Datum',
-      detail: 'Bitte wähle ein Datum aus',
-      life: 3000
-    })
-    return
+  if (date.value === null) {
+    // toast.add({
+    //   severity: 'warn',
+    //   summary: 'Kein Datum',
+    //   detail: 'Bitte wähle ein Datum aus',
+    //   life: 3000
+    // })
+    // return
+    date.value = new Date()
   }
+
   addNewTodo.value = !addNewTodo.value
 }
 
@@ -345,6 +667,29 @@ async function createNewTodo() {
     return
   }
 
+  if (repeatingDate.value === true) {
+    date.value = currentRepeatingDate.value
+
+    if (currentRepeatingDate.value === null) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Fehlende Angaben',
+        detail: 'Bitte wähle Angaben zur Terminwiederholung aus',
+        life: 3000
+      })
+      return
+    }
+    if (new Date(date.value.start) > new Date(date.value.repeat.until)) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Wiederholungszeitraum ungültig',
+        detail: 'Das Ende der Terminwiederholung muss vor dem ersten Termin liegen',
+        life: 3000
+      })
+      return
+    }
+  }
+
   const { data, error } = await supabase
     .from('todos')
     .insert([
@@ -352,7 +697,7 @@ async function createNewTodo() {
         cat_id: catsStore.state.currentCat.id,
         header: todoHeaderContent.value,
         content: todoContent.value,
-        date: date.value
+        dates: JSON.stringify(date.value)
       }
     ])
     .select()
@@ -371,6 +716,12 @@ async function createNewTodo() {
   todoContent.value = ''
   todoHeaderContent.value = ''
   addNewTodo.value = false
+  date.value = new Date()
+  repeatingDateEnd.value = new Date(date.value + 1)
+  repeatingDate.value = false
+  repeatCategory.value = ''
+  repeatNumber.value = 0
+  selectedWeekdays.value = []
 }
 
 function sortTodos() {
@@ -384,24 +735,73 @@ function sortTodos() {
     }
     return 0
   }
+  for (let todo of todos.value) {
+    if (todo.dates[0] === '{') {
+      todo.dates = JSON.parse(todo.dates)
+      todo.dates.repeat.until = new Date(todo.dates.repeat.until)
+      todo.dates.start = new Date(todo.dates.start)
+    } else if (todo.dates[0] !== '{') {
+      todo.dates = new Date(JSON.parse(todo.dates))
+    }
+  }
 }
+// const attributes = [
+//   {
+//     key: 'test',
+
+//     dot: 'purple',
+//     dates: {
+//       start: '2024-01-01T12:00:20.000Z',
+//       repeat: { every: [1, 'weeks'], weekdays: [2], until: new Date('2024-01-30T12:05:20.000Z') }
+//     }
+//   }
+// ]
 
 const attributes = computed(() => {
   if (todos.value === null) {
     return null
   } else {
-    return [
-      ...todos.value.map((todo) => ({
-        dates: todo.date,
-        dot: {
-          color: todo.completed ? 'primary' : 'rose',
-          ...(todo.completed && { class: 'opacit-75' })
-        },
-        popover: {
-          label: todo.header
+    const attributesArray = []
+    for (let todo of todos.value) {
+      const attribute = {}
+      if (todo.dates.repeat) {
+        const startdate =
+          new Date(todo.dates.start).getDate() +
+          '.' +
+          (new Date(todo.dates.start).getMonth() + 1) +
+          '.' +
+          new Date(todo.dates.start).getFullYear()
+        let startDateFix = JSON.parse(JSON.stringify(todo.dates.start))
+
+        attribute.dates = {
+          repeat: todo.dates.repeat,
+          start: new Date(startDateFix).setHours(1)
         }
-      }))
-    ]
+
+        // attribute.dot = {
+        //   color: 'yellow'
+        // }
+        attribute.dot = {
+          color: 'indigo'
+          // fillMode: 'light'
+        }
+        attribute.popover = {
+          label: todo.header + '  (' + 'seit ' + startdate + ')'
+        }
+        attributesArray.push(attribute)
+      } else {
+        attribute.dates = todo.dates
+        ;(attribute.dot = {
+          color: todo.completed ? 'primary' : 'rose'
+          // fillMode: 'light'
+        }),
+          (attribute.popover = {
+            label: todo.header
+          })
+        attributesArray.push(attribute)
+      }
+    }
+    return attributesArray
   }
 })
 
@@ -446,6 +846,8 @@ onBeforeMount(() => {
 .input-wrappper {
   display: flex;
   flex-direction: column;
+  z-index: 1;
+  margin-bottom: 0.5rem;
 }
 .dialog-content {
   display: grid;
@@ -456,7 +858,7 @@ onBeforeMount(() => {
 }
 
 .todo-input {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   width: 90%;
 }
 
@@ -476,7 +878,6 @@ onBeforeMount(() => {
 .float-label_label {
   color: var(--text);
   font-size: 1rem;
-  padding-inline: 0.5rem;
 }
 .input-area + .float-label_label {
   transform: translateY(0.55rem);
@@ -494,7 +895,7 @@ onBeforeMount(() => {
 }
 
 .button-send {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   width: 90%;
 }
 .todo-output-container {
@@ -533,6 +934,7 @@ onBeforeMount(() => {
 }
 .todo-card-wrapper {
   z-index: 2;
+  width: 100%;
 }
 .todo-card {
   margin-block: 0.5rem;
@@ -560,12 +962,66 @@ onBeforeMount(() => {
   text-align: left;
   font-weight: 500;
 }
+.date-selector-wrapper {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  margin-block: 0.5rem;
+  gap: 0.25rem;
+}
+.date-selector-wrapper label {
+  margin-top: 0rem;
+  margin-bottom: 0;
+  padding-left: 0.5rem;
+}
 .button-container {
   padding-bottom: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
+
+.toggle-wrapper {
+  width: 90%;
+  display: flex;
+  padding-block: 0.75rem;
+  gap: 1rem;
+  align-items: center;
+  font-family: 'Roboto-Regular';
+  position: relative;
+}
+.repeating-date-container {
+  /* background-color: var(--card-background); */
+  padding: 1rem;
+  padding-block: 1rem;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary);
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  width: 93%;
+  position: relative;
+  align-items: center;
+  margin-block: 0.5rem;
+}
+
+/* .repeating-date-container > p {
+  margin-block: 0.5rem;
+  font-family: 'Roboto-Medium';
+} */
+.freqency-selection-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
+}
+.label-repeat-end {
+  margin-top: 0.25rem;
+  margin-bottom: -0.5rem;
+  padding-left: 0.5rem;
+}
+
 @media screen and (min-width: 600px) {
   .calendar-container,
   .dialog-container {
@@ -582,3 +1038,24 @@ onBeforeMount(() => {
   }
 }
 </style>
+<!-- 
+<style>
+.todo-output-container .todo-content-container {
+  width: calc((80vw / 100) * 90);
+}
+@media screen and (max-width: 305px) {
+  .todo-output-container .todo-content-container {
+    width: 225px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .todo-output-container .todo-content-container {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 800px) {
+  .todo-output-container .todo-content-container {
+    width: 600px;
+  }
+}
+</style> -->

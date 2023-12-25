@@ -38,7 +38,37 @@ const btnValue = computed(() => {
   } else return 'Absenden'
 })
 
+async function checkIfNameExists() {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .eq('username', userStore.state.username)
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    if (data.length >= 1) {
+      return true
+    } else return false
+  }
+}
+
 async function updateProfile() {
+  if (userStore.state.usernameOld === userStore.state.username) {
+    formInfo.detail = 'Du hast den selben Namen angegeben!'
+    formInfo.summary = 'Keiner Änderung des Namens'
+    showToast()
+    return
+  }
+  let nameExists = await checkIfNameExists()
+  if (nameExists) {
+    formInfo.detail = 'Dieser Name ist leider schon vergeben - bitte wähle einen anderen Namen!'
+    formInfo.summary = 'Name schon vergeben'
+    userStore.state.username = userStore.state.usernameOld
+    showToast()
+    return
+  }
   if (userStore.state.username === null) {
     formInfo.detail = 'Dein Name muss mindestens 3 Zeichen lang sein!'
     formInfo.summary = 'Name zu kurz'
@@ -68,12 +98,7 @@ async function updateProfile() {
     showToast()
     return
   }
-  if (userStore.state.usernameOld === userStore.state.username) {
-    formInfo.detail = 'Du hast den selben Namen angegeben!'
-    formInfo.summary = 'Keiner Änderung des Namens'
-    showToast()
-    return
-  }
+
   try {
     userStore.fetchState.loading = true
     const { user } = session.value

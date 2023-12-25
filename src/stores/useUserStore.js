@@ -198,7 +198,7 @@ export const useUserStore = defineStore('users', () => {
   }
 
   onBeforeMount(async () => {
-    fetchHerders()
+    await fetchHerders()
     await fetchAllConnections()
   })
 

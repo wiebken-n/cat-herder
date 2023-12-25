@@ -72,7 +72,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), todos(id, cat_id, content, created_by, completed, date)`
+        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), todos(id, cat_id, content, created_by, completed, dates)`
       )
       .eq('user_id', userStore.state.userId)
 

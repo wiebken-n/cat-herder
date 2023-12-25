@@ -2,7 +2,12 @@
   <div class="content-wrapper">
     <Toast />
     <header>
-      <img class="cat-avatar" :src="imageUrl(catsStore.state.currentCat.avatar)" alt="cat avatar" />
+      <img
+        tabindex="0"
+        class="cat-avatar"
+        :src="imageUrl(catsStore.state.currentCat.avatar)"
+        alt="cat avatar"
+      />
       <div class="header-text-wrapper">
         <h1>{{ catsStore.state.currentCat.name }}</h1>
         <h2 class="subheader">
@@ -16,15 +21,49 @@
         </h2>
       </div>
     </header>
-    <div class="menu-wrapper site-menu-wrapper">
-      <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" />
-    </div>
+    <!-- <div class="menu-wrapper site-menu-wrapper">
+      <PrimeTabMenu tabindex="0" v-model:activeIndex="activeMenuItem" :model="menuItems" />
+    </div> -->
+    <nav class="cat-view-menu-wrapper menu-wrapper">
+      <PrimeButton
+        @click="activeMenuItem = 0"
+        :class="{ activeMenuButton: activeMenuItem === 0 }"
+        unstyled
+        label="Überblick"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        @click="activeMenuItem = 1"
+        :class="{ activeMenuButton: activeMenuItem === 1 }"
+        unstyled
+        label="Infos"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        @click="activeMenuItem = 2"
+        :class="{ activeMenuButton: activeMenuItem === 2 }"
+        unstyled
+        label="Termine"
+        class="menu-btn"
+      />
+
+      <PrimeButton
+        v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
+        @click="activeMenuItem = 3"
+        :class="{ activeMenuButton: activeMenuItem === 3 }"
+        unstyled
+        label="Herder"
+        class="menu-btn"
+      />
+    </nav>
+
     <div v-if="activeMenuItem === 0" class="cat-overview-container">
       <CatOverview></CatOverview>
     </div>
-    <div v-if="activeMenuItem === 1">
-      <div class="cat-info-menu-wrapper menu-wrapper">
-        <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
+    <div v-if="activeMenuItem === 1" class="cat-info-container">
+      <nav class="cat-info-menu-wrapper menu-wrapper">
         <div class="buffer"></div>
         <PrimeButton
           @click="activeCatInfoMenuItem = 0"
@@ -61,7 +100,7 @@
           class="menu-btn"
         />
         <div class="buffer"></div>
-      </div>
+      </nav>
       <div v-if="activeCatInfoMenuItem === 0" class="cat-content cat-content-food">
         <CatDataCard
           class="catdata"
@@ -121,12 +160,12 @@
         <CatDataCard
           class="catdata"
           id="food_info"
-          :edit="stateEdit.food"
+          :edit="stateEdit.food_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.food_info"
           headline="Futterinfo"
-          @editMode="handleCardEditModeOn('food')"
-          @dataSaved="handleCardDataSaved('food')"
+          @editMode="handleCardEditModeOn('food_info')"
+          @dataSaved="handleCardDataSaved('food_info')"
           ><template #icon>
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
@@ -134,7 +173,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.food"
+              v-if="stateEdit.food_info"
               class="input input-area"
               v-model="catsStore.state.currentCat.food_info"
               autoResize
@@ -174,13 +213,13 @@
         <CatDataCard
           class="catdata"
           id="health_info"
-          :edit="stateEdit.health"
+          :edit="stateEdit.health_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.health_info"
           headline="Infos zur Gesundheit"
           :hasContent="false"
-          @editMode="handleCardEditModeOn('health')"
-          @dataSaved="handleCardDataSaved('health')"
+          @editMode="handleCardEditModeOn('health_info')"
+          @dataSaved="handleCardDataSaved('health_info')"
           ><template #icon>
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
@@ -188,7 +227,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.health"
+              v-if="stateEdit.health_info"
               id="input-cat-health"
               class="input-cat-health input input-area"
               v-model="catsStore.state.currentCat.health_info"
@@ -282,7 +321,7 @@
         <CatDataCard
           class="catdata"
           id="behaviour_info"
-          :edit="stateEdit.behaviour"
+          :edit="stateEdit.behaviour_info"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.behaviour_info"
           headline="Infos zum Verhalten"
@@ -296,7 +335,7 @@
           </template>
           <template #card-input>
             <PrimeTextArea
-              v-if="stateEdit.behaviour"
+              v-if="stateEdit.behaviour_info"
               class="input input-area"
               v-model="catsStore.state.currentCat.behaviour_info"
               autoResize
@@ -474,15 +513,15 @@ function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
-const menuItems = ref([
-  // { label: 'Überblick' },
-  // { label: 'Infos' },
-  // { label: 'Termine' },
-  // { label: 'Herder' }
-])
+// const menuItems = ref([
+//   // { label: 'Überblick' },
+//   // { label: 'Infos' },
+//   // { label: 'Termine' },
+//   // { label: 'Herder' }
+// ])
 
 const activeMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuOne)
-const activeCatInfoMenuItem = ref(0)
+const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menuTwo)
 // const catInfoMenuItems = ref([
 //   { label: 'Futter' },
 //   { label: 'Gesundheit' },
@@ -491,8 +530,8 @@ const activeCatInfoMenuItem = ref(0)
 // ])
 
 const stateEdit = reactive({
-  food: false,
-  health: false,
+  food_info: false,
+  health_info: false,
   behaviour: false,
   personality: false,
   feeding_times: false,
@@ -511,7 +550,6 @@ function handleCardEditModeOn(status) {
 
 function handleCardDataSaved(status) {
   editCatInfo(status)
-  stateEdit[status] = false
 }
 
 const herderProfiles = computed(() => {
@@ -552,6 +590,15 @@ async function editCatInfo(status) {
     playtimes: 'Spielbedarf'
   }
 
+  //// "!!!!!!"
+  const optionalFields = {
+    food_info: 'Infos zum Futter',
+    health_info: 'Infos zur Gesundheit',
+    behaviour_info: 'Infos zum Verhalten',
+    drugs_info: 'Infos zu Medikamenten',
+    play_info: 'Infos zum Spielen'
+  }
+
   if (cat.weight === null || undefined) {
     cat.weight = 0
   }
@@ -576,14 +623,15 @@ async function editCatInfo(status) {
     })
     return
   }
-  if (cat.length > 20) {
+
+  if (cat.name.length < 1) {
+    stateEdit[status] = true
     toast.add({
       severity: 'warn',
-      summary: 'Name zu lang',
+      summary: 'Name zu kurz',
       detail: 'Der Name darf maximal 20 Zeichen lang sein',
       life: 3000
     })
-
     return
   }
   if (
@@ -593,9 +641,10 @@ async function editCatInfo(status) {
     cat.drugs_info.length > 3000 ||
     cat.play_info.length > 3000
   ) {
+    stateEdit[status] = true
     toast.add({
       severity: 'warn',
-      summary: `Text zu lang`,
+      summary: `${optionalFields[status]} - Text zu lang`,
       detail:
         'Die Texte zu Futter, Gesundheit, Medikamenten, Verhalten und Spielen dürfen jeweils maximal 3000 Zeichen lang sein!',
       life: 3000
@@ -627,6 +676,7 @@ async function editCatInfo(status) {
     console.log(error)
   }
   if (data) {
+    stateEdit[status] = false
     // console.log(data)
   }
 }
@@ -726,6 +776,56 @@ async function fetchCatInfos(id) {
   }
 }
 
+document.addEventListener('touchstart', (e) => {
+  touchstartX = e.changedTouches[0].screenX
+})
+document.addEventListener('touchend', (e) => {
+  touchendX = e.changedTouches[0].screenX
+
+  checkIfSwipe()
+})
+
+let touchstartX = 0
+let touchendX = 0
+
+function checkIfSwipe() {
+  if (activeMenuItem.value === 1) {
+    if (touchendX < touchstartX) {
+      if (touchendX + 150 < touchstartX) {
+        if (activeCatInfoMenuItem.value < 3) {
+          activeCatInfoMenuItem.value++
+        } else if (activeCatInfoMenuItem.value === 3) {
+          activeMenuItem.value++
+        }
+      }
+    }
+    if (touchendX > touchstartX) {
+      if (touchendX - 150 > touchstartX) {
+        if (activeCatInfoMenuItem.value > 0) {
+          activeCatInfoMenuItem.value--
+        } else if (activeCatInfoMenuItem.value === 0) {
+          activeMenuItem.value--
+        }
+      }
+    }
+  } else {
+    if (touchendX < touchstartX) {
+      if (touchendX + 150 < touchstartX) {
+        if (activeMenuItem.value < 3) {
+          activeMenuItem.value++
+        }
+      }
+    }
+    if (touchendX > touchstartX) {
+      if (touchendX - 150 > touchstartX) {
+        if (activeMenuItem.value > 0) {
+          activeMenuItem.value--
+        }
+      }
+    }
+  }
+}
+
 onUnmounted(() => {
   catsStore.state.currentCat = {
     user_id: '',
@@ -760,22 +860,22 @@ onUnmounted(() => {
   }
 })
 
-function fillMenu() {
-  if (catsStore.state.currentCat.user_id === userStore.state.userId) {
-    menuItems.value = [
-      { label: 'Überblick' },
-      { label: 'Infos' },
-      { label: 'Termine' },
-      { label: 'Herder' }
-    ]
-  } else {
-    menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
-  }
-}
+// function fillMenu() {
+//   if (catsStore.state.currentCat.user_id === userStore.state.userId) {
+//     menuItems.value = [
+//       { label: 'Überblick' },
+//       { label: 'Infos' },
+//       { label: 'Termine' },
+//       { label: 'Herder' }
+//     ]
+//   } else {
+//     menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
+//   }
+// }
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
   await fetchCatInfos(route.params.id)
-  fillMenu()
+  // fillMenu()
 })
 
 onUnmounted(() => {
@@ -821,9 +921,11 @@ header {
   padding: 0.5rem;
   box-shadow: 0 0 10px 2px var(--card-shadow);
 }
-.cat-avatar:hover {
+.cat-avatar:hover,
+.cat-avatar:focus {
   animation: tilt-shaking 0.25s 2 ease-in-out;
 }
+
 .header-text-wrapper {
   display: flex;
   flex-direction: column;
@@ -845,6 +947,27 @@ header {
 .site-menu-wrapper {
   margin-bottom: 1.5rem;
 }
+
+.cat-view-menu-wrapper {
+  padding-block: 0.25rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  display: grid;
+  width: 80vw;
+  grid-template-columns: min-content min-content min-content min-content min-content;
+  grid-template-rows: 1fr;
+  margin-bottom: 1.5rem;
+}
+.cat-view-menu-wrapper > .menu-btn {
+  font-size: 1rem;
+  padding-inline: calc(0.75rem + 1.125vw);
+}
+
+.cat-view-menu-wrapper .buffer {
+  width: auto;
+  border-bottom: 2px solid var(--underline-inactive-menu);
+}
+
 .cat-info-menu-wrapper {
   padding-block: 0.25rem;
   margin-bottom: 0.5rem;
@@ -890,7 +1013,7 @@ header {
 
 /* .activeMenuButton:focus {
    color: var(--cat-card-text);
-   border-radius: var(--border-radius); 
+   border-radius: var(--border-radius);
 } */
 .user-content-container {
   width: 80vw;

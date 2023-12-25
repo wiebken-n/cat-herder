@@ -12,6 +12,8 @@
         class="cat-info"
         data-cy="cat-info"
         :key="cat.id"
+        tabindex="0"
+        @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
         <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
@@ -26,6 +28,8 @@
           v-if="checkTodaysTodos(cat.todos)"
           alt="todo alert"
           class="alert-icon"
+          tabindex="0"
+          @keyup.enter="handleTodoClick(cat.id)"
           @click="handleTodoClick(cat.id)"
         >
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
@@ -62,6 +66,8 @@
         class="cat-info"
         data-cy="cat-info"
         :key="cat.id"
+        tabindex="0"
+        @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
         <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
@@ -70,7 +76,13 @@
         </svg>
         <p class="cat-name">{{ cat.name }}</p>
         <p class="cat-age">{{ catsStore.getAge(cat.birthday) }} alt</p>
-        <svg v-if="checkTodaysTodos(cat.todos)" alt="todo alert" class="alert-icon">
+        <svg
+          v-if="checkTodaysTodos(cat.todos)"
+          alt="todo alert"
+          class="alert-icon"
+          tabindex="0"
+          @keyup.enter="handleTodoClick(cat.id)"
+        >
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
         </svg>
         <div class="todo-tooltip">
@@ -137,16 +149,25 @@ function checkTodaysTodos(todoarray) {
 
   if (todoarray.length > 0) {
     for (let todo of todoarray) {
+      const catDates = JSON.parse(todo.dates)
       if (
-        new Date(todo.date).getDate() === dayNow &&
-        new Date(todo.date).getMonth() + 1 === monthNow &&
-        new Date(todo.date).getFullYear() === yearNow &&
+        new Date(catDates).getDate() === dayNow &&
+        new Date(catDates).getMonth() + 1 === monthNow &&
+        new Date(catDates).getFullYear() === yearNow &&
+        todo.completed === false
+      ) {
+        return true
+      } else if (
+        new Date(catDates.start).getDate() === dayNow &&
+        new Date(catDates.start).getMonth() + 1 === monthNow &&
+        new Date(catDates.start).getFullYear() === yearNow &&
         todo.completed === false
       ) {
         return true
       }
     }
   }
+  return false
 }
 
 function handleTodoClick(catId) {
@@ -230,25 +251,28 @@ h2 {
 }
 
 .alert-icon {
+  background-color: var(--primary-darkest);
+  border-radius: 100%;
   color: var(--old-rose-lighter-dark);
   position: absolute;
-  height: 1rem;
-  width: 1rem;
+  height: 1.75rem;
+  width: 1.75rem;
   top: 4px;
   right: 5px;
   scale: 1;
   transition: all 200ms ease-in-out;
 }
 
-.alert-icon:hover {
+.alert-icon:hover,
+.alert-icon:focus {
   color: var(--old-rose-darker);
   scale: 1.2;
 }
 
 .todo-tooltip {
   position: absolute;
-  font-family: 'Roboto-Slab';
-  font-weight: 450;
+  font-family: 'Roboto-Medium';
+  font-weight: 500;
   background-color: var(--tooltip-background);
   border: 2px solid var(--tooltip-border);
   color: var(--text);
@@ -260,23 +284,38 @@ h2 {
   top: 0;
   right: 0;
   visibility: hidden;
-  transform: translate(50%, -103%);
+  transform: translate(50%, -102%);
+  translate: -9% -10%;
   transition: all 200ms ease-in-out;
 }
-.alert-icon:hover + .todo-tooltip {
+.todo-tooltip:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 1.75rem 0 1.75rem;
+  border-color: var(--tooltip-border) transparent transparent transparent;
+  left: 2.6rem;
+  bottom: -11px;
+}
+.alert-icon:hover + .todo-tooltip,
+.alert-icon:focus + .todo-tooltip {
   opacity: 0.9;
   visibility: visible;
 }
 .cat-info > * {
   margin: 0.125rem 0;
 }
-.cat-info:hover {
+.cat-info:hover,
+.cat-info:focus {
   background-color: var(--cat-card-background-hover);
   box-shadow: 2px 2px 5px 0 var(--hover-shadow);
   scale: 1.02;
 }
 
-.cat-info:hover > .cat-avatar {
+.cat-info:hover > .cat-avatar,
+.cat-info:focus > .cat-avatar {
   scale: 1.1;
   animation: tilt-shaking 0.25s 2 ease-in-out;
 }
@@ -355,7 +394,8 @@ h2 {
   transition: all 200ms ease-in-out;
 }
 
-.btn-add-cat:hover {
+.btn-add-cat:hover,
+.btn-add-cat:focus {
   scale: 1.02;
 }
 @media screen and (min-width: 630px) {
@@ -370,6 +410,16 @@ h2 {
     width: 540px;
     margin-inline: 0.5rem;
     grid-column: 1/ 3;
+  }
+
+  .alert-icon {
+    box-shadow: none;
+    background-color: var(--primary-darkest);
+    border-radius: 100px;
+    color: var(--old-rose-lighter-dark);
+    position: absolute;
+    height: 1.25rem;
+    width: 1.25rem;
   }
 }
 
