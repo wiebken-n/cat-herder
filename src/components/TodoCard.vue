@@ -118,16 +118,14 @@ let todoHeader = props.todo.header
 
 const currentDate = ref(null)
 
-if (props.todo.dates.start) {
-  currentDate.value = props.todo.dates.start
-} else currentDate.value = props.todo.dates
+currentDate.value = props.todo.dates
 
 function editClicked() {
   if (!editState.value) {
     emit('editActive')
   }
   if (editState.value) {
-    emit('editTodo', todoHeader, todoDescription)
+    emit('editTodo', todoHeader, todoDescription, currentDate)
   }
   editState.value = !editState.value
 }
@@ -143,6 +141,8 @@ function getTime(hour, minute) {
 
 <style scoped>
 .todo-content-container {
+  width: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -168,6 +168,7 @@ function getTime(hour, minute) {
 }
 p {
   font-size: 0.95rem;
+  overflow-wrap: break-word;
 }
 .user-tag {
   color: var(--cat-card-text);
@@ -179,7 +180,7 @@ p {
   background-color: var(--primary-darker-dark);
 } */
 .todo-date {
-  font-family: 'Roboto-Slab';
+  font-family: 'Roboto-Regular';
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
@@ -214,6 +215,8 @@ p {
 .todo-description {
   align-self: flex-start;
   padding-block: 0.25rem;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .todo-date-edit-wrapper {
@@ -250,4 +253,26 @@ p {
   scale: 1.05;
   color: var(--old-rose-darker);
 }
+
+/* .todo-content-wrapper,
+.todo-header-wrapper, */
+
+/* .todo-content-wrapper p {
+  width: 98%;
+} */
+/* @media screen and (min-width: 500px) {
+  .todo-content-wrapper p {
+    width: 70vw;
+  }
+}
+@media screen and (min-width: 600px) {
+  .todo-content-wrapper p {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 800px) {
+  .todo-content-wrapper p {
+    width: 550px;
+  }
+} */
 </style>

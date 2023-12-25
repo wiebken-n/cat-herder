@@ -33,13 +33,16 @@ import PrimeInputSwitch from 'primevue/inputswitch'
 import { setupCalendar } from 'v-calendar'
 import 'v-calendar/style.css'
 
-import './assets/base-style.css'
+import primevuede from '@/assets/primevuede.json'
 /* <<<<<<<<<<<< Prime Vue Component imports */
+import './assets/base-style.css'
+
+const primevueDeLoc = primevuede.de
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue)
+app.use(PrimeVue, { locale: primevueDeLoc })
 app.use(ToastService)
 app.use(ConfirmationService)
 

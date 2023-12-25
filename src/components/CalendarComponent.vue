@@ -167,12 +167,12 @@
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="handleEditActive(todo)"
                   @editTodo="
-                    (todoHeader, todoDescription, newStartDate, newEndDate) =>
+                    (todoHeader, todoDescription, currentDate, currentEndDate) =>
                       handleEditRepeating(
                         todoHeader,
                         todoDescription,
-                        newStartDate,
-                        newEndDate,
+                        currentDate,
+                        currentEndDate,
                         todo
                       )
                   "
@@ -190,7 +190,8 @@
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="handleEditActive(todo)"
                   @editTodo="
-                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                    (todoHeader, todoDescription, currentDate) =>
+                      handleEdit(todoHeader, todoDescription, currentDate, todo)
                   "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
@@ -219,7 +220,8 @@
               >
                 <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
 
-                <TodoCard
+                <TodoCardRepeatingDate
+                  v-if="todo.dates?.start"
                   :todo="todo"
                   :cat-user-id="catsStore.state.currentCat.user_id"
                   :user-id="userStore.state.userId"
@@ -229,7 +231,31 @@
                   @deleteTodo="deleteTodoDialog(todo)"
                   @editActive="handleEditActive(todo)"
                   @editTodo="
-                    (todoHeader, todoDescription) => handleEdit(todoHeader, todoDescription, todo)
+                    (todoHeader, todoDescription, currentDate, currentEndDate) =>
+                      handleEditRepeating(
+                        todoHeader,
+                        todoDescription,
+                        currentDate,
+                        currentEndDate,
+                        todo
+                      )
+                  "
+                  @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
+                  class="todo-card"
+                ></TodoCardRepeatingDate>
+                <TodoCard
+                  v-else
+                  :todo="todo"
+                  :cat-user-id="catsStore.state.currentCat.user_id"
+                  :user-id="userStore.state.userId"
+                  :created-by="todo.created_by"
+                  :creator-name="todo.profiles.username"
+                  :completed="todo.completed"
+                  @deleteTodo="deleteTodoDialog(todo)"
+                  @editActive="handleEditActive(todo)"
+                  @editTodo="
+                    (todoHeader, todoDescription, currentDate) =>
+                      handleEdit(todoHeader, todoDescription, currentDate, todo)
                   "
                   @checkboxClicked="(checkboxState) => handleCheckboxChange(checkboxState, todo)"
                   class="todo-card"
@@ -259,7 +285,6 @@
       </div>
     </div>
   </div>
-  {{ currentRepeatingDate }}
 </template>
 
 <script setup>
@@ -442,7 +467,7 @@ function handleEditActive(todo) {
   date.value = new Date(todo.dates)
 }
 
-async function handleEditRepeating(todoHeader, todoDescription, newStartDate, newEndDate, todo) {
+async function handleEditRepeating(todoHeader, todoDescription, currentDate, currentEndDate, todo) {
   // if (!date.value) {
   //   toast.add({
   //     severity: 'warn',
@@ -472,13 +497,11 @@ async function handleEditRepeating(todoHeader, todoDescription, newStartDate, ne
   }
   todoHeaderContent.value = todoHeader
   todoContent.value = todoDescription
-  console.log(todo.dates)
-  const newTodoDates = todo.dates
-  console.log(newTodoDates)
-  newTodoDates.start = newStartDate.value
-  newTodoDates.repeat.until = newEndDate.value
-  console.log(newTodoDates)
+  const newTodoDates = {}
 
+  newTodoDates.repeat = todo.dates.repeat
+  newTodoDates.start = currentDate.value
+  newTodoDates.repeat.until = currentEndDate.value
   const { data, error } = await supabase
     .from('todos')
     .update([
@@ -509,14 +532,15 @@ async function handleEditRepeating(todoHeader, todoDescription, newStartDate, ne
   }
 }
 
-async function handleEdit(todoHeader, todoDescription, todo) {
-  if (!date.value) {
+async function handleEdit(todoHeader, todoDescription, currentDate, todo) {
+  if (!currentDate.value) {
     toast.add({
       severity: 'warn',
       summary: 'Kein Datum',
       detail: 'Bitte wähle ein Datum aus',
       life: 3000
     })
+
     return
   }
   if (todoHeader.length < 1 || todoHeader.length > 30) {
@@ -545,7 +569,7 @@ async function handleEdit(todoHeader, todoDescription, todo) {
       {
         header: todoHeaderContent.value,
         content: todoContent.value,
-        dates: JSON.stringify(date.value)
+        dates: JSON.stringify(currentDate.value)
       }
     ])
     .eq('id', todo.id)
@@ -692,7 +716,6 @@ function sortTodos() {
     }
     return 0
   }
-
   for (let todo of todos.value) {
     if (todo.dates[0] === '{') {
       todo.dates = JSON.parse(todo.dates)
@@ -719,19 +742,47 @@ const attributes = computed(() => {
   if (todos.value === null) {
     return null
   } else {
-    return [
-      ...todos.value.map((todo) => ({
-        dates: todo.dates,
-        dot: {
-          color: todo.completed ? 'primary' : 'rose',
-          ...(todo.completed && { class: 'opacit-75' })
-        },
+    const attributesArray = []
+    for (let todo of todos.value) {
+      const attribute = {}
+      if (todo.dates.repeat) {
+        const startdate =
+          new Date(todo.dates.start).getDate() +
+          '.' +
+          (new Date(todo.dates.start).getMonth() + 1) +
+          '.' +
+          new Date(todo.dates.start).getFullYear()
+        let startDateFix = JSON.parse(JSON.stringify(todo.dates.start))
 
-        popover: {
-          label: todo.header
+        attribute.dates = {
+          repeat: todo.dates.repeat,
+          start: new Date(startDateFix).setHours(1)
         }
-      }))
-    ]
+
+        // attribute.dot = {
+        //   color: 'yellow'
+        // }
+        attribute.dot = {
+          color: 'indigo'
+          // fillMode: 'light'
+        }
+        attribute.popover = {
+          label: todo.header + '  (' + 'seit ' + startdate + ')'
+        }
+        attributesArray.push(attribute)
+      } else {
+        attribute.dates = todo.dates
+        ;(attribute.dot = {
+          color: todo.completed ? 'primary' : 'rose'
+          // fillMode: 'light'
+        }),
+          (attribute.popover = {
+            label: todo.header
+          })
+        attributesArray.push(attribute)
+      }
+    }
+    return attributesArray
   }
 })
 
@@ -864,6 +915,7 @@ onBeforeMount(() => {
 }
 .todo-card-wrapper {
   z-index: 2;
+  width: 100%;
 }
 .todo-card {
   margin-block: 0.5rem;
@@ -967,3 +1019,24 @@ onBeforeMount(() => {
   }
 }
 </style>
+<!-- 
+<style>
+.todo-output-container .todo-content-container {
+  width: calc((80vw / 100) * 90);
+}
+@media screen and (max-width: 305px) {
+  .todo-output-container .todo-content-container {
+    width: 225px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .todo-output-container .todo-content-container {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 800px) {
+  .todo-output-container .todo-content-container {
+    width: 600px;
+  }
+}
+</style> -->

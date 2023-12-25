@@ -4,11 +4,11 @@
       <PrimeTag class="user-tag" :value="props.creatorName" rounded></PrimeTag>
 
       <p class="todo-date">
-        <span>Start: </span>
-        <span>
+        <!-- <span>Start: </span> -->
+        <!-- <span>
           {{ getTime(new Date(currentDate).getHours(), new Date(currentDate).getMinutes()) }}</span
         >
-        <span>|</span>
+        <span>|</span> -->
         <span>
           {{
             getDate(
@@ -18,15 +18,14 @@
             )
           }}</span
         >
-      </p>
-      <p class="todo-date">
-        <span>Ende: </span>
-        <span>
+        <span>-</span>
+        <!-- <span>Ende: </span> -->
+        <!-- <span>
           {{
             getTime(new Date(currentEndDate).getHours(), new Date(currentEndDate).getMinutes())
           }}</span
         >
-        <span>|</span>
+        <span>|</span> -->
         <span>
           {{
             getDate(
@@ -37,13 +36,30 @@
           }}</span
         >
       </p>
-      <div class="repeating-info">
-        <p>
-          Wiederholung alle
+      <!-- <p class="todo-date">
+      
+      </p> -->
+      <p class="repeating-info">
+        <span>
+          alle
           <span class="repeat-info-number">{{ props.todo?.dates?.repeat?.every?.[0] }}</span>
-          <span>{{ repeatCategories[props.todo?.dates?.repeat?.every?.[1]] }}</span>
-        </p>
-      </div>
+          {{ repeatCategories[props.todo?.dates?.repeat?.every?.[1]] }}
+          <span
+            v-if="repeatCategories[props.todo?.dates?.repeat?.every?.[1]] === 'Monate'"
+            class="month-repeat-info"
+          >
+            am {{ props.todo?.dates?.repeat?.days }}.</span
+          > </span
+        ><span>|</span>
+        <span>
+          {{
+            getTime(
+              new Date(props.todo?.dates?.start).getHours(),
+              new Date(props.todo?.dates?.start).getMinutes()
+            )
+          }}</span
+        >
+      </p>
       <div class="weekdays-container">
         <PrimeTag
           class="repeat-info-weekdays"
@@ -116,12 +132,12 @@
       </div>
     </div>
     <div class="interaction-wrapper">
-      <PrimeCheckbox
+      <!-- <PrimeCheckbox
         v-if="!editState"
         v-model="checkboxState"
         :binary="true"
         @click="emit('checkboxClicked', !checkboxState)"
-      />
+      /> -->
       <div class="button-wrapper" v-if="catUserId === userId || createdBy === userId">
         <button v-if="catUserId === userId" class="delete-todo-button" @click="emit('deleteTodo')">
           <svg class="icon">
@@ -156,8 +172,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['deleteTodo', 'editActive', 'editTodo', 'checkboxClicked'])
-
-const checkboxState = ref(props.completed)
+// const checkboxState = ref(props.completed)
 
 const editState = ref(false)
 
@@ -168,9 +183,7 @@ const currentDate = ref(null)
 
 const currentEndDate = ref(null)
 
-if (props.todo.dates.start) {
-  currentDate.value = new Date(props.todo.dates.start)
-} else currentDate.value = props.todo.dates
+currentDate.value = props.todo.dates.start
 
 if (props.todo.dates.repeat.until) {
   currentEndDate.value = props.todo.dates.repeat.until
@@ -234,17 +247,22 @@ const repeatDays = {
   grid-template-columns: 1fr 2fr;
   justify-content: space-between;
   margin-bottom: 0.5rem;
+  font-family: 'Roboto-Regular';
+  align-items: center;
 }
 
 p {
   font-size: 0.95rem;
+  overflow-wrap: break-word;
 }
+
 .user-tag {
   color: var(--cat-card-text);
   background-color: var(--primary-darkest);
   transition: all 200ms ease-in-out;
   grid-column: 1;
   justify-self: start;
+  align-self: flex-start;
   padding: 0.4rem;
   padding-inline: 0.75rem;
 }
@@ -253,7 +271,7 @@ p {
   background-color: var(--primary-darker-dark);
 } */
 .todo-date {
-  font-family: 'Roboto-Slab';
+  /* font-family: 'Roboto-Slab'; */
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
@@ -262,15 +280,15 @@ p {
   justify-self: end;
 }
 .repeating-info {
-  font-family: 'Roboto-Slab';
-  grid-row: 3;
+  /* font-family: 'Roboto-Slab'; */
+  grid-row: 2;
   grid-column: 1/3;
   justify-self: end;
   display: flex;
-  flex-direction: column;
-
-  margin-top: 0.5rem;
+  flex-direction: row;
+  gap: 0.4rem;
   margin-bottom: 0;
+  margin-top: 0.2rem;
 }
 .repeating-info p {
   text-align: end;
@@ -283,7 +301,7 @@ p {
   margin-top: 0.5rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: end;
   grid-column: 2;
   gap: 0.3rem;
 }
