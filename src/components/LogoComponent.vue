@@ -49,9 +49,9 @@ onBeforeMount(() => imageUrl())
   cursor: pointer;
   background-color: var(--logo-bg-hover);
   background-image: url('/catwithhat_small.webp');
-  animation: tilt-shaking 0.25s 2 ease-in-out;
+  /* animation: tilt-shaking 0.25s 2 ease-in-out; */
 }
-
+/* 
 @keyframes tilt-shaking {
   0% {
     transform: rotate(0deg);
@@ -68,7 +68,7 @@ onBeforeMount(() => imageUrl())
   100% {
     transform: rotate(0deg);
   }
-}
+} */
 
 .home-button {
   background: none;

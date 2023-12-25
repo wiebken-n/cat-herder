@@ -149,16 +149,25 @@ function checkTodaysTodos(todoarray) {
 
   if (todoarray.length > 0) {
     for (let todo of todoarray) {
+      const catDates = JSON.parse(todo.dates)
       if (
-        new Date(todo.date).getDate() === dayNow &&
-        new Date(todo.date).getMonth() + 1 === monthNow &&
-        new Date(todo.date).getFullYear() === yearNow &&
+        new Date(catDates).getDate() === dayNow &&
+        new Date(catDates).getMonth() + 1 === monthNow &&
+        new Date(catDates).getFullYear() === yearNow &&
+        todo.completed === false
+      ) {
+        return true
+      } else if (
+        new Date(catDates.start).getDate() === dayNow &&
+        new Date(catDates.start).getMonth() + 1 === monthNow &&
+        new Date(catDates.start).getFullYear() === yearNow &&
         todo.completed === false
       ) {
         return true
       }
     }
   }
+  return false
 }
 
 function handleTodoClick(catId) {
