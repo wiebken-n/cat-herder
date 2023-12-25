@@ -477,6 +477,15 @@ async function handleEditRepeating(todoHeader, todoDescription, currentDate, cur
   //   })
   //   return
   // }
+  if (new Date(currentDate.value) > new Date(currentEndDate.value)) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Wiederholungszeitraum ungültig',
+      detail: 'Das Ende der Terminwiederholung muss vor dem ersten Termin liegen',
+      life: 3000
+    })
+    return
+  }
   if (todoHeader.length < 1 || todoHeader.length > 30) {
     toast.add({
       severity: 'warn',
@@ -660,11 +669,21 @@ async function createNewTodo() {
 
   if (repeatingDate.value === true) {
     date.value = currentRepeatingDate.value
+
     if (currentRepeatingDate.value === null) {
       toast.add({
         severity: 'warn',
         summary: 'Fehlende Angaben',
         detail: 'Bitte wähle Angaben zur Terminwiederholung aus',
+        life: 3000
+      })
+      return
+    }
+    if (new Date(date.value.start) > new Date(date.value.repeat.until)) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Wiederholungszeitraum ungültig',
+        detail: 'Das Ende der Terminwiederholung muss vor dem ersten Termin liegen',
         life: 3000
       })
       return
