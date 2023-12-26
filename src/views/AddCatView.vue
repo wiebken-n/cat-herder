@@ -31,378 +31,368 @@
       <!-- <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" /> -->
     </div>
     <form>
-      <transition name="menufade">
-        <div
-          class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 0 }"
-          v-if="activeMenuItem === 0"
-        >
-          <article class="input-avatar-wrapper">
-            <div class="image-container">
-              <svg
-                v-if="!catsStore.state.currentCat.avatar"
-                alt="cat avatar"
-                class="cat-avatar cat-image-show cat-avatar-dummy"
-                data-cy="cat-avatar"
-                @click="pickAvatarVisible = true"
-              >
-                <use
-                  class="svg-img"
-                  xlink:href="@/assets/icons.svg#cat-sitting"
-                  fill="currentcolor"
-                ></use>
-              </svg>
-              <img
-                v-else
-                class="cat-image-show cat-avatar"
-                :src="imageUrl(catsStore.state.currentCat.avatar)"
-                alt="cat avatar"
-                @click="pickAvatarVisible = true"
-              />
-            </div>
-
-            <PrimeButton
-              class="button-avatar-selection"
-              label="Wähle einen Avatar aus"
-              icon="pi pi-external-link"
+      <div
+        class="site-one site-container"
+        :class="{ containeractive: activeMenuItem === 0 }"
+        v-if="activeMenuItem === 0"
+      >
+        <article class="input-avatar-wrapper">
+          <div class="image-container">
+            <svg
+              v-if="!catsStore.state.currentCat.avatar"
+              alt="cat avatar"
+              class="cat-avatar cat-image-show cat-avatar-dummy"
+              data-cy="cat-avatar"
+              @click="pickAvatarVisible = true"
+            >
+              <use
+                class="svg-img"
+                xlink:href="@/assets/icons.svg#cat-sitting"
+                fill="currentcolor"
+              ></use>
+            </svg>
+            <img
+              v-else
+              class="cat-image-show cat-avatar"
+              :src="imageUrl(catsStore.state.currentCat.avatar)"
+              alt="cat avatar"
               @click="pickAvatarVisible = true"
             />
-          </article>
-
-          <article class="input-name-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#heart" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-name"> Wie heißt deine Katze?</label>
-            </div>
-            <PrimeInputText
-              id="input-cat-name"
-              class="input-cat-name input"
-              data-cy="input-cat-name"
-              v-model="catsStore.state.currentCat.name"
-            />
-          </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#birthday-cake" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-birthday"> Wann wurde deine Katze geboren?</label>
-            </div>
-            <PrimeCalendar
-              class="input"
-              id="input-cat-birthday"
-              v-model="catsStore.state.currentCat.birthday"
-              view="month"
-              dateFormat="mm/yy"
-              showIcon
-            />
-          </article>
-
-          <article class="input-breed-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="catbreed-selection">
-                Um welche Art von Katze handelt es sich?</label
-              >
-            </div>
-            <PrimeDropdown
-              v-model="catsStore.state.currentCat.breed"
-              :options="resourcesStore.options.catbreeds"
-              optionLabel="content"
-              placeholder="Wähle eine Bezeichnung aus"
-              id="catbreed-selection"
-            />
-          </article>
-          <article class="input-inoutdoor-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#open-door" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-inoutdoor">
-                Lebt deine Katze drinnen und/oder draußen?</label
-              >
-            </div>
-            <PrimeDropdown
-              v-model="catsStore.state.currentCat.in_outdoor"
-              :options="resourcesStore.options.inoutdoor"
-              optionLabel="content"
-              placeholder="Wähle eine Option aus"
-              id="input-cat-inoutdoor"
-            />
-          </article>
-
-          <div class="button-wrapper">
-            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 1">
-              <span>weiter</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
-              </svg>
-            </PrimeButton>
           </div>
-        </div>
-      </transition>
-      <transition name="menufade">
-        <div
-          class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 1 }"
-          v-if="activeMenuItem === 1"
-        >
-          <article class="input-weight-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#scale" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-weight"> Wie viel wiegt deine Katze?</label>
-            </div>
-            <PrimeInputNumber
-              v-model="catsStore.state.currentCat.weight"
-              class="input input-text"
-              inputId="weight"
-              suffix=" kg"
-              :minFractionDigits="1"
-              :maxFractionDigits="2"
-            />
 
-            <!-- <PrimeInputText
+          <PrimeButton
+            class="button-avatar-selection"
+            label="Wähle einen Avatar aus"
+            icon="pi pi-external-link"
+            @click="pickAvatarVisible = true"
+          />
+        </article>
+
+        <article class="input-name-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#heart" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-name"> Wie heißt deine Katze?</label>
+          </div>
+          <PrimeInputText
+            id="input-cat-name"
+            class="input-cat-name input"
+            data-cy="input-cat-name"
+            v-model="catsStore.state.currentCat.name"
+          />
+        </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#birthday-cake" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-birthday"> Wann wurde deine Katze geboren?</label>
+          </div>
+          <PrimeCalendar
+            class="input"
+            id="input-cat-birthday"
+            v-model="catsStore.state.currentCat.birthday"
+            view="month"
+            dateFormat="mm/yy"
+            showIcon
+          />
+        </article>
+
+        <article class="input-breed-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="catbreed-selection">
+              Um welche Art von Katze handelt es sich?</label
+            >
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.breed"
+            :options="resourcesStore.options.catbreeds"
+            optionLabel="content"
+            placeholder="Wähle eine Bezeichnung aus"
+            id="catbreed-selection"
+          />
+        </article>
+        <article class="input-inoutdoor-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#open-door" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-inoutdoor">
+              Lebt deine Katze drinnen und/oder draußen?</label
+            >
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.in_outdoor"
+            :options="resourcesStore.options.inoutdoor"
+            optionLabel="content"
+            placeholder="Wähle eine Option aus"
+            id="input-cat-inoutdoor"
+          />
+        </article>
+
+        <div class="button-wrapper">
+          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 1">
+            <span>weiter</span
+            ><svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
+            </svg>
+          </PrimeButton>
+        </div>
+      </div>
+
+      <div
+        class="site-one site-container"
+        :class="{ containeractive: activeMenuItem === 1 }"
+        v-if="activeMenuItem === 1"
+      >
+        <article class="input-weight-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#scale" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-weight"> Wie viel wiegt deine Katze?</label>
+          </div>
+          <PrimeInputNumber
+            v-model="catsStore.state.currentCat.weight"
+            class="input input-text"
+            inputId="weight"
+            suffix=" kg"
+            :minFractionDigits="1"
+            :maxFractionDigits="2"
+          />
+
+          <!-- <PrimeInputText
               id="input-cat-name"
               class="input-cat-name input"
               data-cy="input-cat-name"
               v-model="catsStore.state.currentCat.weight"
             /> -->
-          </article>
-          <article class="input-food-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#meat" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-food">
-                Welche Art(en) von Futter bekommt deine Katze?</label
-              >
-            </div>
-            <PrimeMultiSelect
-              v-model="catsStore.state.currentCat.food_varieties"
-              :options="resourcesStore.options.foodVarieties"
-              optionLabel="content"
-              placeholder="Wähle die Futtervariante(n) aus"
-              id="input-cat-inoutdoor"
-              :maxSelectedLabels="4"
-              class="multiselect"
-            />
-          </article>
-          <article class="input-feeding-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#calendar-icon" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="feeding-selection">
-                Wie viele Mahlzeiten bekommt deine Katze pro Tag?</label
-              >
-            </div>
-            <PrimeDropdown
-              v-model="catsStore.state.currentCat.feeding_times"
-              :options="resourcesStore.options.feedingTimes"
-              optionLabel="content"
-              placeholder="Wähle eine Anzahl aus"
-              id="feeding-selection"
-            />
-          </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-food "
-                >Beschreibe hier bitte die einzelnen Mahlzeiten:
-                <span class="info-optional">(optional)</span></label
-              >
-            </div>
-            <PrimeTextArea
-              v-model="catsStore.state.currentCat.food_info"
-              id="input-cat-food"
-              class="input-cat-food input input-area"
-            ></PrimeTextArea>
-          </article>
-
-          <div class="button-wrapper">
-            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 0">
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-              ><span>zurück</span>
-            </PrimeButton>
-            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 2">
-              <span>weiter</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
-              </svg>
-            </PrimeButton>
+        </article>
+        <article class="input-food-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#meat" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-food">
+              Welche Art(en) von Futter bekommt deine Katze?</label
+            >
           </div>
-        </div>
-      </transition>
-      <transition name="menufade">
-        <div
-          class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 2 }"
-          v-if="activeMenuItem === 2"
-        >
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#drugs" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-food "
-                >Bekommt deine Katze Medikamente?
-              </label>
-            </div>
-            <PrimeDropdown
-              v-model="catsStore.state.currentCat.drugs"
-              :options="resourcesStore.options.drugs"
-              optionLabel="content"
-              placeholder="Wähle eine Option aus"
-              id="drugs"
-            />
-          </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#pillbox" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-food "
-                >Beschreibe hier die Medikamente:
-                <span class="info-optional">(optional)</span></label
-              >
-            </div>
-            <PrimeTextArea
-              v-model="catsStore.state.currentCat.drugs_info"
-              class="input-area"
-              id="drugs-details"
-            />
-          </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-health"
-                >Beschreibe hier eventuelle gesundheitliche Besonderheiten:
-                <span class="info-optional">(optional)</span></label
-              >
-            </div>
-            <PrimeTextArea
-              id="input-cat-health"
-              class="input-cat-health input input-area"
-              v-model="catsStore.state.currentCat.health_info"
-            ></PrimeTextArea>
-          </article>
-
-          <div class="button-wrapper">
-            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-              ><span>zurück</span>
-            </PrimeButton>
-            <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 3">
-              <span>weiter</span
-              ><svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
-              </svg>
-            </PrimeButton>
+          <PrimeMultiSelect
+            v-model="catsStore.state.currentCat.food_varieties"
+            :options="resourcesStore.options.foodVarieties"
+            optionLabel="content"
+            placeholder="Wähle die Futtervariante(n) aus"
+            id="input-cat-inoutdoor"
+            :maxSelectedLabels="4"
+            class="multiselect"
+          />
+        </article>
+        <article class="input-feeding-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#calendar-icon" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="feeding-selection">
+              Wie viele Mahlzeiten bekommt deine Katze pro Tag?</label
+            >
           </div>
-        </div>
-      </transition>
-      <transition name="menufade">
-        <div
-          class="site-one site-container"
-          :class="{ containeractive: activeMenuItem === 3 }"
-          v-if="activeMenuItem === 3"
-        >
-          <article class="input-personality-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#even-scales" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-personality">
-                Welches Verhalten zeigt deine Katze?</label
-              >
-            </div>
-            <PrimeMultiSelect
-              class="multiselect"
-              v-model="catsStore.state.currentCat.personality"
-              :options="resourcesStore.options.personality"
-              optionLabel="content"
-              placeholder="Wähle passende Optionen aus"
-              id="input-cat-personality"
-              :maxSelectedLabels="10"
-            />
-          </article>
-
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-behaviour"
-                ><span>Beschreibe hier eventuelle Verhaltensbesonderheiten:</span>
-                <span class="info-optional">(optional)</span>
-              </label>
-            </div>
-            <PrimeTextArea
-              id="input-cat-behaviour"
-              class="input-cat-behaviour input input-area"
-              v-model="catsStore.state.currentCat.behaviour_info"
-            ></PrimeTextArea>
-          </article>
-
-          <article class="input-playtimes-wrapper">
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#ball" fill="currentcolor"></use>
-              </svg>
-              <label class="label" for="input-cat-playtimes">
-                Wie häufig spielst du mit deiner Katze?</label
-              >
-            </div>
-            <PrimeDropdown
-              v-model="catsStore.state.currentCat.playtimes"
-              :options="resourcesStore.options.playtimes"
-              optionLabel="content"
-              placeholder="Wähle passende Optionen aus"
-              id="input-cat-playtimes"
-            />
-          </article>
-          <article>
-            <div>
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
-              </svg>
-              <label class="label label-info" for="input-cat-play"
-                >Beschreibe hier wie du mit deiner Katze spielst:
-                <span class="info-optional">(optional)</span></label
-              >
-            </div>
-            <PrimeTextArea
-              id="input-cat-play"
-              class="input-cat-play input input-area"
-              v-model="catsStore.state.currentCat.play_info"
-            ></PrimeTextArea>
-          </article>
-          <PrimeButton
-            @click="addCat"
-            class="btn-submit"
-            label="Speichere deine Katze"
-          ></PrimeButton>
-          <div class="button-wrapper">
-            <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
-              <svg class="icon">
-                <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-              ><span>zurück</span>
-            </PrimeButton>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.feeding_times"
+            :options="resourcesStore.options.feedingTimes"
+            optionLabel="content"
+            placeholder="Wähle eine Anzahl aus"
+            id="feeding-selection"
+          />
+        </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#food-bowl" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-food "
+              >Beschreibe hier bitte die einzelnen Mahlzeiten:
+              <span class="info-optional">(optional)</span></label
+            >
           </div>
+          <PrimeTextArea
+            v-model="catsStore.state.currentCat.food_info"
+            id="input-cat-food"
+            class="input-cat-food input input-area"
+          ></PrimeTextArea>
+        </article>
+
+        <div class="button-wrapper">
+          <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 0">
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+            ><span>zurück</span>
+          </PrimeButton>
+          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 2">
+            <span>weiter</span
+            ><svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
+            </svg>
+          </PrimeButton>
         </div>
-      </transition>
+      </div>
+
+      <div
+        class="site-one site-container"
+        :class="{ containeractive: activeMenuItem === 2 }"
+        v-if="activeMenuItem === 2"
+      >
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#drugs" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-food "
+              >Bekommt deine Katze Medikamente?
+            </label>
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.drugs"
+            :options="resourcesStore.options.drugs"
+            optionLabel="content"
+            placeholder="Wähle eine Option aus"
+            id="drugs"
+          />
+        </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#pillbox" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-food "
+              >Beschreibe hier die Medikamente: <span class="info-optional">(optional)</span></label
+            >
+          </div>
+          <PrimeTextArea
+            v-model="catsStore.state.currentCat.drugs_info"
+            class="input-area"
+            id="drugs-details"
+          />
+        </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#medical" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-health"
+              >Beschreibe hier eventuelle gesundheitliche Besonderheiten:
+              <span class="info-optional">(optional)</span></label
+            >
+          </div>
+          <PrimeTextArea
+            id="input-cat-health"
+            class="input-cat-health input input-area"
+            v-model="catsStore.state.currentCat.health_info"
+          ></PrimeTextArea>
+        </article>
+
+        <div class="button-wrapper">
+          <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+            ><span>zurück</span>
+          </PrimeButton>
+          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 3">
+            <span>weiter</span
+            ><svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
+            </svg>
+          </PrimeButton>
+        </div>
+      </div>
+
+      <div
+        class="site-one site-container"
+        :class="{ containeractive: activeMenuItem === 3 }"
+        v-if="activeMenuItem === 3"
+      >
+        <article class="input-personality-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#even-scales" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-personality">
+              Welches Verhalten zeigt deine Katze?</label
+            >
+          </div>
+          <PrimeMultiSelect
+            class="multiselect"
+            v-model="catsStore.state.currentCat.personality"
+            :options="resourcesStore.options.personality"
+            optionLabel="content"
+            placeholder="Wähle passende Optionen aus"
+            id="input-cat-personality"
+            :maxSelectedLabels="10"
+          />
+        </article>
+
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-behaviour"
+              ><span>Beschreibe hier eventuelle Verhaltensbesonderheiten:</span>
+              <span class="info-optional">(optional)</span>
+            </label>
+          </div>
+          <PrimeTextArea
+            id="input-cat-behaviour"
+            class="input-cat-behaviour input input-area"
+            v-model="catsStore.state.currentCat.behaviour_info"
+          ></PrimeTextArea>
+        </article>
+
+        <article class="input-playtimes-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#ball" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-playtimes">
+              Wie häufig spielst du mit deiner Katze?</label
+            >
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.playtimes"
+            :options="resourcesStore.options.playtimes"
+            optionLabel="content"
+            placeholder="Wähle passende Optionen aus"
+            id="input-cat-playtimes"
+          />
+        </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-play"
+              >Beschreibe hier wie du mit deiner Katze spielst:
+              <span class="info-optional">(optional)</span></label
+            >
+          </div>
+          <PrimeTextArea
+            id="input-cat-play"
+            class="input-cat-play input input-area"
+            v-model="catsStore.state.currentCat.play_info"
+          ></PrimeTextArea>
+        </article>
+        <PrimeButton @click="addCat" class="btn-submit" label="Speichere deine Katze"></PrimeButton>
+        <div class="button-wrapper">
+          <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
+            ><span>zurück</span>
+          </PrimeButton>
+        </div>
+      </div>
     </form>
     <PrimeDialog
       v-model:visible="pickAvatarVisible"
@@ -608,7 +598,6 @@ let touchstartX = 0
 let touchendX = 0
 
 function checkIfSwipe() {
-  console.log(touchstartX, touchendX)
   if (touchendX < touchstartX) {
     if (touchendX + 150 < touchstartX) {
       if (activeMenuItem.value < 3) {
@@ -708,6 +697,8 @@ form {
 .fade-leave-to {
   opacity: 0;
 } */
+
+/*
 .menufade-enter-active,
 .menufade-leave-active {
   opacity: 100;
@@ -723,6 +714,7 @@ form {
   transform: translateX(5vw);
   opacity: 0;
 }
+*/
 .site-container > article {
   display: grid;
   gap: 0.5rem;

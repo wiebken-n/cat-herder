@@ -1,6 +1,6 @@
 <template>
   <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
-    <div class="burger-container">
+    <div class="burger-container" v-if="!menuAlwaysActive">
       <PrimeButton
         :class="{ burgeractive: menuActive }"
         @click="activateMenu('click')"
@@ -14,24 +14,56 @@
           class="burger"
           data-cy="burger"
         >
-          <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use></svg
-      ></PrimeButton>
+          <use xlink:href="@/assets/icons.svg#burger" fill="currentcolor"></use>
+        </svg>
+      </PrimeButton>
     </div>
     <transition>
-      <nav v-if="menuActive" class="nav-container" :class="{ menuactive: menuActive }">
-        <div class="nav-wrapper" :class="{ navactive: menuActive }">
+      <nav
+        v-if="menuActive || menuAlwaysActive"
+        class="nav-container"
+        :class="{ menuactive: menuActive || menuAlwaysActive }"
+      >
+        <div class="nav-wrapper" :class="{ navactive: menuActive || menuAlwaysActive }">
           <ul>
-            <li tabindex="0" @keyup.enter="goToPage('/')" @click="goToPage('/')">Home</li>
-            <li tabindex="0" @keyup.enter="goToPage('/add-cat')" @click="goToPage('/add-cat')">
+            <li
+              tabindex="0"
+              :class="{ linkactive: activeRoute('home') }"
+              @keyup.enter="goToPage('/')"
+              @click="goToPage('/')"
+            >
+              Home
+            </li>
+            <li
+              tabindex="0"
+              :class="{ linkactive: activeRoute('add-cat') }"
+              @keyup.enter="goToPage('/add-cat')"
+              @click="goToPage('/add-cat')"
+            >
               Neue Katze
             </li>
-            <li tabindex="0" @keyup.enter="goToPage('/herder')" @click="goToPage('/herder')">
+            <li
+              tabindex="0"
+              :class="{ linkactive: activeRoute('herder') }"
+              @keyup.enter="goToPage('/herder')"
+              @click="goToPage('/herder')"
+            >
               Cat Herder
             </li>
-            <li tabindex="0" @keyup.enter="goToPage('/user')" @click="goToPage('/user')">
+            <li
+              tabindex="0"
+              :class="{ linkactive: activeRoute('user') }"
+              @keyup.enter="goToPage('/user')"
+              @click="goToPage('/user')"
+            >
               Einstellungen
             </li>
-            <li tabindex="0" @keyup.enter="goToPage('/impressum')" @click="goToPage('/impressum')">
+            <li
+              tabindex="0"
+              :class="{ linkactive: activeRoute('impressum') }"
+              @keyup.enter="goToPage('/impressum')"
+              @click="goToPage('/impressum')"
+            >
               Impressum
             </li>
           </ul>
@@ -59,7 +91,6 @@
 
 <style scoped>
 .nav-container {
-  visibility: hidden;
   width: 15rem;
   height: 20rem;
   border-radius: 0 0 0 var(--border-radius);
@@ -74,8 +105,11 @@
   background-color: transparent;
   border-color: transparent;
   position: absolute;
-  bottom: 0.5rem;
-  left: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.5rem;
+  height: 2.75rem;
+  width: 2.75rem;
+  padding: 0;
 }
 .darkmode-toggle-icon {
   z-index: 3;
@@ -206,19 +240,143 @@ li:focus {
 .v-leave-to {
   opacity: 0;
 }
+
+@media screen and (min-width: 1000px) {
+  /* .nav-container {
+    visibility: visible;
+  } */
+
+  .menuactive {
+    visibility: visible;
+    width: 87vw;
+    height: 3.25rem;
+    border-radius: 0 0 0 var(--border-radius);
+    position: relative;
+    background-color: transparent;
+    border-left: 1.5px solid var(--nav-border);
+    border-bottom: 1.5px solid var(--nav-border);
+    border: 1.5px solid transparent;
+    opacity: 0.97;
+  }
+  .nav-wrapper {
+    top: 0;
+  }
+
+  ul {
+    width: 84%;
+    display: flex;
+    align-self: flex-start;
+    justify-content: space-evenly;
+    gap: calc(2rem + 2vw);
+    padding-top: 0.25rem;
+    margin-left: calc(10vw);
+  }
+  ul,
+  li {
+    line-height: 2.25rem;
+    font-size: 1.05rem;
+    padding-left: 0;
+  }
+  li {
+    padding-inline: 5px;
+    color: var(--nav-text);
+    width: max-content;
+    border-bottom: none;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.75rem;
+    text-decoration-color: var(--nav-underline);
+    font-family: 'Roboto-Regular';
+  }
+
+  li:hover,
+  li:focus {
+    color: var(--nav-text-hover);
+    border-bottom: none;
+    cursor: pointer;
+    text-decoration-line: underline;
+    text-decoration-thickness: 4px;
+    text-decoration-color: var(--nav-underline-hover);
+    font-family: 'Roboto-Regular';
+  }
+  .darkmode-toggle {
+    position: absolute;
+    scale: 0.7;
+    bottom: 0.3rem;
+    left: 95%;
+  }
+}
+
+.linkactive {
+  text-decoration-color: var(--nav-underline-hover);
+}
+
+@media screen and (min-width: 1150px) {
+  .menuactive {
+    width: 80vw;
+  }
+  ul {
+    width: 82%;
+  }
+  .darkmode-toggle {
+    left: 94.5%;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .menuactive {
+    width: 70vw;
+  }
+  ul {
+    width: 80%;
+  }
+  /* .darkmode-toggle {
+    left: 95%;
+  } */
+}
+@media screen and (min-width: 1500px) {
+  .menuactive {
+    width: 100vw;
+  }
+  .darkmode-toggle {
+    left: 97%;
+  }
+  ul {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .menuactive {
+    width: 100vw;
+  }
+  ul {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+  .darkmode-toggle {
+    left: 98%;
+  }
+}
 </style>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { usePrimeVue } from 'primevue/config'
 import { useUserStore } from '@/stores/useUserStore.js'
 import { supabase } from '../supabase'
 const userStore = useUserStore()
 
+const route = useRoute()
+
 const router = useRouter()
 
 const menuActive = ref(false)
+const menuAlwaysActive = ref(false)
 const PrimeVue = usePrimeVue()
 
 const themeInfo = reactive({
@@ -238,6 +396,10 @@ const props = defineProps({
   session: Object
 })
 
+const activeRoute = function (link) {
+  return route.name === link
+}
+
 const activateMenu = function (method) {
   if (method === 'enter') {
     menuActive.value = true
@@ -251,6 +413,7 @@ const deactivateMenu = function () {
     menuActive.value = false
   }, 1500)
 }
+
 const goToPage = function (path) {
   router.push(path)
   menuActive.value = !menuActive.value
@@ -313,9 +476,26 @@ async function adjustDarkMode() {
     PrimeVue.changeTheme(themeInfo.dark.name, themeInfo.light.name, themeInfo.light.link, () => {})
   }
 }
+const windowWidth = ref(window.innerWidth)
+
+// const screenWidth = computed(() => {
+//   console.log(windowWidth.value)
+//   return windowWidth.value
+// })
+
+function onWindowSizeChange() {
+  windowWidth.value = window.innerWidth
+  if (windowWidth.value >= 1000) {
+    menuAlwaysActive.value = true
+  } else menuAlwaysActive.value = false
+}
 
 onMounted(async () => {
   await fetchDarkmodeSetting()
   await adjustDarkMode()
+  window.addEventListener('resize', onWindowSizeChange)
+  if (window.screen.width >= 1000) {
+    menuAlwaysActive.value = true
+  }
 })
 </script>

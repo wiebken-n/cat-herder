@@ -72,7 +72,7 @@ onMounted(() => {
 }
 .logo-component {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   width: 2rem;
   height: 2rem;
   left: 5px;
