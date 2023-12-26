@@ -254,6 +254,7 @@ const repeatDays = {
 p {
   font-size: 0.95rem;
   overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .user-tag {
