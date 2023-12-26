@@ -248,7 +248,7 @@ li:focus {
 
   .menuactive {
     visibility: visible;
-    width: 85vw;
+    width: 87vw;
     height: 3.25rem;
     border-radius: 0 0 0 var(--border-radius);
     position: relative;
@@ -263,7 +263,7 @@ li:focus {
   }
 
   ul {
-    width: 85%;
+    width: 84%;
     display: flex;
     align-self: flex-start;
     justify-content: space-evenly;
@@ -310,7 +310,20 @@ li:focus {
 .linkactive {
   text-decoration-color: var(--nav-underline-hover);
 }
-@media screen and (min-width: 1250px) {
+
+@media screen and (min-width: 1150px) {
+  .menuactive {
+    width: 80vw;
+  }
+  ul {
+    width: 82%;
+  }
+  .darkmode-toggle {
+    left: 94.5%;
+  }
+}
+
+@media screen and (min-width: 1300px) {
   .menuactive {
     width: 70vw;
   }
