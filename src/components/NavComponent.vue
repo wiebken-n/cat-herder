@@ -317,9 +317,9 @@ li:focus {
   ul {
     width: 80%;
   }
-  .darkmode-toggle {
-    left: 96%;
-  }
+  /* .darkmode-toggle {
+    left: 95%;
+  } */
 }
 @media screen and (min-width: 1500px) {
   .menuactive {
