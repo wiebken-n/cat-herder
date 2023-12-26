@@ -21,11 +21,13 @@
         </div>
         <div class="user-info" v-for="user of userStore.connectionData.users.userdata" :key="user">
           <HerderData
+            tabindex="0"
             :user="user"
             :connectionStatus="checkConnectionStatus(user)"
             @interaction="userStore.fetchAllConnections()"
             :showButton="false"
             @click="userInteraction(user)"
+            @keyup.enter="userInteraction(user)"
           />
           <div v-if="user === activeUser">
             <PrimeDialog :header="user.username" v-model:visible="userContextMenu">
@@ -59,11 +61,13 @@
           >
             <div class="user-info" v-for="user of userSearchResults.value" :key="user">
               <HerderData
+                tabindex="0"
                 :user="user"
                 :connectionStatus="checkConnectionStatus(user)"
                 @interaction="userStore.fetchAllConnections()"
                 :showButton="false"
                 @click="userInteraction(user)"
+                @keyup.enter="userInteraction(user)"
               />
               <div v-if="user === activeUser">
                 <PrimeDialog :header="user.username" v-model:visible="userContextMenu">
@@ -251,6 +255,7 @@ onBeforeMount(async () => {
 }
 
 .user-info-container {
+  margin-top: 3px;
   padding: 1.25rem;
   display: grid;
   gap: 1.25rem;

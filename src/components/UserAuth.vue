@@ -80,6 +80,7 @@ const handleLogin = async () => {
             id="user-email"
             label="Email"
             v-model.trim="email"
+            @keyup.enter="handleLogin()"
           />
           <label :class="{ labelUp: email }" class="float-label_label" for="user-email"
             >Email</label
