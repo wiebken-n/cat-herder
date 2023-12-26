@@ -169,6 +169,7 @@ function getTime(hour, minute) {
 p {
   font-size: 0.95rem;
   overflow-wrap: break-word;
+  word-break: break-all;
 }
 .user-tag {
   color: var(--cat-card-text);

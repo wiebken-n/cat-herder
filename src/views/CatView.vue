@@ -440,6 +440,9 @@
       </div>
       <div v-if="ownerId === userStore.state.userId" class="user-content-container">
         <div class="herder-output-container">
+          <p class="no-herders-info" v-if="herderProfiles === undefined">
+            Du hast {{ catsStore.state.currentCat.name }} noch keine Herder zugewiesen
+          </p>
           <div class="herder-data-container" v-for="herder of herderProfiles" :key="herder.id">
             <PrimeButton
               class="user-tag"
@@ -1020,14 +1023,22 @@ header {
   position: relative;
   gap: 0.75rem;
 }
-
+.no-herders-info {
+  color: var(--text);
+  background-color: var(--logo-bg);
+  padding-inline: 1.25rem;
+  padding-block: 0.9rem;
+  border-radius: 50px;
+  font-family: 'Roboto-Regular';
+  opacity: 0.95;
+}
 .herder-output-container {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .dialog-container {
@@ -1190,12 +1201,13 @@ h2 {
   .catdata {
     width: 490px;
   }
-  .herder-input-container {
+  /* .herder-input-container {
     gap: 1rem;
     grid-template-columns: 2fr 2fr;
-  }
+  } */
   .herder-input-container > * {
-    width: 500px;
+    width: 700px;
+    margin-inline: auto;
   }
 }
 
