@@ -702,7 +702,6 @@ async function editCatInfo(status) {
 
 async function addHerder(herderId) {
   if (selectedHerder.value === 'none') {
-    // console.log('bitte wähle einen herder aus')
     toast.add({
       severity: 'warn',
       summary: 'Kein Nutzer ausgewählt',

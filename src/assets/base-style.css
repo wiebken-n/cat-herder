@@ -140,7 +140,7 @@
   --nav-border: var(--old-rose-lighter);
 
   --nav-text: var(--text);
-  --nav-text-hover: var(--text-off);
+  --nav-text-hover: var(--primary-darkest);
   --cat-card-background: var(--primary);
   --cat-card-background-hover: var(--primary-darker);
   --cat-card-text: hsl(0, 0%, 96%);
@@ -169,6 +169,8 @@
   --underline-inactive-menu: #e5e7eb;
   --background-card-message: hsl(4, 15%, 93%);
   --connection-icon-on-dialog: var(--primary-darker);
+  --nav-underline: var(--old-rose-lighter);
+  --nav-underline-hover: var(--primary);
 }
 
 /* ----colors for calendar----- */
@@ -391,7 +393,7 @@ body {
   --nav-border: var(--primary);
 
   --nav-text: var(--text);
-  --nav-text-hover: var(--text-off);
+  --nav-text-hover: var(--primary-lighter);
   --cat-card-background: var(--primary-darker-dark);
   --cat-card-background-hover: var(--primary-darkest);
   --hover-label-bg: linear-gradient(hsl(205, 20%, 17%) 55%, hsl(192, 10%, 11%));
@@ -420,6 +422,8 @@ body {
   --underline-inactive-menu: #424b57;
   --background-card-message: hsl(192, 10%, 11%);
   --connection-icon-on-dialog: var(--text);
+  --nav-underline: var(--old-rose-lighter-dark);
+  --nav-underline-hover: var(--primary);
 }
 h1,
 h2 {

@@ -145,7 +145,6 @@ function checkTodaysTodos(todoarray) {
   const yearNow = new Date().getFullYear()
   const monthNow = new Date().getMonth() + 1
   const dayNow = new Date().getDate()
-  // console.log(yearNow, monthNow, dayNow)
 
   if (todoarray.length > 0) {
     for (let todo of todoarray) {

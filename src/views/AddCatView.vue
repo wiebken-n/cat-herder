@@ -608,7 +608,6 @@ let touchstartX = 0
 let touchendX = 0
 
 function checkIfSwipe() {
-  console.log(touchstartX, touchendX)
   if (touchendX < touchstartX) {
     if (touchendX + 150 < touchstartX) {
       if (activeMenuItem.value < 3) {
