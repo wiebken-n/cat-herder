@@ -165,34 +165,47 @@ async function handleSaveNote() {
 }
 
 async function togglePin(note) {
-  let newPinnedState = !note.pinned
-  const { error, data } = await supabase
-    .from('notes')
-    .update({ pinned: newPinnedState })
-    .eq('id', note.id)
-    .select()
+  if (
+    note.created_by === userStore.state.userId ||
+    catsStore.state.currentCat.user_id === userStore.state.userId
+  ) {
+    let newPinnedState = !note.pinned
+    const { error, data } = await supabase
+      .from('notes')
+      .update({ pinned: newPinnedState })
+      .eq('id', note.id)
+      .select()
 
-  if (error) {
-    console.log(error)
-  }
-  if (data) {
-    // console.log(data)
-    if (newPinnedState) {
-      toast.add({
-        severity: 'info',
-        summary: 'Notiz gepinned',
-        detail: 'Du hast diese Notiz angeheftet',
-        life: 2000
-      })
-    } else {
-      toast.add({
-        severity: 'info',
-        summary: 'Pin entfernt',
-        detail: 'Die Notiz ist nun nicht mehr angeheftet',
-        life: 2000
-      })
+    if (error) {
+      console.log(error)
     }
-    await getNotes()
+    if (data) {
+      // console.log(data)
+      if (newPinnedState) {
+        toast.add({
+          severity: 'info',
+          summary: 'Notiz gepinned',
+          detail: 'Du hast diese Notiz angeheftet',
+          life: 2000
+        })
+      } else {
+        toast.add({
+          severity: 'info',
+          summary: 'Pin entfernt',
+          detail: 'Die Notiz ist nun nicht mehr angeheftet',
+          life: 2000
+        })
+      }
+      await getNotes()
+    }
+  } else {
+    toast.add({
+      severity: 'warn',
+      summary: 'Aktion nicht möglich',
+      detail: 'Du kannst nur von dir erstellte Notizen an- und entpinnen',
+      life: 2000
+    })
+    return
   }
 }
 
@@ -303,10 +316,13 @@ onBeforeMount(async () => {
   text-align: start;
   position: relative;
   padding-bottom: 2rem;
-  width: 100%;
+  width: 95%;
+  margin-inline: auto;
   /* border: 2px solid red; */
 }
 .button-add-note {
+  flex-direction: column;
+  display: flex;
   width: 100%;
 }
 .button-save-note {
@@ -375,11 +391,18 @@ onBeforeMount(async () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-
+@media screen and (min-width: 500px) {
+  .button-add-note {
+    width: 400px;
+  }
+}
 @media screen and (min-width: 600px) {
   .dialog-container,
   .notes-content-wrapper {
     width: 500px;
+  }
+  .button-add-note {
+    width: 480px;
   }
 }
 

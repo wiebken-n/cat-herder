@@ -50,16 +50,16 @@
       />
 
       <PrimeButton
-        @click="activeMenuItem = 4"
-        :class="{ activeMenuButton: activeMenuItem === 4 }"
+        @click="activeMenuItem = 3"
+        :class="{ activeMenuButton: activeMenuItem === 3 }"
         unstyled
         label="Notes"
         class="menu-btn"
       />
       <PrimeButton
         v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
-        @click="activeMenuItem = 3"
-        :class="{ activeMenuButton: activeMenuItem === 3 }"
+        @click="activeMenuItem = 4"
+        :class="{ activeMenuButton: activeMenuItem === 4 }"
         unstyled
         label="Herder"
         class="menu-btn"
@@ -432,10 +432,10 @@
         >
       </div>
     </div>
-    <div v-if="activeMenuItem === 2">
+    <div class="calendar-section" v-if="activeMenuItem === 2">
       <CalendarComponent />
     </div>
-    <div v-if="activeMenuItem === 3" class="herder-container">
+    <div v-if="activeMenuItem === 4" class="herder-container">
       <div v-if="ownerId !== userStore.state.userId" class="user-content-container">
         <div div class="herder-output-container">
           <PrimeTag
@@ -492,8 +492,8 @@
         </div>
       </div>
     </div>
-    <div v-if="activeMenuItem === 4" class="notes-container">
-      <NotesComponent></NotesComponent>
+    <div v-if="activeMenuItem === 3" class="notes-container">
+      <NotesComponent />
     </div>
   </div>
 </template>
@@ -823,7 +823,7 @@ function checkIfSwipe() {
   } else {
     if (touchendX < touchstartX) {
       if (touchendX + 150 < touchstartX) {
-        if (activeMenuItem.value < 3) {
+        if (activeMenuItem.value < 4) {
           activeMenuItem.value++
         }
       }
@@ -951,7 +951,7 @@ header {
 .menu-wrapper,
 .site-menu-wrapper,
 .cat-info-menu-wrapper {
-  width: 100%;
+  width: 95%;
   display: flex;
   justify-content: center;
 }
@@ -1087,7 +1087,7 @@ header {
   padding-bottom: 1.5rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.25rem;
+  gap: 0.5rem;
   position: relative;
   width: 100%;
 }
@@ -1151,6 +1151,23 @@ h2 {
   width: 100%;
   margin-bottom: 1rem;
 }
+
+.notes-container {
+  width: 100%;
+}
+@media screen and (min-width: 500px) {
+  .herder-input-container {
+    width: 400px;
+    margin-inline: auto;
+  }
+}
+@media screen and (min-width: 630px) {
+  .herder-input-container {
+    width: 500px;
+    margin-inline: auto;
+  }
+}
+
 @media screen and (min-width: 700px) {
   header,
   .user-content-container {

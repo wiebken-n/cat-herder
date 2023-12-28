@@ -8,8 +8,14 @@
         }}</span
       >
 
-      <button class="pin-button" @click="emit('pinClicked')">
-        <svg class="icon" :class="{ pinactive: props.pinned }">
+      <button tabindex="0" class="pin-button grey-pin" @click="emit('pinClicked')">
+        <svg
+          class="pin-icon"
+          :class="{
+            pinactive: props.pinned,
+            pincolored: catUserId === userId || createdBy === userId
+          }"
+        >
           <use xlink:href="@/assets/icons.svg#pin" fill="currentcolor"></use>
         </svg>
       </button>
@@ -99,11 +105,12 @@ onBeforeMount(() => {
   justify-items: flex-end;
   align-items: center;
 }
+
 .pin-button {
   border: none;
   background-color: transparent;
 }
-.icon {
+.pin-icon {
   color: var(--text-inactive);
   width: 1.4rem;
   height: 1.4rem;
@@ -112,12 +119,14 @@ onBeforeMount(() => {
 .pin-button .pinactive {
   color: var(--old-rose-darker);
 }
-.icon:hover,
-.icon:focus {
+.pincolored:hover,
+.pincolored:focus {
   color: var(--old-rose);
-  scale: 1.05;
+  scale: 1.25;
 }
-
+.pincolored {
+  color: var(--primary-darker);
+}
 .user-tag {
   color: var(--cat-card-text);
   background-color: var(--primary-darker);
