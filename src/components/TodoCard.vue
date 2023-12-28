@@ -155,7 +155,7 @@ function getTime(hour, minute) {
 
 .todo-content-container:hover,
 .todo-content-container:focus {
-  background-color: var(--cat-card-background-hover);
+  background-color: var(--todo-card-background-hover);
 }
 .todo-content-container > p {
   margin: 0;

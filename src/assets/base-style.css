@@ -92,6 +92,7 @@
 :root {
   --moonstone: hsla(192, 49%, 50%, 1);
   --moonstone-dark: hsla(192, 49%, 40%, 1);
+  --moonstone-slightly-darker: hsla(192, 49%, 45%, 1);
   --moonstone-darker: hsla(192, 49%, 30%, 1);
   --moonstone-light: hsla(192, 49%, 60%, 1);
   --moonstone-superlight: hsla(192, 49%, 97%, 1);
@@ -112,7 +113,10 @@
   --secondary-light: var(--old-rose-light);
   --secondary-lighter: var(--old-rose-lighter);
   --primary-darker: var(--moonstone-dark);
-  --primary-darker-dark: #0e7490;
+  --primary-darker-less-sat: hsla(192, 25%, 30%, 1);
+  --primary-slighty-darker: var(--moonstone-slightly-darker);
+  --primary-darker-dark: hsl(193, 82%, 31%);
+  --primary-darker-dark-slighty-darker: hsl(193, 82%, 29%);
   --primary-darkest: hsl(193, 82%, 27%);
   --primary-lighter: var(--moonstone-light);
   --primary-superlight: var(--moonstone-superlight);
@@ -171,6 +175,7 @@
   --connection-icon-on-dialog: var(--primary-darker);
   --nav-underline: var(--old-rose-lighter);
   --nav-underline-hover: var(--primary);
+  --todo-card-background-hover: var(--primary-slighty-darker);
 }
 
 /* ----colors for calendar----- */
@@ -370,8 +375,8 @@ body {
 }
 
 .todo-card-datepicker .p-button {
-  background-color: var(--primary-darker-dark);
-  border-color: var(--primary-darker-dark);
+  background-color: var(--primary-darker);
+  /* border-color: var(--primary-darker); */
 }
 
 .darkmode {
@@ -424,6 +429,7 @@ body {
   --connection-icon-on-dialog: var(--text);
   --nav-underline: var(--old-rose-lighter-dark);
   --nav-underline-hover: var(--primary);
+  --todo-card-background-hover: var(--primary-darker-dark-slighty-darker);
 }
 h1,
 h2 {

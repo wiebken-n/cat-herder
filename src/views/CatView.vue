@@ -50,6 +50,13 @@
       />
 
       <PrimeButton
+        @click="activeMenuItem = 4"
+        :class="{ activeMenuButton: activeMenuItem === 4 }"
+        unstyled
+        label="Notes"
+        class="menu-btn"
+      />
+      <PrimeButton
         v-if="catsStore.state.currentCat.user_id === userStore.state.userId"
         @click="activeMenuItem = 3"
         :class="{ activeMenuButton: activeMenuItem === 3 }"
@@ -481,10 +488,12 @@
           <PrimeButton
             label="Füge diese Nutzer als Herder hinzu"
             @click="addHerder(selectedHerder.id)"
-            outlined
           />
         </div>
       </div>
+    </div>
+    <div v-if="activeMenuItem === 4" class="notes-container">
+      <NotesComponent></NotesComponent>
     </div>
   </div>
 </template>
@@ -494,6 +503,7 @@ import { useCatsStore } from '../stores/useCatsStore'
 import { useUserStore } from '../stores/useUserStore'
 import { useResourcesStore } from '../stores/useResourcesStore'
 import CalendarComponent from '@/components/CalendarComponent.vue'
+import NotesComponent from '@/components/NotesComponent.vue'
 import { useRoute } from 'vue-router'
 import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'
@@ -941,7 +951,7 @@ header {
 .menu-wrapper,
 .site-menu-wrapper,
 .cat-info-menu-wrapper {
-  width: 80vw;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -955,7 +965,7 @@ header {
   margin-bottom: 0.5rem;
   overflow-x: auto;
   display: grid;
-  width: 80vw;
+
   grid-template-columns: min-content min-content min-content min-content min-content;
   grid-template-rows: 1fr;
   margin-bottom: 1.5rem;
@@ -972,7 +982,7 @@ header {
 
 .cat-info-menu-wrapper {
   padding-block: 0.25rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   overflow-x: auto;
   display: grid;
   grid-template-columns: 2fr min-content 1fr min-content 1fr min-content 1fr min-content 2fr;
@@ -1025,12 +1035,14 @@ header {
 }
 .no-herders-info {
   color: var(--text);
-  background-color: var(--logo-bg);
+  background-color: transparent;
+  border: 2px solid var(--primary);
   padding-inline: 1.25rem;
   padding-block: 0.9rem;
   border-radius: 50px;
   font-family: 'Roboto-Regular';
   opacity: 0.95;
+  text-align: center;
 }
 .herder-output-container {
   display: flex;
@@ -1141,13 +1153,17 @@ h2 {
 }
 @media screen and (min-width: 700px) {
   header,
-  .menu-wrapper,
-  .user-content-container,
-  .cat-content,
-  .catdata {
+  .user-content-container {
     width: 500px;
   }
 
+  .cat-content,
+  .catdata {
+    width: 600px;
+  }
+  .menu-wrapper {
+    width: 600px;
+  }
   .dialog-container {
     width: 450px;
   }
@@ -1155,25 +1171,32 @@ h2 {
 @media screen and (min-width: 1000px) {
   header,
   .menu-wrapper,
-  .user-content-container,
   .cat-content,
   .catdata,
   .content-wrapper-calendar {
     width: 700px;
   }
 
+  .user-content-container,
   .dialog-container {
     width: 600px;
+  }
+
+  .herder-input-container {
+    width: 550px;
+    margin-inline: auto;
   }
 }
 @media screen and (min-width: 1200px) {
   header,
-  .user-content-container,
   .menu-wrapper,
   .content-wrapper-calendar {
     width: 1000px;
   }
-
+  .cat-info-menu-wrapper {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
   .cat-content {
     grid-template-columns: 1fr 1fr;
     /* grid-template-rows: 1fr 1fr auto; */
@@ -1205,10 +1228,6 @@ h2 {
     gap: 1rem;
     grid-template-columns: 2fr 2fr;
   } */
-  .herder-input-container > * {
-    width: 700px;
-    margin-inline: auto;
-  }
 }
 
 @keyframes tilt-shaking {
