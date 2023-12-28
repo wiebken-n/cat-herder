@@ -1087,7 +1087,7 @@ header {
   padding-bottom: 1.5rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.25rem;
+  gap: 0.5rem;
   position: relative;
   width: 100%;
 }
@@ -1151,6 +1151,20 @@ h2 {
   width: 100%;
   margin-bottom: 1rem;
 }
+
+@media screen and (min-width: 500px) {
+  .herder-input-container {
+    width: 400px;
+    margin-inline: auto;
+  }
+}
+@media screen and (min-width: 630px) {
+  .herder-input-container {
+    width: 500px;
+    margin-inline: auto;
+  }
+}
+
 @media screen and (min-width: 700px) {
   header,
   .user-content-container {
