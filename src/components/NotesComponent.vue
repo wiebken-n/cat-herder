@@ -34,6 +34,7 @@
     </PrimeDialog>
     <div class="notes-container">
       <NoteCardComponent
+        class="note-card"
         v-for="note of pinnedNotes"
         :key="note"
         :content="note.content"
@@ -51,6 +52,7 @@
       >
       </NoteCardComponent>
       <NoteCardComponent
+        class="note-card"
         v-for="note of unpinnedNotes"
         :key="note"
         :content="note.content"
@@ -296,13 +298,12 @@ onBeforeMount(async () => {
 
 <style scoped>
 .notes-content-wrapper {
-  padding-inline: 2rem;
   display: grid;
   justify-items: center;
   text-align: start;
   position: relative;
   padding-bottom: 2rem;
-  width: 80vw;
+  width: 100%;
   /* border: 2px solid red; */
 }
 .button-add-note {
@@ -374,6 +375,7 @@ onBeforeMount(async () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
+
 @media screen and (min-width: 600px) {
   .dialog-container,
   .notes-content-wrapper {
@@ -384,6 +386,24 @@ onBeforeMount(async () => {
 @media screen and (min-width: 700px) {
   .notes-content-wrapper {
     width: 600px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .notes-content-wrapper {
+    width: 1000px;
+  }
+  .notes-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+  }
+
+  .note-card {
+    width: 490px;
+    height: fit-content;
+  }
+  .button-add-note {
+    width: 550px;
   }
 }
 </style>
