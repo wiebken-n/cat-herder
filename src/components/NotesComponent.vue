@@ -96,7 +96,7 @@ import { onBeforeMount, ref } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import { supabase } from '../supabase'
-import NoteCardComponent from '@/NoteCardComponent.vue'
+import NoteCardComponent from './NoteCardComponent.vue'
 
 const catsStore = useCatsStore()
 const userStore = useUserStore()
@@ -303,10 +303,13 @@ onBeforeMount(async () => {
   text-align: start;
   position: relative;
   padding-bottom: 2rem;
-  width: 100%;
+  width: 95%;
+  margin-inline: auto;
   /* border: 2px solid red; */
 }
 .button-add-note {
+  flex-direction: column;
+  display: flex;
   width: 100%;
 }
 .button-save-note {
@@ -375,7 +378,7 @@ onBeforeMount(async () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-@media screen and (min-width: 450px) {
+@media screen and (min-width: 500px) {
   .button-add-note {
     width: 400px;
   }
