@@ -810,7 +810,7 @@ const selectedColor = ref('primary')
 const deleteTodoDialog = (todo) => {
   confirm.require({
     group: 'headless',
-    message: `Möchtest du den Termin löschen`,
+    message: `Möchtest du den Termin löschen?`,
     header: 'Termin löschen',
 
     accept: () => {

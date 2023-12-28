@@ -57,6 +57,13 @@
         label="Herder"
         class="menu-btn"
       />
+      <PrimeButton
+        @click="activeMenuItem = 4"
+        :class="{ activeMenuButton: activeMenuItem === 4 }"
+        unstyled
+        label="Notes"
+        class="menu-btn"
+      />
     </nav>
 
     <div v-if="activeMenuItem === 0" class="cat-overview-container">
@@ -486,6 +493,9 @@
         </div>
       </div>
     </div>
+    <div v-if="activeMenuItem === 4" class="notes-container">
+      <NotesComponent></NotesComponent>
+    </div>
   </div>
 </template>
 
@@ -494,6 +504,7 @@ import { useCatsStore } from '../stores/useCatsStore'
 import { useUserStore } from '../stores/useUserStore'
 import { useResourcesStore } from '../stores/useResourcesStore'
 import CalendarComponent from '@/components/CalendarComponent.vue'
+import NotesComponent from '@/components/NotesComponent.vue'
 import { useRoute } from 'vue-router'
 import { onBeforeMount, reactive, onUnmounted, ref, computed } from 'vue'
 import { supabase } from '../supabase'

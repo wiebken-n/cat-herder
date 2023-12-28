@@ -73,7 +73,7 @@ const impressumActive = ref(false)
   text-align: center;
   padding-block: 3rem;
   font-size: 1.3rem;
-  font-family: 'Roboto-Slab';
+  font-family: 'Roboto-Regular';
   display: flex;
   flex-direction: column;
 }
@@ -92,7 +92,7 @@ img {
   position: relative;
 }
 .impressum-link {
-  font-family: 'Roboto-Slab';
+  font-family: 'Roboto-Regular';
   position: absolute;
   bottom: 0.75rem;
   left: 50%;
