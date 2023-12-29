@@ -163,7 +163,7 @@ onBeforeMount(() => {
         <h2>(Dieser Name ist für andere Nutzer sichtbar)</h2>
       </div>
       <div v-else>
-        <h1>Hier kannst du deine Namen ändern, {{ userStore.state.usernameOld }}</h1>
+        <h1>Hier kannst du deinen Namen ändern, {{ userStore.state.usernameOld }}</h1>
       </div>
     </header>
     <form class="form-widget" @submit.prevent="updateProfile">

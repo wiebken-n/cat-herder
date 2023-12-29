@@ -82,24 +82,27 @@
           <div v-if="repeatingDate" class="repeating-date-container">
             <!-- <p id="description-frequency">Gib hier die Wiederholungsfrequenz an:</p> -->
             <div class="freqency-selection-wrapper">
-              <PrimeInputNumber
-                v-model="repeatNumber"
-                mode="decimal"
-                showButtons
-                id="repeat-number"
-                prefix=" Wiederholung alle "
-                :min="repeatMinMax.min"
-                :max="repeatMinMax.max"
-              />
-
+              <label class="label-repeat-frequency" for="repeat-category"
+                >Häufigkeit der Wiederholung:</label
+              >
               <PrimeDropdown
                 v-model="repeatCategory"
                 :options="repeatCategoryOptions"
                 optionLabel="content"
-                placeholder="Tage, Wochen, Monate...?"
+                placeholder="Wähle eine Option aus"
                 id="repeat-category"
               />
-
+              <PrimeInputNumber
+                v-if="repeatCategory"
+                v-model="repeatNumber"
+                mode="decimal"
+                showButtons
+                id="repeat-number"
+                prefix="Wiederholung alle "
+                :suffix="` ` + repeatCategory.content"
+                :min="repeatMinMax.min"
+                :max="repeatMinMax.max"
+              />
               <PrimeMultiSelect
                 v-if="repeatCategory.content === 'Wochen'"
                 v-model="selectedWeekdays"
@@ -268,7 +271,7 @@
       <div class="confimation-wrapper">
         <PrimeConfirmDialog group="headless">
           <template #container="{ message, acceptCallback, rejectCallback }">
-            <div class="dialog-container">
+            <div class="confirm-dialog-container">
               <h3 class="dialog-header">{{ message.header }}</h3>
               <div class="dialog-text-container">
                 <p class="dialog-text">{{ message.message }}</p>
@@ -896,6 +899,7 @@ onBeforeMount(() => {
 
 .button-send {
   margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   width: 90%;
 }
 .todo-output-container {
@@ -906,13 +910,14 @@ onBeforeMount(() => {
 .menu-wrapper {
   display: flex;
   justify-content: center;
-  padding-bottom: 1.25rem;
+  padding-top: 0.125rem;
+  padding-bottom: 1rem;
 }
 .todo-container {
-  background-color: var(--card-background);
-  box-shadow: 0 0 4px 2px var(--card-shadow);
+  /* background-color: var(--card-background);
+  box-shadow: 0 0 4px 2px var(--card-shadow); */
 
-  padding: 1rem;
+  /* padding: 1rem; */
   min-height: 10rem;
   border-radius: var(--border-radius);
   display: flex;
@@ -937,7 +942,7 @@ onBeforeMount(() => {
   width: 100%;
 }
 .todo-card {
-  margin-block: 0.5rem;
+  margin-block: 0.6rem;
 }
 .dialog-container {
   border-radius: var(--border-radius);
@@ -984,7 +989,9 @@ onBeforeMount(() => {
 .toggle-wrapper {
   width: 90%;
   display: flex;
+  padding-inline-start: 0.125rem;
   padding-block: 0.75rem;
+  margin-top: 0.7rem;
   gap: 1rem;
   align-items: center;
   font-family: 'Roboto-Regular';
@@ -992,14 +999,14 @@ onBeforeMount(() => {
 }
 .repeating-date-container {
   /* background-color: var(--card-background); */
-  padding: 1rem;
-  padding-block: 1rem;
+  /* padding: 1rem; */
+  padding-bottom: 1rem;
   border-radius: var(--border-radius);
-  border: 2px solid var(--primary);
+  /* border: 2px solid var(--primary); */
   display: grid;
   justify-items: start;
   gap: 0.5rem;
-  width: 93%;
+  width: 90%;
   position: relative;
   align-items: center;
   margin-block: 0.5rem;
@@ -1015,11 +1022,26 @@ onBeforeMount(() => {
   gap: 0.75rem;
   align-items: stretch;
   width: 100%;
+  padding-top: 0.25rem;
 }
+.label-repeat-frequency,
 .label-repeat-end {
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   margin-bottom: -0.5rem;
   padding-left: 0.5rem;
+}
+
+.confirm-dialog-container {
+  border-radius: var(--border-radius);
+  justify-items: center;
+  background-color: var(--card-background);
+  padding: 2rem;
+}
+
+.confirm-dialog-container > h3 {
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: center;
 }
 
 @media screen and (min-width: 600px) {

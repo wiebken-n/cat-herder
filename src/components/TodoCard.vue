@@ -49,7 +49,7 @@
         class="input input-area"
         v-model="todoDescription"
         label="Termininhalt"
-        rows="10"
+        rows="5"
       ></PrimeTextArea>
     </div>
 
@@ -69,6 +69,7 @@
 
     <div class="interaction-wrapper">
       <PrimeCheckbox
+        class="checkbox"
         v-if="!editState"
         v-model="checkboxState"
         :binary="true"
@@ -145,18 +146,21 @@ function getTime(hour, minute) {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.125rem;
   padding: 1rem;
-  color: var(--cat-card-text);
-  background-color: var(--cat-card-background);
+  /* color: var(--cat-card-text);
+  background-color: var(--cat-card-background); */
   border-radius: var(--border-radius);
-  transition: all 200ms ease-in-out;
+  /* transition: all 200ms ease-in-out; */
+  background-color: var(--background-clr);
+  color: var(--text);
+  border: 2px solid var(--border-catdata-card);
 }
 
-.todo-content-container:hover,
+/* .todo-content-container:hover,
 .todo-content-container:focus {
   background-color: var(--todo-card-background-hover);
-}
+} */
 .todo-content-container > p {
   margin: 0;
 }
@@ -166,20 +170,26 @@ function getTime(hour, minute) {
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
+
 p {
   font-size: 0.95rem;
   overflow-wrap: break-word;
   word-break: break-all;
+  padding-inline: 0.5rem;
 }
 .user-tag {
   color: var(--cat-card-text);
-  background-color: var(--primary-darkest);
-  transition: all 200ms ease-in-out;
+  background-color: var(--primary-darker);
+  /* transition: all 200ms ease-in-out; */
+  padding: 0.25rem;
+  padding-inline: 0.5rem;
 }
+
 /* .todo-content-container:hover * .user-tag,
 .todo-content-container:focus * .user-tag {
   background-color: var(--primary-darker-dark);
 } */
+
 .todo-date {
   font-family: 'Roboto-Regular';
   display: flex;
@@ -201,6 +211,8 @@ p {
 }
 .todo-header-wrapper {
   margin-top: 1rem;
+
+  margin-bottom: 0.25rem;
 }
 .todo-content-wrapper {
   margin-bottom: 1rem;
@@ -224,6 +236,7 @@ p {
   margin-bottom: 1.25rem;
 }
 .interaction-wrapper {
+  padding-inline: 0.5rem;
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -241,7 +254,7 @@ p {
   width: min-content;
 }
 .icon {
-  color: var(--cat-card-text);
+  color: var(--primary-darker);
   height: 1.5rem;
   width: 1.25rem;
   scale: 1;

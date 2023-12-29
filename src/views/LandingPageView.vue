@@ -1,10 +1,28 @@
 <template>
   <div v-if="!impressumActive" class="l-content-wrapper">
     <SiteLogo class="logo-component" />
-
+    <div class="paw-icon-container">
+      <svg class="paw-icon">
+        <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
+      </svg>
+    </div>
     <div class="intro-text" data-cy="intro-text">
-      <span>Willommen!</span>
-      <span>Cat Herder hilft dir dabei, die Versorgung deiner Katzen zu koordinieren</span>
+      <h2>
+        <span>Du willst die Betreuung deiner Katzen vereinfachen?</span>
+        <span>Dann bist du hier genau richtig!</span>
+      </h2>
+
+      <!-- <div class="paw-icon-container">
+        <svg class="paw-icon">
+          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+        </svg>
+      </div> -->
+      <!-- <span>Willommen!</span> -->
+      <!-- <span class="info-text"
+        >Cat Herder hilft dir dabei, die Versorgung deiner Katzen zu koordinieren. Du kannst die
+        wichtigsten Daten für deine Katze angeben, Termine anlegen, Notizen erstellen und dies alles
+        mit deinen Cat-Sittern teilen.</span
+      > -->
     </div>
 
     <PrimeButton
@@ -48,7 +66,7 @@ const impressumActive = ref(false)
 <style scoped>
 .l-content-wrapper {
   display: grid;
-  grid-template-rows: 45fr 15fr 15fr 25fr;
+  grid-template-rows: 40fr 15fr 15fr 30fr;
   align-items: center;
   justify-items: center;
   height: 100vh;
@@ -56,7 +74,7 @@ const impressumActive = ref(false)
 
 .logo-component {
   margin-top: 7vh;
-  font-size: 0.55rem;
+  font-size: 0.525rem;
 }
 
 /* .site-logo {
@@ -69,17 +87,70 @@ const impressumActive = ref(false)
   margin-top: 0.5rem;
 } */
 .intro-text {
-  width: 250px;
-  text-align: center;
-  padding-block: 3rem;
-  font-size: 1.3rem;
+  width: 18rem;
+  text-align: left;
+
+  font-size: 1.1rem;
   font-family: 'Roboto-Regular';
   display: flex;
+
   flex-direction: column;
 }
+.intro-text h2 {
+  margin: 0;
+  margin-inline: auto;
+  width: 18rem;
+  font-family: 'Roboto-Regular';
+  font-size: 1.125rem;
+  text-align: center;
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5rem;
+  gap: 0.5rem;
+  margin-block: 0.75rem;
+  margin-top: 2rem;
+  /* background-color: var(--card-background); */
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  color: var(--text-off);
+  border: 2px solid var(--primary);
+  /* box-shadow: 0 0 4px 2px var(--card-shadow); */
+  /* letter-spacing: -0.6px; */
+}
+
+.intro-text .info-text {
+  margin-inline: 1rem;
+  line-height: 1.5rem;
+  border: 2px solid var(--primary);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-block: 1rem;
+  font-size: 0.9rem;
+}
+.paw-icon-container {
+  margin-block: 0rem;
+  width: 3.5rem;
+  height: 3.5rem;
+
+  margin-inline: auto;
+  padding: 0.75rem;
+  background-color: var(--old-rose);
+  /* box-shadow: inline 0 0 0px 2px var(--old-rose-light); */
+  border-radius: 100px;
+  scale: 1.125;
+}
+.paw-icon {
+  color: var(--background-clr);
+  height: 2rem;
+  width: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
 .btn-open-modal {
-  height: 2.5rem;
-  width: 250px;
+  height: 3rem;
+  width: 18rem;
 }
 img {
   height: 200px;
@@ -110,12 +181,12 @@ img {
 }
 
 @media screen and (min-width: 600px) {
-  .intro-text {
-    width: 400px;
-  }
+  /* .intro-text {
+    width: 15rem;
+  } */
   .btn-open-modal {
-    height: 2.5rem;
-    width: 250px;
+    height: 3rem;
+    width: 18rem;
   }
   .btn-login {
     width: 10rem;

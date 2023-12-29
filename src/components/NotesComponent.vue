@@ -79,7 +79,7 @@
           </div>
 
           <div class="dialog-button-container">
-            <PrimeButton label="Termin löschen" @click="acceptCallback"></PrimeButton>
+            <PrimeButton label="Notiz löschen" @click="acceptCallback"></PrimeButton>
             <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
           </div>
         </div>
@@ -184,16 +184,16 @@ async function togglePin(note) {
       if (newPinnedState) {
         toast.add({
           severity: 'info',
-          summary: 'Notiz gepinned',
-          detail: 'Du hast diese Notiz angeheftet',
-          life: 2000
+          summary: 'Angeheftet',
+          detail: 'Notiz wurde angeheftet',
+          life: 1500
         })
       } else {
         toast.add({
           severity: 'info',
-          summary: 'Pin entfernt',
-          detail: 'Die Notiz ist nun nicht mehr angeheftet',
-          life: 2000
+          summary: 'Anheftung entfernt',
+          detail: 'Notiz wurde freigegeben',
+          life: 1500
         })
       }
       await getNotes()
@@ -365,13 +365,9 @@ onBeforeMount(async () => {
 
 .dialog-container {
   border-radius: var(--border-radius);
-  display: grid;
   justify-items: center;
-  min-height: max-content;
-  width: 85vw;
   background-color: var(--card-background);
-  position: relative;
-  padding: 1rem;
+  padding: 2rem;
 }
 .dialog-container > h3 {
   margin-block: 0.5rem;
@@ -382,7 +378,7 @@ onBeforeMount(async () => {
   width: 100%;
   padding-inline: 3rem;
   padding-block: 2rem;
-  text-align: left;
+  text-align: center;
   font-weight: 500;
 }
 .dialog-button-container {
@@ -410,6 +406,15 @@ onBeforeMount(async () => {
   .notes-content-wrapper {
     width: 600px;
   }
+  .button-add-note {
+    width: calc(450px + 1vw);
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .button-add-note {
+    width: calc(500px + 1vw);
+  }
 }
 @media screen and (min-width: 1200px) {
   .notes-content-wrapper {
@@ -426,7 +431,7 @@ onBeforeMount(async () => {
     height: fit-content;
   }
   .button-add-note {
-    width: 550px;
+    width: calc(550px + 2vw);
   }
 }
 </style>

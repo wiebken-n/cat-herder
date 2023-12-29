@@ -374,10 +374,10 @@ body {
   color: var(--text);
 }
 
-.todo-card-datepicker .p-button {
+/* .todo-card-datepicker .p-button {
   background-color: var(--primary-darker);
-  /* border-color: var(--primary-darker); */
-}
+  /* border-color: var(--primary-darker); 
+} */
 
 .darkmode {
   --hover-shadow: rgba(0, 0, 0, 0.568);

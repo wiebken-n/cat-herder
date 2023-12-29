@@ -53,7 +53,7 @@
         @click="activeMenuItem = 3"
         :class="{ activeMenuButton: activeMenuItem === 3 }"
         unstyled
-        label="Notes"
+        label="Notizen"
         class="menu-btn"
       />
       <PrimeButton
