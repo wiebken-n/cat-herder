@@ -314,6 +314,11 @@ body {
   background-color: var(--selection-bg);
 }
 
+.no-selection {
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
+}
+
 .p-button,
 .p-menuitem-text {
   font-weight: 500;
@@ -450,6 +455,16 @@ p {
   padding-top: 3rem;
 }
 
+@media screen and (max-width: 400px) {
+  html {
+    font-size: 12px;
+  }
+}
+@media screen and (max-width: 300px) {
+  html {
+    font-size: 11px;
+  }
+}
 @media screen and (min-width: 600px) {
   html {
     font-size: 15px;

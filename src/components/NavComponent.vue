@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-content-wrapper" @mouseleave="deactivateMenu">
+  <div class="nav-content-wrapper no-selection" @mouseleave="deactivateMenu">
     <div class="burger-container" v-if="!menuAlwaysActive">
       <PrimeButton
         :class="{ burgeractive: menuActive }"

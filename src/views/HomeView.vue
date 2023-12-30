@@ -16,8 +16,8 @@
         @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
-        <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
-        <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+        <img v-if="cat.avatar" class="cat-avatar no-selection" :src="imageUrl(cat.avatar)" alt="" />
+        <svg v-else alt="cat avatar" class="cat-avatar no-selection" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
 
@@ -70,8 +70,8 @@
         @keyup.enter="router.push({ name: 'cat', params: { id: cat.id } })"
         @click="router.push({ name: 'cat', params: { id: cat.id } })"
       >
-        <img v-if="cat.avatar" class="cat-avatar" :src="imageUrl(cat.avatar)" alt="" />
-        <svg v-else alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
+        <img v-if="cat.avatar" class="cat-avatar no-selection" :src="imageUrl(cat.avatar)" alt="" />
+        <svg v-else alt="cat avatar" class="cat-avatar no-selection" data-cy="cat-avatar">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
         <p class="cat-name">{{ cat.name }}</p>

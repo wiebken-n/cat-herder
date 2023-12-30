@@ -1,36 +1,23 @@
 <template>
   <div v-if="!impressumActive" class="l-content-wrapper">
     <SiteLogo class="logo-component" />
-    <div class="paw-icon-container">
+
+    <div class="intro-text" data-cy="intro-text">
+      <h2>Koordiniere die Betreuung deiner Katzen</h2>
+      <div class="paw-icon-container">
+        <svg class="cat-icon">
+          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+        </svg>
+      </div>
+      <h3>einfach und interaktiv</h3>
+    </div>
+
+    <PrimeButton label="Anmelden" class="btn-open-modal" icon="pi pi-user" @click="visible = true">
+      <span>Anmelden</span>
       <svg class="paw-icon">
         <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
       </svg>
-    </div>
-    <div class="intro-text" data-cy="intro-text">
-      <h2>
-        <span>Du willst die Betreuung deiner Katzen vereinfachen?</span>
-        <span>Dann bist du hier genau richtig!</span>
-      </h2>
-
-      <!-- <div class="paw-icon-container">
-        <svg class="paw-icon">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-      </div> -->
-      <!-- <span>Willommen!</span> -->
-      <!-- <span class="info-text"
-        >Cat Herder hilft dir dabei, die Versorgung deiner Katzen zu koordinieren. Du kannst die
-        wichtigsten Daten für deine Katze angeben, Termine anlegen, Notizen erstellen und dies alles
-        mit deinen Cat-Sittern teilen.</span
-      > -->
-    </div>
-
-    <PrimeButton
-      label="Anmelden"
-      class="btn-open-modal"
-      icon="pi pi-user"
-      @click="visible = true"
-    />
+    </PrimeButton>
     <PrimeDialog
       v-model:visible="visible"
       modal
@@ -42,7 +29,6 @@
     </PrimeDialog>
     <div class="impressum-link-wrapper">
       <button @click="impressumActive = !impressumActive" class="impressum-link">Impressum</button>
-      <!-- <a class="impressum-link" @click="impressumActive = !impressumActive">Impressum</a> -->
     </div>
   </div>
   <div v-if="impressumActive" class="impressum">
@@ -65,69 +51,43 @@ const impressumActive = ref(false)
 
 <style scoped>
 .l-content-wrapper {
+  background-color: var(--card-background);
   display: grid;
-  grid-template-rows: 40fr 15fr 15fr 30fr;
+  /* grid-template-rows: 40fr 15fr 15fr 30fr; */
   align-items: center;
   justify-items: center;
   height: 100vh;
 }
 
 .logo-component {
-  margin-top: 7vh;
+  margin-top: 8vh;
   font-size: 0.525rem;
 }
 
-/* .site-logo {
-  padding-right: 1rem;
-}
-.site-name-headline {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: -1px;
-  margin-top: 0.5rem;
-} */
 .intro-text {
-  width: 18rem;
-  text-align: left;
-
-  font-size: 1.1rem;
-  font-family: 'Roboto-Regular';
-  display: flex;
-
-  flex-direction: column;
-}
-.intro-text h2 {
-  margin: 0;
-  margin-inline: auto;
-  width: 18rem;
-  font-family: 'Roboto-Regular';
-  font-size: 1.125rem;
+  width: 20rem;
   text-align: center;
-  font-weight: 300;
+
+  font-family: 'Roboto-Regular';
   display: flex;
+
   flex-direction: column;
-  line-height: 1.5rem;
-  gap: 0.5rem;
-  margin-block: 0.75rem;
-  margin-top: 2rem;
-  /* background-color: var(--card-background); */
-  padding: 1.5rem;
-  border-radius: var(--border-radius);
-  color: var(--text-off);
-  border: 2px solid var(--primary);
-  /* box-shadow: 0 0 4px 2px var(--card-shadow); */
-  /* letter-spacing: -0.6px; */
 }
 
-.intro-text .info-text {
-  margin-inline: 1rem;
-  line-height: 1.5rem;
-  border: 2px solid var(--primary);
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  margin-block: 1rem;
-  font-size: 0.9rem;
+h2 {
+  font-size: 1.9em;
+  font-family: 'Roboto-Condensed';
+  margin-bottom: 1.4rem;
+  font-weight: 500;
 }
+
+h3 {
+  margin-top: 1.4rem;
+  font-size: 1.3em;
+  font-weight: 350;
+  font-family: 'Roboto-Condensed';
+}
+
 .paw-icon-container {
   margin-block: 0rem;
   width: 3.5rem;
@@ -135,12 +95,18 @@ const impressumActive = ref(false)
 
   margin-inline: auto;
   padding: 0.75rem;
-  background-color: var(--old-rose);
-  /* box-shadow: inline 0 0 0px 2px var(--old-rose-light); */
+  background-color: hsl(4, 15%, 67%);
   border-radius: 100px;
-  scale: 1.125;
+  scale: 1;
 }
 .paw-icon {
+  color: var(--background-clr);
+  height: 1.5rem;
+  width: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+.cat-icon {
   color: var(--background-clr);
   height: 2rem;
   width: 2rem;
@@ -151,14 +117,21 @@ const impressumActive = ref(false)
 .btn-open-modal {
   height: 3rem;
   width: 18rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.125rem;
+  font-family: 'Roboto-Regular';
+  font-size: 1.125rem;
+  align-items: center;
 }
+
 img {
   height: 200px;
 }
 .impressum-link-wrapper {
   margin-top: auto;
-  height: 2.55rem;
-  background-color: var(--card-background);
+  height: 2.75rem;
+  background-color: hsl(4, 15%, 77%);
   width: 100vw;
   position: relative;
 }
@@ -180,10 +153,21 @@ img {
   font-weight: 500;
 }
 
+@media screen and (max-width: 350px) {
+  .intro-text {
+    width: 85vw;
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .intro-text {
+    width: 20rem;
+  }
+}
 @media screen and (min-width: 600px) {
-  /* .intro-text {
-    width: 15rem;
-  } */
+  .intro-text {
+    width: 20rem;
+  }
   .btn-open-modal {
     height: 3rem;
     width: 18rem;
@@ -192,10 +176,4 @@ img {
     width: 10rem;
   }
 }
-
-/* .dialog-content-wrapper {
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  background-color: var(--background-clr);
-} */
 </style>

@@ -4,7 +4,7 @@
     <header>
       <img
         tabindex="0"
-        class="cat-avatar"
+        class="cat-avatar no-selection"
         :src="imageUrl(catsStore.state.currentCat.avatar)"
         alt="cat avatar"
       />
@@ -21,10 +21,8 @@
         </h2>
       </div>
     </header>
-    <!-- <div class="menu-wrapper site-menu-wrapper">
-      <PrimeTabMenu tabindex="0" v-model:activeIndex="activeMenuItem" :model="menuItems" />
-    </div> -->
-    <nav class="cat-view-menu-wrapper menu-wrapper">
+
+    <nav class="cat-view-menu-wrapper menu-wrapper no-selection">
       <PrimeButton
         @click="activeMenuItem = 0"
         :class="{ activeMenuButton: activeMenuItem === 0 }"
@@ -70,7 +68,7 @@
       <CatOverview></CatOverview>
     </div>
     <div v-if="activeMenuItem === 1" class="cat-info-container">
-      <nav class="cat-info-menu-wrapper menu-wrapper">
+      <nav class="cat-info-menu-wrapper menu-wrapper no-selection">
         <div class="buffer"></div>
         <PrimeButton
           @click="activeCatInfoMenuItem = 0"
@@ -1154,6 +1152,23 @@ h2 {
 
 .notes-container {
   width: 100%;
+}
+
+@media screen and (max-width: 500px) {
+  .cat-view-menu-wrapper .menu-btn {
+    padding-inline: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .cat-view-menu-wrapper .menu-btn {
+    padding-inline: 0.7rem;
+  }
+}
+@media screen and (max-width: 300px) {
+  .cat-view-menu-wrapper .menu-btn {
+    padding-inline: 0.5rem;
+  }
 }
 @media screen and (min-width: 500px) {
   .herder-input-container {
