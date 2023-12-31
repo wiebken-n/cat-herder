@@ -34,8 +34,8 @@ const showToast = () => {
 
 const btnValue = computed(() => {
   if (userStore.fetchState.loading) {
-    return 'Loading'
-  } else return 'Absenden'
+    return 'In Bearbeitung'
+  } else return 'Speichern'
 })
 
 async function checkIfNameExists() {
@@ -219,6 +219,7 @@ onBeforeMount(() => {
   justify-items: center;
   position: relative;
   padding-inline: 1rem;
+  font-size: 1rem;
 }
 header {
   width: 70vw;
@@ -244,6 +245,7 @@ form > * {
   color: var(--text);
   font-size: 1rem;
   padding-inline: 0.5rem;
+  font-family: 'Roboto-Light';
 }
 
 .input-field:focus + .float-label_label {
@@ -270,7 +272,7 @@ p {
 .button-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.5rem;
 }
 
 @media screen and (min-width: 600px) {
