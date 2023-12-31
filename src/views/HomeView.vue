@@ -35,7 +35,7 @@
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
         </svg>
         <div class="todo-tooltip">
-          <p>Für {{ cat.name }} gibt es heute offene Todos</p>
+          <p>{{ cat.name }} hat heute Termine</p>
         </div>
       </article>
 
@@ -89,30 +89,6 @@
           <p>Für {{ cat.name }} gibt es heute offene Termine</p>
         </div>
       </article>
-      <!-- <article class="cat-info" data-cy="cat-info">
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
-        <p class="cat-herders">Owner</p>
-      </article>
-      <article class="cat-info" data-cy="cat-info">
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
-        <p class="cat-herders">Owner</p>
-      </article>
-      <article class="cat-info" data-cy="cat-info">
-        <svg alt="cat avatar" class="cat-avatar" data-cy="cat-avatar">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
-        <p class="cat-name">my Cat</p>
-        <p class="cat-age">8</p>
-        <p class="cat-herders">Owner</p>
-      </article> -->
     </article>
   </div>
 </template>
@@ -123,6 +99,11 @@ import { useRouter } from 'vue-router'
 import { onBeforeMount, ref } from 'vue'
 import { supabase } from '@/supabase'
 import { useCatsStore } from '@/stores/useCatsStore'
+
+import dayjs from 'dayjs'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+
+dayjs.extend(weekOfYear)
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -163,10 +144,65 @@ function checkTodaysTodos(todoarray) {
         todo.completed === false
       ) {
         return true
+      } else if (checkIfRepeatDateToday(catDates)) {
+        return true
       }
     }
   }
   return false
+}
+
+function checkIfRepeatDateToday(catDates) {
+  const filterDate = dayjs(new Date())
+
+  let cacheDate = dayjs(catDates.start).hour(1)
+
+  if (!catDates?.repeat?.until) {
+    return false
+  }
+
+  if (catDates.repeat.every[1] === 'days') {
+    while (cacheDate <= dayjs(new Date(catDates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(catDates.repeat.every[0], 'day')
+      if (
+        dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+        dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+        dayjs(cacheDate).year() === dayjs(filterDate).year()
+      ) {
+        return true
+      }
+    }
+  }
+  if (catDates.repeat.every[1] === 'weeks') {
+    while (cacheDate <= dayjs(new Date(catDates.repeat.until)).hour(23)) {
+      // for (let day of todo.dates.repeat.weekdays)
+      for (let i = catDates.repeat.weekdays.length - 1; i >= 0; i--) {
+        cacheDate = cacheDate.day(catDates.repeat.weekdays[i] - 1)
+        if (
+          dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+          dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+          dayjs(cacheDate).year() === dayjs(filterDate).year() &&
+          cacheDate <= dayjs(new Date(catDates.repeat.until)).hour(23)
+        ) {
+          return true
+        }
+      }
+      cacheDate = cacheDate.add(catDates.repeat.every[0], 'week')
+    }
+  }
+
+  if (catDates.repeat.every[1] === 'months') {
+    while (cacheDate <= dayjs(new Date(catDates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(catDates.repeat.every[0], 'month')
+      if (
+        dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+        dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+        dayjs(cacheDate).year() === dayjs(filterDate).year()
+      ) {
+        return true
+      }
+    }
+  }
 }
 
 function handleTodoClick(catId) {

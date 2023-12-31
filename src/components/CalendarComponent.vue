@@ -156,7 +156,8 @@
                     new Date(todo.dates?.start).getFullYear() === shownDate.year) ||
                   todo.editActive === true ||
                   (new Date(todo.dates).getMonth() + 1 === shownDate.month &&
-                    new Date(todo.dates).getFullYear() === shownDate.year)
+                    new Date(todo.dates).getFullYear() === shownDate.year) ||
+                  checkIfRepeatDateCurrentMonth(todo)
                 "
               >
                 <TodoCardRepeatingDate
@@ -214,6 +215,7 @@
                     new Date(todo.dates.start).getMonth() + 1 === shownDate.month &&
                     new Date(todo.dates.start).getFullYear() === shownDate.year &&
                     date !== null) ||
+                  checkIfRepeatDateToday(todo) ||
                   todo.editActive === true ||
                   (new Date(todo.dates).getDate() ===
                     new Date(new Date(date).setHours(10)).getDate() &&
@@ -221,8 +223,6 @@
                     new Date(todo.dates).getFullYear() === shownDate.year)
                 "
               >
-                <!-- @editActive="handleEditActive(todo)date = new Date(todo.date)" -->
-
                 <TodoCardRepeatingDate
                   v-if="todo.dates?.start"
                   :todo="todo"
@@ -301,6 +301,16 @@ import { useCatsStore } from '../stores/useCatsStore'
 import { useToast } from 'primevue/usetoast'
 import TodoCard from '@/components/TodoCard.vue'
 import TodoCardRepeatingDate from './TodoCardRepeatingDate.vue'
+
+import dayjs from 'dayjs'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+
+dayjs.extend(weekOfYear)
+
+// dayjs.extend(weekOfYear)
+
+// const week = weekOfYear()
+//import dayjs from 'dayjs' // ES 2015
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -827,6 +837,108 @@ const deleteTodoDialog = (todo) => {
     },
     reject: () => {}
   })
+}
+
+function checkIfRepeatDateCurrentMonth(todo) {
+  let cacheDate = dayjs(todo.dates.start).hour(1)
+
+  if (!todo.dates?.repeat?.until) {
+    return false
+  }
+
+  if (todo.dates.repeat.every[1] === 'days') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'day')
+      if (
+        dayjs(cacheDate).month() + 1 === shownDate.value.month &&
+        dayjs(cacheDate).year() === shownDate.value.year &&
+        cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)
+      ) {
+        return true
+      }
+    }
+  }
+  if (todo.dates.repeat.every[1] === 'weeks') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      // for (let day of todo.dates.repeat.weekdays)
+      for (let i = todo.dates.repeat.weekdays.length - 1; i >= 0; i--) {
+        cacheDate = cacheDate.day(todo.dates.repeat.weekdays[i] - 1)
+        if (
+          dayjs(cacheDate).month() + 1 === shownDate.value.month &&
+          dayjs(cacheDate).year() === shownDate.value.year &&
+          cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)
+        ) {
+          return true
+        }
+      }
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'week')
+    }
+  }
+
+  if (todo.dates.repeat.every[1] === 'months') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'month')
+      if (
+        dayjs(cacheDate).month() + 1 === shownDate.value.month &&
+        dayjs(cacheDate).year() === shownDate.value.year &&
+        cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)
+      ) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+function checkIfRepeatDateToday(todo) {
+  const filterDate = dayjs(date.value)
+  let cacheDate = dayjs(todo.dates.start).hour(1)
+
+  if (!todo.dates?.repeat?.until) {
+    return false
+  }
+  if (todo.dates.repeat.every[1] === 'days') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'day')
+      if (
+        dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+        dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+        dayjs(cacheDate).year() === dayjs(filterDate).year()
+      ) {
+        return true
+      }
+    }
+  }
+  if (todo.dates.repeat.every[1] === 'weeks') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      // for (let day of todo.dates.repeat.weekdays)
+      for (let i = todo.dates.repeat.weekdays.length - 1; i >= 0; i--) {
+        cacheDate = cacheDate.day(todo.dates.repeat.weekdays[i] - 1)
+        if (
+          dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+          dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+          dayjs(cacheDate).year() === dayjs(filterDate).year() &&
+          cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)
+        ) {
+          return true
+        }
+      }
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'week')
+    }
+  }
+
+  if (todo.dates.repeat.every[1] === 'months') {
+    while (cacheDate <= dayjs(new Date(todo.dates.repeat.until)).hour(23)) {
+      cacheDate = cacheDate.add(todo.dates.repeat.every[0], 'month')
+      if (
+        dayjs(cacheDate).date() === dayjs(filterDate).date() &&
+        dayjs(cacheDate).month() === dayjs(filterDate).month() &&
+        dayjs(cacheDate).year() === dayjs(filterDate).year()
+      ) {
+        return true
+      }
+    }
+  }
 }
 
 onBeforeMount(() => {
