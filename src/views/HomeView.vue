@@ -35,7 +35,7 @@
           <use xlink:href="@/assets/icons.svg#alert" fill="currentcolor"></use>
         </svg>
         <div class="todo-tooltip">
-          <p>Für {{ cat.name }} gibt es heute offene Todos</p>
+          <p>{{ cat.name }} hat heute Termine</p>
         </div>
       </article>
 

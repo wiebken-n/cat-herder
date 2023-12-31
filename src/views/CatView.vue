@@ -331,8 +331,8 @@
           :dataContent="catsStore.state.currentCat.behaviour_info"
           headline="Infos zum Verhalten"
           :hasContent="false"
-          @editMode="handleCardEditModeOn('behaviour')"
-          @dataSaved="handleCardDataSaved('behaviour')"
+          @editMode="handleCardEditModeOn('behaviour_info')"
+          @dataSaved="handleCardDataSaved('behaviour_info')"
           ><template #icon>
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#cloud-lightning" fill="currentcolor"></use>
@@ -543,7 +543,7 @@ const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menu
 const stateEdit = reactive({
   food_info: false,
   health_info: false,
-  behaviour: false,
+  behaviour_info: false,
   personality: false,
   feeding_times: false,
   in_outdoor: false,
