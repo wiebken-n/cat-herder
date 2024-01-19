@@ -778,6 +778,7 @@ async function fetchCatInfos(id) {
     cat.food_info = data.food_info
     cat.food_varieties = JSON.parse(data.food_varieties)
     cat.health_info = data.health_info
+    cat.vet = JSON.parse(data.vet)
     cat.in_outdoor = JSON.parse(data.in_outdoor)
     cat.personality = JSON.parse(data.personality)
     cat.play_info = data.play_info
@@ -858,7 +859,12 @@ onUnmounted(() => {
     play_info: '',
     health_info: '',
     behaviour_info: '',
-
+    vet: {
+      name: '',
+      street: '',
+      city: '',
+      phone: ''
+    },
     herder_connections: '',
     catHerderProfiles: '',
     herders: '',

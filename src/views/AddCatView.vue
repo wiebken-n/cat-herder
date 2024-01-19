@@ -293,7 +293,44 @@
             v-model="catsStore.state.currentCat.health_info"
           ></PrimeTextArea>
         </article>
+        <article>
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#stetho" fill="currentcolor"></use>
+            </svg>
+            <label class="label label-info" for="input-cat-vet"
+              >Gib hier die Tierarzt-Kontaktdaten an:
+              <span class="info-optional">(optional)</span></label
+            >
+          </div>
 
+          <div class="input-cat-vet">
+            <label class="label label-info" for="input-vet-name">Name: </label>
+            <PrimeInputText
+              id="input-vet-name"
+              class="input-vet-name input"
+              v-model="catsStore.state.currentCat.vet.name"
+            />
+            <label class="label label-info" for="input-vet-street">Straße & Hausnummer: </label>
+            <PrimeInputText
+              id="input-vet-street"
+              class="input-vet-street input"
+              v-model="catsStore.state.currentCat.vet.street"
+            />
+            <label class="label label-info" for="input-vet-city">Stadt & PLZ: </label>
+            <PrimeInputText
+              id="input-vet-street"
+              class="input-vet-street input"
+              v-model="catsStore.state.currentCat.vet.city"
+            />
+            <label class="label label-info" for="input-vet-city">Telefon: </label>
+            <PrimeInputText
+              id="input-vet-phone"
+              class="input-vet-phone input"
+              v-model="catsStore.state.currentCat.vet.phone"
+            />
+          </div>
+        </article>
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
             <svg class="icon">
@@ -384,6 +421,7 @@
             v-model="catsStore.state.currentCat.play_info"
           ></PrimeTextArea>
         </article>
+
         <PrimeButton @click="addCat" class="btn-submit" label="Speichere deine Katze"></PrimeButton>
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
@@ -468,6 +506,7 @@ function imageUrl(catAvatar) {
 }
 
 const addCat = async () => {
+  // add check for length of vet data
   let cat = catsStore.state.currentCat
   if (cat.weight === null || undefined) {
     cat.weight = 0
@@ -490,7 +529,7 @@ const addCat = async () => {
     addCatToast()
     return
   }
-  if (cat.length > 20) {
+  if (cat.name.length > 20) {
     toastData.summary = 'Name zu lang'
     toastData.detail = 'Der Name darf maximal 20 Zeichen lang sein'
     addCatToast()
@@ -550,6 +589,7 @@ const addCatInfo = async (catId) => {
         food_info: cat.food_info, // txt
         drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
         drugs_info: cat.drugs_info, //txt
+        vet: JSON.stringify(cat.vet),
         personality: JSON.stringify(cat.personality), //JSON content-array > txt
         playtimes: JSON.stringify(cat.playtimes), // JSON {content: txt}
         play_info: cat.play_info, //opt ae txt
@@ -590,7 +630,13 @@ function emptyCatData() {
     playtimes: { content: '' },
     play_info: '',
     health_info: '',
-    behaviour_info: ''
+    behaviour_info: '',
+    vet: {
+      name: '',
+      street: '',
+      city: '',
+      phone: ''
+    }
   }
 }
 
@@ -749,6 +795,26 @@ article > div {
   height: 5rem;
 }
 
+.input-cat-vet {
+  border: 1px solid #d1d5db;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+}
+
+@media screen and (max-width: 500px) {
+  .input-cat-vet {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .input-cat-vet .label-info {
+    margin-bottom: 0.25rem;
+  }
+  .input-cat-vet .input + .label-info {
+    margin-top: 1rem;
+  }
+}
 .button-wrapper {
   display: flex;
 }
@@ -773,7 +839,8 @@ form > article > *,
 .site-container,
 .site-container > article,
 .btn-submit,
-.multiselect {
+.multiselect,
+.input-cat-vet {
   width: 80vw;
 }
 
@@ -786,7 +853,8 @@ form > article > *,
   .site-container,
   .site-container > article,
   .btn-submit,
-  .multiselect {
+  .multiselect,
+  .input-cat-vet {
     width: 70vw;
   }
 }
@@ -800,7 +868,8 @@ form > article > *,
   .site-container,
   .site-container > article,
   .btn-submit,
-  .multiselect {
+  .multiselect,
+  .input-cat-vet {
     width: 500px;
   }
 }
@@ -814,7 +883,8 @@ form > article > *,
   .site-container,
   .site-container > article,
   .btn-submit,
-  .multiselect {
+  .multiselect,
+  .input-cat-vet {
     width: 600px;
   }
 }
