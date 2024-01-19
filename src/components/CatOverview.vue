@@ -73,6 +73,16 @@
           <span>Spielbedarf:</span> {{ catsStore.state.currentCat.playtimes?.content }}
         </p>
       </div>
+      <div class="info-element" v-if="catsStore.state.currentCat.vet?.name">
+        <svg class="icon">
+          <use xlink:href="@/assets/icons.svg#stetho" fill="currentcolor"></use>
+        </svg>
+        <p class="info-element-text">
+          <span>Tierarzt:</span> {{ catsStore.state.currentCat.vet.name }},
+          {{ catsStore.state.currentCat.vet.street }}, {{ catsStore.state.currentCat.vet.city }},
+          Tel. {{ catsStore.state.currentCat.vet.phone }}
+        </p>
+      </div>
     </div>
   </div>
 </template>

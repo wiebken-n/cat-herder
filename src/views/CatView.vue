@@ -294,6 +294,51 @@
           </template>
           ></CatDataCard
         >
+        <CatDataCard
+          class="catdata"
+          id="vet"
+          :edit="stateEdit.vet"
+          :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+          :dataContent="catsStore.state.currentCat.vet"
+          headline="Kontaktdaten Tierarzt"
+          :hasContent="false"
+          @editMode="handleCardEditModeOn('vet')"
+          @dataSaved="handleCardDataSaved('vet')"
+          ><template #icon>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#stetho" fill="currentcolor"></use>
+            </svg>
+          </template>
+          <template #card-input>
+            <div class="input-cat-vet">
+              <label class="label label-info" for="input-vet-name">Name: </label>
+              <PrimeInputText
+                id="input-vet-name"
+                class="input-vet-name input"
+                v-model="catsStore.state.currentCat.vet.name"
+              />
+              <label class="label label-info" for="input-vet-street">Straße & Hausnummer: </label>
+              <PrimeInputText
+                id="input-vet-street"
+                class="input-vet-street input"
+                v-model="catsStore.state.currentCat.vet.street"
+              />
+              <label class="label label-info" for="input-vet-city">Stadt & PLZ: </label>
+              <PrimeInputText
+                id="input-vet-street"
+                class="input-vet-street input"
+                v-model="catsStore.state.currentCat.vet.city"
+              />
+              <label class="label label-info" for="input-vet-city">Telefon: </label>
+              <PrimeInputText
+                id="input-vet-phone"
+                class="input-vet-phone input"
+                v-model="catsStore.state.currentCat.vet.phone"
+              />
+            </div>
+          </template>
+          ></CatDataCard
+        >
       </div>
       <div v-if="activeCatInfoMenuItem === 2" class="cat-content cat-content-behaviour">
         <CatDataCard
@@ -551,6 +596,7 @@ const stateEdit = reactive({
   weight: false,
   drugs: false,
   drugs_info: false,
+  vet: false,
   playtimes: false,
   play_info: false
 })
@@ -607,7 +653,8 @@ async function editCatInfo(status) {
     health_info: 'Infos zur Gesundheit',
     behaviour_info: 'Infos zum Verhalten',
     drugs_info: 'Infos zu Medikamenten',
-    play_info: 'Infos zum Spielen'
+    play_info: 'Infos zum Spielen',
+    vet: 'vet'
   }
 
   if (cat.weight === null || undefined) {
@@ -675,6 +722,7 @@ async function editCatInfo(status) {
       food_info: cat.food_info, // txt
       drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
       drugs_info: cat.drugs_info, //txt
+      vet: JSON.stringify(cat.vet),
       personality: JSON.stringify(cat.personality), //JSON content-array > txt
       playtimes: JSON.stringify(cat.playtimes), // JSON {content: txt}
       play_info: cat.play_info, //opt ae txt
@@ -778,6 +826,7 @@ async function fetchCatInfos(id) {
     cat.food_info = data.food_info
     cat.food_varieties = JSON.parse(data.food_varieties)
     cat.health_info = data.health_info
+    cat.vet = JSON.parse(data.vet)
     cat.in_outdoor = JSON.parse(data.in_outdoor)
     cat.personality = JSON.parse(data.personality)
     cat.play_info = data.play_info
@@ -858,7 +907,12 @@ onUnmounted(() => {
     play_info: '',
     health_info: '',
     behaviour_info: '',
-
+    vet: {
+      name: '',
+      street: '',
+      city: '',
+      phone: ''
+    },
     herder_connections: '',
     catHerderProfiles: '',
     herders: '',
@@ -1089,7 +1143,17 @@ header {
   position: relative;
   width: 100%;
 }
+.input-cat-vet {
+  display: grid;
+  padding-block: 1rem;
+}
 
+.input-cat-vet .label-info {
+  margin-bottom: 0.25rem;
+}
+.input-cat-vet .input + .label-info {
+  margin-top: 1rem;
+}
 .catdata {
   width: 100%;
 }
