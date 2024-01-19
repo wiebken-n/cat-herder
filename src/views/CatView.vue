@@ -832,6 +832,16 @@ async function fetchCatInfos(id) {
     cat.play_info = data.play_info
     cat.playtimes = JSON.parse(data.playtimes)
     cat.weight = data.weight
+
+    // workarround to prevent error if no vet data available
+    if (cat.vet === null) {
+      cat.vet = {
+        name: '',
+        street: '',
+        city: '',
+        phone: ''
+      }
+    }
   }
 }
 
