@@ -16,11 +16,7 @@ export const useResourcesStore = defineStore('resources', () => {
       { content: 'Maine Coon' },
       { content: 'andere' }
     ],
-    inoutdoor: [
-      { content: 'Wohnungskatze' },
-      { content: 'Freigänger' },
-      { content: 'Reine Draußenkatze' }
-    ],
+    inoutdoor: [{ content: 'Wohnungskatze' }, { content: 'Freigänger' }, { content: 'Streuner' }],
     foodVarieties: [
       { content: 'Dosenfutter' },
       { content: 'Trockenfutter' },
