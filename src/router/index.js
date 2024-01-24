@@ -32,6 +32,11 @@ const router = createRouter({
       path: '/impressum',
       name: 'impressum',
       component: () => import('@/views/ImpressumView.vue')
+    },
+    {
+      path: '/password',
+      name: 'password',
+      component: () => import('@/views/ResetPasswordView.vue')
     }
   ]
 })
