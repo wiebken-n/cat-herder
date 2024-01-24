@@ -4,11 +4,14 @@ import { supabase } from '../supabase'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import SiteLogo from '@/components/SiteLogo.vue'
+import router from '../router'
 const toast = useToast()
 
 const loading = ref(false)
 const email = ref('')
+const password = ref('')
 const linkSend = ref(false)
+const newAccount = ref(false)
 
 const toastData = reactive({
   severity: 'warn',
@@ -23,14 +26,53 @@ const throwToast = () => {
     life: 4000
   })
 }
-// function imageUrl() {
-//   return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
-// }
 
-const handleLogin = async () => {
+const handleLoginClick = async () => {
+  if (newAccount.value) {
+    await handleSignUp()
+  }
+  if (!newAccount.value) {
+    await handleSignIn()
+  }
+}
+
+const handleSignIn = async () => {
   const textInput = document.querySelector('#user-email')
+  const passwordInput = document.querySelector('#user-password')
   textInput.classList.remove('p-invalid')
+  passwordInput.classList.remove('p-invalid')
 
+  if (email.value.length < 5 || email.value.length > 40) {
+    textInput.classList.add('p-invalid')
+    toastData.summary = 'Emailadresse ungültig'
+    toastData.detail = 'Bitte gib eine gültige Emailadresse ein!'
+    throwToast()
+    return
+  }
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+    options: {
+      emailRedirectTo: 'https://cat-herder.netlify.app/password'
+    }
+  })
+  if (error) {
+    console.log(error)
+    toastData.summary = 'Falsches Passwort'
+    toastData.detail = 'Bitte gib das korrekte Passwort ein'
+    throwToast()
+    return
+  }
+  if (data) {
+    router.push('/')
+  }
+}
+
+const handleSignUp = async () => {
+  const textInput = document.querySelector('#user-email')
+  const passwordInput = document.querySelector('#user-password')
+  textInput.classList.remove('p-invalid')
+  passwordInput.classList.remove('p-invalid')
   if (email.value.length < 5 || email.value.length > 40) {
     textInput.classList.add('p-invalid')
     toastData.summary = 'Bitte gib eine gültige Emailadresse ein!'
@@ -38,25 +80,54 @@ const handleLogin = async () => {
     throwToast()
     return
   }
-
-  try {
-    loading.value = true
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.value
-    })
-    if (error) throw error
-    // alert('Schau in deinem Mail-Postfach nach dem Login-Link!')
-    toastData.summary = 'Link versendet'
-    toastData.detail = 'Der Link für die Anmeldung wurde an deine Adresse geschickt!'
-    toastData.severity = 'success'
+  if (password.value.length < 8 || password.value.length > 40) {
+    passwordInput.classList.add('p-invalid')
+    toastData.summary = 'Passwort ungültig'
+    toastData.detail = 'Das Password muss zwischen 8 und 40 Zeichen lang sein!'
     throwToast()
-    linkSend.value = true
-  } catch (error) {
-    if (error instanceof Error) {
-      loading.value = false
-    }
-  } finally {
-    loading.value = false
+    return
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value
+  })
+  if (error) {
+    console.log(error)
+    toastData.summary = 'Emailadresse schon registiert'
+    toastData.detail =
+      'Bitte logge dich auf dem bestehenden Account ein oder benutze eine andere Emailadresse'
+    throwToast()
+    return
+  }
+  if (data) {
+    router.push('/')
+  }
+}
+
+const resetPassword = async () => {
+  if (email.value.length < 5 || email.value.length > 40) {
+    toastData.summary = 'Emailadresse ungültig'
+    toastData.detail = 'Bitte gibt eine gültige Emailadresse ein'
+    throwToast()
+    return
+  }
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email.value, {
+    redirectTo: 'https://cat-herder.netlify.app/password'
+  })
+  if (error) {
+    console.log(error)
+    toastData.summary = 'Emailadresse ungültig'
+    toastData.detail = 'Bitte gib die Emailadresse deines Accounts ein'
+    throwToast()
+    return
+  }
+  if (data) {
+    toastData.severity = 'success'
+    toastData.summary = 'Email versendet'
+    toastData.detail = 'Es wurde eine Email zum Zurücksetzen des Passworts versendet'
+    throwToast()
+    return
   }
 }
 </script>
@@ -72,7 +143,7 @@ const handleLogin = async () => {
         Gib unten deine E-Mail Adresse ein um einen Login-Link zugeschickt zu bekommen
       </p>
       <div class="form-input">
-        <span class="p-float-label">
+        <span class="p-float-label input-mail">
           <PrimeInputText
             class="input-field"
             required
@@ -80,28 +151,47 @@ const handleLogin = async () => {
             id="user-email"
             label="Email"
             v-model.trim="email"
-            @keyup.enter="handleLogin()"
           />
           <label :class="{ labelUp: email }" class="float-label_label" for="user-email"
             >Email</label
           ></span
         >
+        <span class="p-float-label input-password">
+          <PrimeInputText
+            class="input-field"
+            required
+            type="password"
+            id="user-password"
+            label="Passwort"
+            v-model.trim="password"
+          />
+          <label :class="{ labelUp: password }" class="float-label_label" for="user-email"
+            >Passwort</label
+          ></span
+        >
 
         <PrimeButton
-          :label="loading ? 'Loading' : 'Sende einen Link'"
+          :label="newAccount ? 'Anmelden' : 'Einloggen'"
           :disabled="loading"
           class="button-submit"
-          @click="handleLogin()"
+          @click="handleLoginClick()"
         ></PrimeButton>
+        <div class="toggle-wrapper">
+          <PrimeInputSwitch v-model="newAccount" id="newAccountToggle" /><label
+            for="newAccountToggle"
+            >Neuen Account erstellen</label
+          >
+        </div>
+        <PrimeButton text label="Passwort zurücksetzen" @click="resetPassword()"></PrimeButton>
       </div>
     </form>
   </div>
-  <div v-else class="auth-content-wrapper">
+  <!-- <div v-else class="auth-content-wrapper">
     <SiteLogo class="logo-component" />
     <p class="description">
       Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
     </p>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
@@ -158,8 +248,23 @@ const handleLogin = async () => {
   background: var(--hover-label-bg);
   transform: translateY(0.55rem);
 }
-.button-submit {
+
+.input-mail {
+  margin-bottom: 0.75rem;
+}
+.toggle-wrapper {
+  width: 90%;
+  display: flex;
+  padding-inline-start: 0.125rem;
+  padding-block: 0.75rem;
+  gap: 1rem;
+  align-items: center;
+  font-family: 'Roboto-Regular';
+  position: relative;
   margin-bottom: 2rem;
-  margin-top: 0.25rem;
+  margin-top: 1rem;
+}
+.button-submit {
+  margin-top: 0.75rem;
 }
 </style>
