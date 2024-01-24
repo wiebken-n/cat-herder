@@ -53,7 +53,7 @@ const handleSignIn = async () => {
     email: email.value,
     password: password.value,
     options: {
-      emailRedirectTo: 'https://develop--cat-herder.netlify.app/password'
+      emailRedirectTo: 'https://cat-herder.netlify.app/password'
     }
   })
   if (error) {
@@ -113,7 +113,7 @@ const resetPassword = async () => {
     return
   }
   const { data, error } = await supabase.auth.resetPasswordForEmail(email.value, {
-    redirectTo: 'https://develop--cat-herder.netlify.app/password'
+    redirectTo: 'https://cat-herder.netlify.app/password'
   })
   if (error) {
     console.log(error)
