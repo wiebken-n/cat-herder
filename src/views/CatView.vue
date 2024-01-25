@@ -294,7 +294,7 @@
           </template>
           ></CatDataCard
         >
-        <CatDataCard
+        <CatDataCardVetData
           class="catdata"
           id="vet"
           :edit="stateEdit.vet"
@@ -337,7 +337,7 @@
               />
             </div>
           </template>
-          ></CatDataCard
+          ></CatDataCardVetData
         >
       </div>
       <div v-if="activeCatInfoMenuItem === 2" class="cat-content cat-content-behaviour">
@@ -553,6 +553,7 @@ import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import CatDataCard from '@/components/CatDataCard.vue'
+import CatDataCardVetData from '@/components/CatDataCardVetData.vue'
 import CatOverview from '@/components/CatOverview.vue'
 
 const confirm = useConfirm()
