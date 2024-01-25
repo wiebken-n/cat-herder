@@ -164,6 +164,7 @@ const resetPassword = async () => {
             id="user-password"
             label="Passwort"
             v-model.trim="password"
+            @keyup.enter="handleLoginClick()"
           />
           <label :class="{ labelUp: password }" class="float-label_label" for="user-email"
             >Passwort</label

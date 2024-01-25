@@ -283,6 +283,5 @@ p {
     width: 500px;
   }
 }
-@media screen and (min-width: 1200px) {
-}
+
 </style>

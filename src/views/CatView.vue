@@ -294,14 +294,13 @@
           </template>
           ></CatDataCard
         >
-        <CatDataCard
+        <CatDataCardVetData
           class="catdata"
           id="vet"
           :edit="stateEdit.vet"
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.vet"
           headline="Kontaktdaten Tierarzt"
-          :hasContent="false"
           @editMode="handleCardEditModeOn('vet')"
           @dataSaved="handleCardDataSaved('vet')"
           ><template #icon>
@@ -337,7 +336,7 @@
               />
             </div>
           </template>
-          ></CatDataCard
+          ></CatDataCardVetData
         >
       </div>
       <div v-if="activeCatInfoMenuItem === 2" class="cat-content cat-content-behaviour">
@@ -553,6 +552,7 @@ import { supabase } from '../supabase'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import CatDataCard from '@/components/CatDataCard.vue'
+import CatDataCardVetData from '@/components/CatDataCardVetData.vue'
 import CatOverview from '@/components/CatOverview.vue'
 
 const confirm = useConfirm()
