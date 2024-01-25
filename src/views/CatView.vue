@@ -301,7 +301,6 @@
           :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
           :dataContent="catsStore.state.currentCat.vet"
           headline="Kontaktdaten Tierarzt"
-          :hasContent="false"
           @editMode="handleCardEditModeOn('vet')"
           @dataSaved="handleCardDataSaved('vet')"
           ><template #icon>

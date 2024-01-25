@@ -4,18 +4,38 @@
       <slot name="icon"></slot>
       <h2>{{ props?.headline }}</h2>
     </div>
-    <div class="output-container" v-if="!props?.edit && props?.dataContent?.name">
+    <div
+      class="output-container"
+      v-if="
+        (!props?.edit && props?.dataContent?.name) ||
+        (!props?.edit && props?.dataContent?.phone) ||
+        (!props?.edit && props?.dataContent?.street) ||
+        (!props?.edit && props?.dataContent?.city)
+      "
+    >
       <div class="card-output no-content-object">
         <div class="vet-data" v-if="props?.dataContent">
           <p>{{ props?.dataContent?.name }}</p>
           <p>
-            <span>{{ props?.dataContent?.street }}, {{ props?.dataContent?.city }}</span>
+            <span v-if="props?.dataContent?.street">{{ props?.dataContent?.street }}</span>
+            <span v-if="props?.dataContent?.street && props?.dataContent?.city">, </span>
+            <span v-if="props?.dataContent?.city"> {{ props?.dataContent?.city }}</span>
           </p>
-          <p>Tel.: {{ props?.dataContent?.phone }}</p>
+          <p v-if="props?.dataContent?.phone">Tel.: {{ props?.dataContent?.phone }}</p>
         </div>
       </div>
     </div>
-    <div v-if="!props?.edit && !props?.dataContent?.name"><p>(noch) keine Angabe vorhanden</p></div>
+    <div
+      v-if="
+        !props?.edit &&
+        !props?.dataContent?.name &&
+        !props?.dataContent?.phone &&
+        !props?.dataContent?.street &&
+        !props?.dataContent?.city
+      "
+    >
+      <p>(noch) keine Angabe vorhanden</p>
+    </div>
     <slot v-if="props?.edit" name="card-input"> </slot>
 
     <svg
