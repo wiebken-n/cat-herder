@@ -1,8 +1,14 @@
-# cat-herder
 
-This template should help get you started developing with Vue 3 in Vite.
+# Cat Herder
+
+Cat-Herder is an app to facilitate the task of cat-herding (more commonly known as cat-sitting).
+It's live at https://cat-herder.netlify.app/
+
+
 
 ## Recommended IDE Setup
+
+This template should help get you started developing with Vue 3 in Vite.
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
