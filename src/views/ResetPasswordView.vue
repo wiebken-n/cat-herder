@@ -46,6 +46,15 @@ const toast = useToast()
 const password = ref('')
 
 const changePassword = async () => {
+  if (userStore.state.demo_role === true) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Password kann nicht geändert werden',
+      detail: 'Das Passwort für den Demo-Nutzer kann nicht geändert werden.',
+      life: 4000
+    })
+    return
+  }
   if (password.value.length < 8 || password.value.length > 40) {
     toast.add({
       severity: 'warn',

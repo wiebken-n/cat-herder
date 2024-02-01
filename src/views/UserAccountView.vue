@@ -107,7 +107,6 @@ async function updateProfile() {
       id: user.id,
       username: userStore.state.username,
       avatar_url: userStore.state.avatar_url,
-      // full_name: userStore.state.full_name,
       updated_at: new Date()
     }
 
@@ -182,15 +181,6 @@ onBeforeMount(() => {
           >Nutzername</label
         >
       </span>
-      <!-- <span class="p-float-label">
-        <PrimeInputText class="input-field" id="full-name" v-model="userStore.state.full_name" />
-        <label
-          for="full-name"
-          class="float-label_label"
-          :class="{ labelUp: userStore.state.full_name }"
-          >Full Name</label
-        >
-      </span> -->
       <div class="button-wrapper">
         <PrimeButton
           type="submit"
@@ -283,5 +273,4 @@ p {
     width: 500px;
   }
 }
-
 </style>

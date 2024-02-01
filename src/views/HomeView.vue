@@ -4,7 +4,20 @@
       <h1 class="user-greeting" data-cy="user-greeting">
         Willkommen {{ userStore.state.username }}!
       </h1>
+
+      <div class="requests-info" v-if="incomingHerderRequests">
+        <PrimeButton @click="router.push('/herder')" class="button-incoming-request" unstyled>
+          <svg>
+            <use xlink:href="@/assets/icons.svg#bell" fill="currentcolor"></use>
+          </svg>
+        </PrimeButton>
+
+        <div class="request-tooltip">
+          <p>Du hast offene Verbindungs-Anfragen!</p>
+        </div>
+      </div>
     </header>
+
     <article class="cat-overview content-wrapper-owned-cats" data-cy="cat-overview">
       <h2 class="cat-overview-headline" data-cy="cat-overview-headline">Deine Katzen</h2>
       <article
@@ -112,6 +125,8 @@ const catsStore = useCatsStore()
 
 const session = ref()
 const user_id = ref('')
+
+const incomingHerderRequests = ref(false)
 
 userStore.$subscribe(() => {
   if (userStore.connectionData.loading === 3) {
@@ -229,6 +244,9 @@ onBeforeMount(async () => {
   await catsStore.fetchCats()
   await catsStore.fetchHerdedCats()
   await userStore.getProfile(session)
+  if (userStore.connectionData.connections.incoming.length > 0) {
+    incomingHerderRequests.value = true
+  }
 })
 </script>
 
@@ -248,6 +266,96 @@ onBeforeMount(async () => {
   padding-bottom: 1rem;
 }
 
+header {
+  position: relative;
+}
+.incoming-request-info {
+  position: absolute;
+  top: 0.45rem;
+  right: -2.75rem;
+  width: min-content;
+  height: min-content;
+}
+.button-incoming-request:hover + .request-tooltip {
+  visibility: visible;
+  opacity: 0.95;
+}
+.request-tooltip {
+  padding: 0.5rem;
+  width: 8rem;
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  top: -1.5rem;
+  right: 0rem;
+  background-color: red;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  font-family: 'Roboto-Medium';
+  font-weight: 500;
+  background-color: var(--tooltip-background);
+  border: 2px solid var(--tooltip-border);
+  color: var(--text);
+  border-radius: var(--border-radius);
+  font-size: 0.8rem;
+  transition: all 250ms ease-in-out;
+}
+
+.request-tooltip:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 1.75rem 0 1.75rem 10px;
+  border-color: transparent transparent transparent var(--tooltip-border);
+  left: 7.7rem;
+  bottom: 1.5rem;
+}
+.request-tooltip * {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.button-incoming-request {
+  position: absolute;
+  top: 0.45rem;
+  right: -2.75rem;
+  border: 0;
+  background-color: var(--old-rose-darker);
+  padding: 5px;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--cat-card-text);
+  text-shadow: var(--alert) 0 0 10px;
+
+  scale: 0.75;
+  transition: all 200ms ease-in-out;
+}
+.button-incoming-request * {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.button-incoming-request:hover,
+.button-incoming-request:focus {
+  background-color: var(--old-rose);
+  scale: 0.85;
+  animation: tilt-shaking 0.25s 2 ease-in-out;
+}
+.request-info-icon {
+  width: 2rem;
+  height: 2rem;
+}
 .cat-overview {
   display: grid;
   gap: 1rem;
@@ -302,6 +410,7 @@ h2 {
 .alert-icon:focus {
   color: var(--old-rose-darker);
   scale: 1.2;
+  animation: tilt-shaking 0.25s 2 ease-in-out;
 }
 
 .todo-tooltip {
