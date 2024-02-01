@@ -11,7 +11,6 @@ export const useUserStore = defineStore('users', () => {
     username: '',
     usernameOld: '',
     avatar_url: '',
-    full_name: '',
     herderConnections: '',
     herders: '',
     darkmode: false,
