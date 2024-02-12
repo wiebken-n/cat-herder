@@ -177,6 +177,7 @@ const resetPassword = async () => {
           :label="newAccount ? 'Anmelden' : 'Einloggen'"
           :disabled="loading"
           class="button-submit"
+          data-cy="login-button"
           @click="handleLoginClick()"
         ></PrimeButton>
         <div class="toggle-wrapper">
