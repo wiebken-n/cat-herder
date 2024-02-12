@@ -612,7 +612,7 @@ function handleCardDataSaved(status) {
 const herderProfiles = computed(() => {
   return catsStore.state.currentCat.catHerderProfiles
 })
-const ownerId = computed(() => catsStore.state.currentCat.profiles.id)
+const ownerId = computed(() => catsStore.state.currentCat.profiles?.id)
 
 const confirmRemoveHerder = (herder) => {
   confirm.require({

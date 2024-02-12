@@ -231,19 +231,20 @@ function handleTodoClick(catId) {
 
 onBeforeMount(async () => {
   await supabase.auth.getSession().then(({ data }) => {
+    // console.log(data.session.user)
     session.value = data.session
     user_id.value = data.session.user.id
-    catsStore.fetchCats()
-    catsStore.fetchHerdedCats()
+    userStore.state.userId = user_id.value
   })
-
+  // console.log(session)
   await supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
   })
-
+  await userStore.getProfile(session)
+  // console.log(userStore.state)
   await catsStore.fetchCats()
   await catsStore.fetchHerdedCats()
-  await userStore.getProfile(session)
+
   if (userStore.connectionData.connections.incoming.length > 0) {
     incomingHerderRequests.value = true
   }

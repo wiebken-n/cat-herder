@@ -12,7 +12,13 @@
       <h3>einfach und interaktiv</h3>
     </div>
 
-    <PrimeButton label="Anmelden" class="btn-open-modal" icon="pi pi-user" @click="visible = true">
+    <PrimeButton
+      data-cy="open-login-btn"
+      label="Anmelden"
+      class="btn-open-modal"
+      icon="pi pi-user"
+      @click="visible = true"
+    >
       <span>Anmelden</span>
       <svg class="paw-icon">
         <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>

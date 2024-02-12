@@ -467,7 +467,7 @@ async function getTodos() {
     )
     .eq('cat_id', catsStore.state.currentCat.id)
   if (error) {
-    console.log(error)
+    // console.log(error)
   }
   if (data) {
     todos.value = data

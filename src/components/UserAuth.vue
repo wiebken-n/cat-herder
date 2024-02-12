@@ -139,13 +139,14 @@ const resetPassword = async () => {
     <SiteLogo class="logo-component" />
 
     <form class="signup-form" @submit.prevent>
-      <p class="description">
+      <!-- <p class="description">
         Gib unten deine E-Mail Adresse ein um einen Login-Link zugeschickt zu bekommen
-      </p>
+      </p> -->
       <div class="form-input">
         <span class="p-float-label input-mail">
           <PrimeInputText
             class="input-field"
+            data-cy="user-mail-input"
             required
             type="email"
             id="user-email"
@@ -160,6 +161,7 @@ const resetPassword = async () => {
           <PrimeInputText
             class="input-field"
             required
+            data-cy="user-password-input"
             type="password"
             id="user-password"
             label="Passwort"
@@ -202,6 +204,7 @@ const resetPassword = async () => {
   justify-items: center;
 }
 .signup-form {
+  margin-top: 1.25rem;
   padding-block: 1rem;
   display: grid;
   justify-items: center;
