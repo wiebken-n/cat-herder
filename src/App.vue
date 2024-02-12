@@ -8,8 +8,8 @@ import { useUserStore } from './stores/useUserStore'
 import NavComponent from '@/components/NavComponent.vue'
 import LandingPageView from '@/views/LandingPageView.vue'
 import LogoComponent from '@/components/LogoComponent.vue'
-const userStore = useUserStore()
 
+const userStore = useUserStore()
 const session = ref('')
 const userId = ref('')
 
@@ -23,17 +23,16 @@ onMounted(() => {
     }
     if (data) {
       session.value = data.session
-      // console.log('after fetch: ')
-      // console.log(data.session)
-      userId.value = data.session.user.id
-      userStore.state.userId = data.session.user.id
+      userId.value = data.session?.user?.id
+      userStore.state.userId = data.session?.user?.id
       // console.log(userId.value)
     }
   })
 
   supabase.auth.onAuthStateChange((_, _session) => {
     session.value = _session
-    // console.log(session.value)
+    userId.value = _session?.user?.id
+    userStore.state.userId = _session?.user?.id
   })
 })
 </script>
