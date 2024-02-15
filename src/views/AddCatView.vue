@@ -82,6 +82,21 @@
             v-model="catsStore.state.currentCat.name"
           />
         </article>
+        <article class="input-sex-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#sex" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-sex">Welches Geschlecht hat deine Katze?</label>
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.sex"
+            :options="resourcesStore.options.sex"
+            optionLabel="content"
+            placeholder="Wähle eine Option aus"
+            id="sex-selection"
+          />
+        </article>
         <article>
           <div>
             <svg class="icon">
@@ -112,7 +127,7 @@
             v-model="catsStore.state.currentCat.breed"
             :options="resourcesStore.options.catbreeds"
             optionLabel="content"
-            placeholder="Wähle eine Bezeichnung aus"
+            placeholder="Wähle eine Option aus"
             id="catbreed-selection"
           />
         </article>
@@ -228,8 +243,9 @@
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 0">
             <svg class="icon">
-              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-            ><span>zurück</span>
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
+            </svg>
+            <span>zurück</span>
           </PrimeButton>
           <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 2">
             <span>weiter</span
@@ -245,6 +261,21 @@
         :class="{ containeractive: activeMenuItem === 2 }"
         v-if="activeMenuItem === 2"
       >
+        <article class="input-neutered-wrapper">
+          <div>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#scissors" fill="currentcolor"></use>
+            </svg>
+            <label class="label" for="input-cat-neutered">Ist deine Katze kastriert?</label>
+          </div>
+          <PrimeDropdown
+            v-model="catsStore.state.currentCat.neutered"
+            :options="resourcesStore.options.neutered"
+            optionLabel="content"
+            placeholder="Wähle eine Option aus"
+            id="neutered-selection"
+          />
+        </article>
         <article>
           <div>
             <svg class="icon">
@@ -268,8 +299,9 @@
               <use xlink:href="@/assets/icons.svg#pillbox" fill="currentcolor"></use>
             </svg>
             <label class="label label-info" for="input-cat-food "
-              >Beschreibe hier die Medikamente: <span class="info-optional">(optional)</span></label
-            >
+              >Beschreibe hier die Medikamente:
+              <span class="info-optional">(optional)</span>
+            </label>
           </div>
           <PrimeTextArea
             v-model="catsStore.state.currentCat.drugs_info"
@@ -334,8 +366,9 @@
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
             <svg class="icon">
-              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-            ><span>zurück</span>
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
+            </svg>
+            <span>zurück</span>
           </PrimeButton>
           <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 3">
             <span>weiter</span
@@ -426,8 +459,9 @@
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
             <svg class="icon">
-              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use></svg
-            ><span>zurück</span>
+              <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
+            </svg>
+            <span>zurück</span>
           </PrimeButton>
         </div>
       </div>
@@ -522,7 +556,9 @@ const addCat = async () => {
     cat.drugs.length < 1 ||
     cat.personality.length < 1 ||
     cat.playtimes.length < 1 ||
-    cat.breed.length < 1
+    cat.breed.length < 1 ||
+    cat.sex.length < 1 ||
+    cat.neutered < 1
   ) {
     toastData.summary = 'Nicht alle Daten vorhanden'
     toastData.detail = 'Bitte fülle alle Pflichtfelder aus!'
@@ -550,7 +586,15 @@ const addCat = async () => {
   }
   const { data, error } = await supabase
     .from('cats')
-    .insert([{ name: cat.name, birthday: cat.birthday, avatar: cat.avatar, breed: cat.breed }])
+    .insert([
+      {
+        name: cat.name,
+        sex: JSON.stringify(cat.sex),
+        birthday: cat.birthday,
+        avatar: cat.avatar,
+        breed: cat.breed
+      }
+    ])
     .select()
     .single()
 
@@ -587,6 +631,7 @@ const addCatInfo = async (catId) => {
         food_varieties: JSON.stringify(cat.food_varieties), //JSON  [{content: txt}]
         feeding_times: JSON.stringify(cat.feeding_times), // // {content: txt}
         food_info: cat.food_info, // txt
+        neutered: JSON.stringify(cat.neutered),
         drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
         drugs_info: cat.drugs_info, //txt
         vet: JSON.stringify(cat.vet),

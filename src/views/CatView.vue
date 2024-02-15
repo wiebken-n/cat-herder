@@ -780,7 +780,6 @@ async function addHerder(herderId) {
       return
     }
   }
-
   let { data, error } = await supabase
     .from('herder_connections')
     .insert([{ cat_id: catsStore.state.currentCat.id, herder_id: herderId }])
@@ -811,6 +810,7 @@ async function removeHerder(herderId) {
   await catsStore.fetchCat(route.params.id)
 }
 
+// get infos for current cat
 async function fetchCatInfos(id) {
   const { data, error } = await supabase.from('cats_info').select().eq('cat_id', id).single()
   if (error) {
@@ -818,7 +818,6 @@ async function fetchCatInfos(id) {
   }
   if (data) {
     let cat = catsStore.state.currentCat
-
     cat.behaviour_info = data.behaviour_info
     cat.drugs = JSON.parse(data.drugs)
     cat.drugs_info = data.drugs_info
@@ -832,6 +831,7 @@ async function fetchCatInfos(id) {
     cat.play_info = data.play_info
     cat.playtimes = JSON.parse(data.playtimes)
     cat.weight = data.weight
+    cat.neutered = JSON.parse(data.neutered)
 
     // workarround to prevent error if no vet data available
     if (cat.vet === null) {
@@ -903,9 +903,10 @@ onUnmounted(() => {
     avatar: '',
     birthday: '',
     breed: '',
-
+    sex: { content: '' },
     cat_id: '',
     weight: 0,
+    neutered: '',
     in_outdoor: { content: '' },
     food_varieties: [],
     feeding_times: { content: '' },

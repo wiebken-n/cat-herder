@@ -17,6 +17,9 @@ export const useResourcesStore = defineStore('resources', () => {
       { content: 'andere' }
     ],
     inoutdoor: [{ content: 'Wohnungskatze' }, { content: 'Freigänger' }, { content: 'Streuner' }],
+    sex: [{ content: 'weiblich' }, { content: 'männlich' }],
+    neutered: [{ content: 'kastriert' }, { content: 'nicht kastriert' }],
+
     foodVarieties: [
       { content: 'Dosenfutter' },
       { content: 'Trockenfutter' },
