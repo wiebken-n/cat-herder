@@ -23,7 +23,7 @@ const throwToast = () => {
     severity: toastData.severity,
     summary: toastData.summary,
     detail: toastData.detail,
-    life: 4000
+    life: 10000
   })
 }
 
@@ -44,8 +44,17 @@ const handleSignIn = async () => {
 
   if (email.value.length < 5 || email.value.length > 40) {
     textInput.classList.add('p-invalid')
+    toastData.severity = 'warn'
     toastData.summary = 'Emailadresse ungültig'
     toastData.detail = 'Bitte gib eine gültige Emailadresse ein!'
+    throwToast()
+    return
+  }
+  if (password.value.length < 1) {
+    passwordInput.classList.add('p-invalid')
+    toastData.severity = 'warn'
+    toastData.summary = 'Passwort ungültig'
+    toastData.detail = 'Bitte gibt ein Passwort ein!'
     throwToast()
     return
   }
@@ -56,10 +65,17 @@ const handleSignIn = async () => {
       emailRedirectTo: 'https://cat-herder.netlify.app/password'
     }
   })
+
   if (error) {
     console.log(error)
-    toastData.summary = 'Falsches Passwort'
-    toastData.detail = 'Bitte gib das korrekte Passwort ein'
+    toastData.severity = 'warn'
+    toastData.summary = 'Falsches Passwort oder Nutzer nicht vorhanden'
+    toastData.detail =
+      'Bitte gib das korrekte Passwort ein oder klicke unten auf "Password zurücksetzen"'
+    throwToast()
+    ;(toastData.severity = 'info'), (toastData.summary = 'Neuen Nutzer-Account erstellen')
+    toastData.detail =
+      'Falls du deinen neuen Nutzer-Account erstellen möchtest, schalte dazu unten auf "Neuen Account erstellen" um.'
     throwToast()
     return
   }
@@ -75,6 +91,7 @@ const handleSignUp = async () => {
   passwordInput.classList.remove('p-invalid')
   if (email.value.length < 5 || email.value.length > 40) {
     textInput.classList.add('p-invalid')
+    toastData.severity = 'warn'
     toastData.summary = 'Bitte gib eine gültige Emailadresse ein!'
     toastData.detail = 'Emailadresse ungültig'
     throwToast()
@@ -82,6 +99,7 @@ const handleSignUp = async () => {
   }
   if (password.value.length < 8 || password.value.length > 40) {
     passwordInput.classList.add('p-invalid')
+    toastData.severity = 'warn'
     toastData.summary = 'Passwort ungültig'
     toastData.detail = 'Das Password muss zwischen 8 und 40 Zeichen lang sein!'
     throwToast()
@@ -94,6 +112,7 @@ const handleSignUp = async () => {
   })
   if (error) {
     console.log(error)
+    toastData.severity = 'warn'
     toastData.summary = 'Emailadresse schon registiert'
     toastData.detail =
       'Bitte logge dich auf dem bestehenden Account ein oder benutze eine andere Emailadresse'
@@ -107,6 +126,7 @@ const handleSignUp = async () => {
 
 const resetPassword = async () => {
   if (email.value.length < 5 || email.value.length > 40) {
+    toastData.severity = 'warn'
     toastData.summary = 'Emailadresse ungültig'
     toastData.detail = 'Bitte gibt eine gültige Emailadresse ein'
     throwToast()
@@ -117,6 +137,7 @@ const resetPassword = async () => {
   })
   if (error) {
     console.log(error)
+    toastData.severity = 'warn'
     toastData.summary = 'Emailadresse ungültig'
     toastData.detail = 'Bitte gib die Emailadresse deines Accounts ein'
     throwToast()
@@ -190,12 +211,6 @@ const resetPassword = async () => {
       </div>
     </form>
   </div>
-  <!-- <div v-else class="auth-content-wrapper">
-    <SiteLogo class="logo-component" />
-    <p class="description">
-      Du hast eine Email bekommen - mit dem Link in der Email kannst du dich nun einloggen!
-    </p>
-  </div> -->
 </template>
 
 <style scoped>
@@ -203,9 +218,10 @@ const resetPassword = async () => {
   padding-inline: 2rem;
   display: grid;
   justify-items: center;
+  padding-top: 1rem;
 }
 .signup-form {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   padding-block: 1rem;
   display: grid;
   justify-items: center;
@@ -267,7 +283,7 @@ const resetPassword = async () => {
   font-family: 'Roboto-Regular';
   position: relative;
   margin-bottom: 2rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 .button-submit {
   margin-top: 0.75rem;

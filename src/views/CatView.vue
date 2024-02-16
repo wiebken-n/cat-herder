@@ -338,6 +338,33 @@
           </template>
           ></CatDataCardVetData
         >
+        <CatDataCard
+          class="catdata"
+          :edit="stateEdit.neutered"
+          :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+          :dataContent="catsStore.state.currentCat.neutered"
+          :hasContent="true"
+          :isNoArray="true"
+          headline="Kastrationsstatus"
+          @editMode="handleCardEditModeOn('neutered')"
+          @dataSaved="handleCardDataSaved('neutered')"
+          ><template #icon>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#scissors" fill="currentcolor"></use>
+            </svg>
+          </template>
+          <template #card-input>
+            <PrimeDropdown
+              v-model="catsStore.state.currentCat.neutered"
+              :options="resourcesStore.options.neutered"
+              class="dropdown"
+              optionLabel="content"
+              placeholder="Wähle eine Option aus"
+              id="neutered"
+            />
+          </template>
+          ></CatDataCard
+        >
       </div>
       <div v-if="activeCatInfoMenuItem === 2" class="cat-content cat-content-behaviour">
         <CatDataCard
@@ -598,7 +625,8 @@ const stateEdit = reactive({
   drugs_info: false,
   vet: false,
   playtimes: false,
-  play_info: false
+  play_info: false,
+  neutered: false
 })
 
 function handleCardEditModeOn(status) {
@@ -723,6 +751,7 @@ async function editCatInfo(status) {
       drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
       drugs_info: cat.drugs_info, //txt
       vet: JSON.stringify(cat.vet),
+      neutered: JSON.stringify(cat.neutered),
       personality: JSON.stringify(cat.personality), //JSON content-array > txt
       playtimes: JSON.stringify(cat.playtimes), // JSON {content: txt}
       play_info: cat.play_info, //opt ae txt

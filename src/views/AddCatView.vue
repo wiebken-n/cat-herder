@@ -30,7 +30,7 @@
       </div>
       <!-- <PrimeTabMenu v-model:activeIndex="activeMenuItem" :model="menuItems" /> -->
     </div>
-    <form>
+    <form @submit.prevent="addCat">
       <div
         class="site-one site-container"
         :class="{ containeractive: activeMenuItem === 0 }"
@@ -455,7 +455,7 @@
           ></PrimeTextArea>
         </article>
 
-        <PrimeButton @click="addCat" class="btn-submit" label="Speichere deine Katze"></PrimeButton>
+        <PrimeButton type="submit" class="btn-submit" label="Speichere deine Katze"></PrimeButton>
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
             <svg class="icon">
@@ -530,6 +530,7 @@ function createAvatarNumbers() {
   }
 }
 
+// closed selection dialog after selecting an avatar
 function selectAvatar(number) {
   catsStore.state.currentCat.avatar = number
   pickAvatarVisible.value = false
@@ -539,12 +540,14 @@ function imageUrl(catAvatar) {
   return new URL(`/src/assets/images/cat-avatar_${catAvatar}.webp`, import.meta.url).href
 }
 
+// saves new cat
 const addCat = async () => {
-  // add check for length of vet data
   let cat = catsStore.state.currentCat
+  // if no weight given, sets weight to 0
   if (cat.weight === null || undefined) {
     cat.weight = 0
   }
+  // checks if all compulsory input has been given and returns warning if that is not the case
   if (
     cat.name.length < 1 ||
     cat.birthday.length < 1 ||
@@ -558,16 +561,35 @@ const addCat = async () => {
     cat.playtimes.length < 1 ||
     cat.breed.length < 1 ||
     cat.sex.length < 1 ||
-    cat.neutered < 1
+    cat.neutered.length < 1
   ) {
     toastData.summary = 'Nicht alle Daten vorhanden'
     toastData.detail = 'Bitte fülle alle Pflichtfelder aus!'
     addCatToast()
     return
   }
+
+  if (cat.birthday > new Date()) {
+    toastData.summary = 'Geburtsdatum in der Zukunft'
+    toastData.detail = 'Das Geburtsdatum kann nicht in der Zukunft liegen'
+    addCatToast()
+    return
+  }
+
   if (cat.name.length > 20) {
     toastData.summary = 'Name zu lang'
     toastData.detail = 'Der Name darf maximal 20 Zeichen lang sein'
+    addCatToast()
+    return
+  }
+  if (
+    cat.vet.name.length > 30 ||
+    cat.vet.street.length > 30 ||
+    cat.vet.city.length > 30 ||
+    cat.vet.phone.length > 30
+  ) {
+    toastData.summary = 'Tierarztangaben zu lang'
+    toastData.detail = 'Die Angaben zum Tierarzt dürfen jeweils maximal 30 Zeichen lang sein.'
     addCatToast()
     return
   }
