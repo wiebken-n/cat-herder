@@ -14,7 +14,7 @@
           <!-- <span>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</span> -->
           <span
             ><span v-if="ownerId !== userStore.state.userId"
-              >{{ catsStore.state.currentCat.profiles.username }}'s Katze</span
+              >{{ catsStore.state.currentCat?.profiles?.username }}'s Katze</span
             >
             <span v-else>Deine Katze</span>
           </span>
