@@ -16,9 +16,10 @@ export const useCatsStore = defineStore('cats', () => {
       avatar: '',
       birthday: '',
       breed: '',
-
+      sex: { content: '' },
       cat_id: '',
       weight: 0,
+      neutered: '',
       in_outdoor: { content: '' },
       // food_varieties: [{ content: '' }],
       food_varieties: [],
@@ -112,7 +113,7 @@ export const useCatsStore = defineStore('cats', () => {
     const { data, error } = await supabase
       .from('cats')
       .select(
-        `id, name, avatar, user_id, birthday, breed, herder_connections(id, herder_id, cat_id), profiles(id, username)`
+        `id, name, avatar, user_id, birthday, breed, sex, herder_connections(id, herder_id, cat_id), profiles(id, username)`
       )
       .eq('id', id)
       .single()
@@ -124,6 +125,11 @@ export const useCatsStore = defineStore('cats', () => {
     if (data) {
       // console.log(data)
       state.currentCat = data
+
+      // check for old cat datasets with no sex data
+      if (data.sex !== null) {
+        state.currentCat.sex = JSON.parse(data.sex)
+      }
       if (data.herder_connections) {
         const herderIds = []
         for (let connection of data.herder_connections) {

@@ -11,6 +11,17 @@
       </div>
       <div class="info-element">
         <svg class="icon">
+          <use xlink:href="@/assets/icons.svg#sex" fill="currentcolor"></use>
+        </svg>
+        <p class="info-element-text">
+          <span>Geschlecht: </span> <span>{{ catsStore.state.currentCat.sex?.content }}</span
+          ><span v-if="catsStore.state.currentCat.neutered?.content"
+            >, {{ catsStore.state.currentCat.neutered?.content }}</span
+          >
+        </p>
+      </div>
+      <div class="info-element">
+        <svg class="icon">
           <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
         </svg>
         <p class="info-element-text">

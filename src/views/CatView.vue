@@ -14,7 +14,7 @@
           <!-- <span>{{ catsStore.getAge(catsStore.state.currentCat.birthday) }} alt</span> -->
           <span
             ><span v-if="ownerId !== userStore.state.userId"
-              >{{ catsStore.state.currentCat.profiles.username }}'s Katze</span
+              >{{ catsStore.state.currentCat?.profiles?.username }}'s Katze</span
             >
             <span v-else>Deine Katze</span>
           </span>
@@ -338,6 +338,33 @@
           </template>
           ></CatDataCardVetData
         >
+        <CatDataCard
+          class="catdata"
+          :edit="stateEdit.neutered"
+          :user-is-owner="catsStore.state.currentCat.user_id === userStore.state.userId"
+          :dataContent="catsStore.state.currentCat.neutered"
+          :hasContent="true"
+          :isNoArray="true"
+          headline="Kastrationsstatus"
+          @editMode="handleCardEditModeOn('neutered')"
+          @dataSaved="handleCardDataSaved('neutered')"
+          ><template #icon>
+            <svg class="icon">
+              <use xlink:href="@/assets/icons.svg#scissors" fill="currentcolor"></use>
+            </svg>
+          </template>
+          <template #card-input>
+            <PrimeDropdown
+              v-model="catsStore.state.currentCat.neutered"
+              :options="resourcesStore.options.neutered"
+              class="dropdown"
+              optionLabel="content"
+              placeholder="Wähle eine Option aus"
+              id="neutered"
+            />
+          </template>
+          ></CatDataCard
+        >
       </div>
       <div v-if="activeCatInfoMenuItem === 2" class="cat-content cat-content-behaviour">
         <CatDataCard
@@ -598,7 +625,8 @@ const stateEdit = reactive({
   drugs_info: false,
   vet: false,
   playtimes: false,
-  play_info: false
+  play_info: false,
+  neutered: false
 })
 
 function handleCardEditModeOn(status) {
@@ -723,6 +751,7 @@ async function editCatInfo(status) {
       drugs: JSON.stringify(cat.drugs), // JSON {content: txt}
       drugs_info: cat.drugs_info, //txt
       vet: JSON.stringify(cat.vet),
+      neutered: JSON.stringify(cat.neutered),
       personality: JSON.stringify(cat.personality), //JSON content-array > txt
       playtimes: JSON.stringify(cat.playtimes), // JSON {content: txt}
       play_info: cat.play_info, //opt ae txt
@@ -780,7 +809,6 @@ async function addHerder(herderId) {
       return
     }
   }
-
   let { data, error } = await supabase
     .from('herder_connections')
     .insert([{ cat_id: catsStore.state.currentCat.id, herder_id: herderId }])
@@ -811,6 +839,7 @@ async function removeHerder(herderId) {
   await catsStore.fetchCat(route.params.id)
 }
 
+// get infos for current cat
 async function fetchCatInfos(id) {
   const { data, error } = await supabase.from('cats_info').select().eq('cat_id', id).single()
   if (error) {
@@ -818,7 +847,6 @@ async function fetchCatInfos(id) {
   }
   if (data) {
     let cat = catsStore.state.currentCat
-
     cat.behaviour_info = data.behaviour_info
     cat.drugs = JSON.parse(data.drugs)
     cat.drugs_info = data.drugs_info
@@ -832,6 +860,7 @@ async function fetchCatInfos(id) {
     cat.play_info = data.play_info
     cat.playtimes = JSON.parse(data.playtimes)
     cat.weight = data.weight
+    cat.neutered = JSON.parse(data.neutered)
 
     // workarround to prevent error if no vet data available
     if (cat.vet === null) {
@@ -903,9 +932,10 @@ onUnmounted(() => {
     avatar: '',
     birthday: '',
     breed: '',
-
+    sex: { content: '' },
     cat_id: '',
     weight: 0,
+    neutered: '',
     in_outdoor: { content: '' },
     food_varieties: [],
     feeding_times: { content: '' },
