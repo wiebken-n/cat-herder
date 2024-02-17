@@ -245,7 +245,8 @@ onBeforeMount(async () => {
   // console.log(userStore.state)
   await catsStore.fetchCats()
   await catsStore.fetchHerdedCats()
-
+  await userStore.fetchHerders()
+  await userStore.fetchAllConnections()
   if (userStore.connectionData.connections.incoming.length > 0) {
     incomingHerderRequests.value = true
   }

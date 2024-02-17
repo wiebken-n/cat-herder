@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
-import { onBeforeMount } from 'vue'
+// import { onBeforeMount } from 'vue'
 
 export const useUserStore = defineStore('users', () => {
   const router = useRouter()
@@ -198,12 +198,10 @@ export const useUserStore = defineStore('users', () => {
     }
   }
 
-  onBeforeMount(async () => {
-    if (state.userId.length > 1) {
-      await fetchHerders()
-      await fetchAllConnections()
-    }
-  })
+  // onBeforeMount(async () => {
+  //   await fetchHerders()
+  //   await fetchAllConnections()
+  // })
 
   return {
     state,
