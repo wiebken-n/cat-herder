@@ -125,11 +125,6 @@ export const useCatsStore = defineStore('cats', () => {
     if (data) {
       // console.log(data)
       state.currentCat = data
-
-      // check for old cat datasets with no sex data
-      if (data.sex !== null) {
-        state.currentCat.sex = JSON.parse(data.sex)
-      }
       if (data.herder_connections) {
         const herderIds = []
         for (let connection of data.herder_connections) {

@@ -964,22 +964,11 @@ onUnmounted(() => {
   }
 })
 
-// function fillMenu() {
-//   if (catsStore.state.currentCat.user_id === userStore.state.userId) {
-//     menuItems.value = [
-//       { label: 'Überblick' },
-//       { label: 'Infos' },
-//       { label: 'Termine' },
-//       { label: 'Herder' }
-//     ]
-//   } else {
-//     menuItems.value = [{ label: 'Überblick' }, { label: 'Infos' }, { label: 'Termine' }]
-//   }
-// }
 onBeforeMount(async () => {
   await catsStore.fetchCat(route.params.id)
   await fetchCatInfos(route.params.id)
-  // fillMenu()
+  await userStore.fetchHerders()
+  await userStore.fetchAllConnections()
 })
 
 onUnmounted(() => {
