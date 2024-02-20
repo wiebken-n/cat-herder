@@ -113,7 +113,12 @@
                 </div>
 
                 <div class="button-container">
-                  <PrimeButton :label="message.header" @click="acceptCallback"></PrimeButton>
+                  <PrimeButton
+                    class="dialog-accept-btn"
+                    :class="{ dangerButton: isDangerButton }"
+                    :label="message.header"
+                    @click="acceptCallback"
+                  ></PrimeButton>
                   <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
                 </div>
               </div>
@@ -720,6 +725,7 @@ const newCatName = ref('')
 const newCatSex = ref('')
 
 const optionsMenuOpen = ref(false)
+const isDangerButton = ref(false)
 
 const openSaveCatOptionsDialog = async () => {
   if (newCatName.value.length > 20 || newCatName.value.length < 1) {
@@ -783,6 +789,7 @@ const saveCatOptions = async () => {
 }
 
 function openDeleteCatDialog() {
+  isDangerButton.value = true
   const catName = catsStore.state.currentCat.name
   toast.add({
     severity: 'error',
@@ -794,9 +801,14 @@ function openDeleteCatDialog() {
     group: 'headless',
     message: `Möchtest du den Eintrag zu ${catsStore.state.currentCat.name} wirklich endgültig löschen?`,
     header: 'Datensatz löschen',
+    rejectLabel: 'Cancel',
+    acceptLabel: 'Delete',
+    rejectClass: 'p-button-secondary p-button-outlined',
+    acceptClass: 'p-button-danger',
 
     accept: () => {
       deleteCat()
+
       toast.add({
         severity: 'success',
         summary: 'Datensatz gelöscht',
@@ -804,8 +816,11 @@ function openDeleteCatDialog() {
         life: 3000
       })
       optionsMenuOpen.value = false
+      isDangerButton.value = false
     },
-    reject: () => {}
+    reject: () => {
+      isDangerButton.value = false
+    }
   })
 }
 
@@ -1288,6 +1303,15 @@ header {
   display: grid;
   padding-top: 1.25rem;
   gap: 1rem;
+}
+
+.dangerButton {
+  background-color: var(--alert);
+  border-color: var(--alert-dark);
+}
+
+.dangerButton:hover {
+  background-color: var(--alert-dark);
 }
 .label {
   font-family: 'Roboto-Regular';
