@@ -682,6 +682,7 @@ import { useToast } from 'primevue/usetoast'
 import CatDataCard from '@/components/CatDataCard.vue'
 import CatDataCardVetData from '@/components/CatDataCardVetData.vue'
 import CatOverview from '@/components/CatOverview.vue'
+import router from '../router'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -721,8 +722,6 @@ const newCatSex = ref('')
 const optionsMenuOpen = ref(false)
 
 const openSaveCatOptionsDialog = async () => {
-  console.log('edit cat options')
-
   if (newCatName.value.length > 20 || newCatName.value.length < 1) {
     toast.add({
       severity: 'warn',
@@ -778,13 +777,54 @@ const saveCatOptions = async () => {
     return
   }
   if (data) {
-    console.log(data)
+    await catsStore.fetchCat(catsStore.state.currentCat.id)
+    await fetchCatInfos(catsStore.state.currentCat.id)
   }
 }
+
 function openDeleteCatDialog() {
-  console.log('delete cat')
+  const catName = catsStore.state.currentCat.name
+  toast.add({
+    severity: 'error',
+    summary: 'Löschen ist endgültig',
+    detail: `Wenn du den Datensatz zu ${catName} löschst, ist dies endgültig und kann nicht wieder rückgängig gemacht werden!`,
+    life: 10000
+  })
+  confirm.require({
+    group: 'headless',
+    message: `Möchtest du den Eintrag zu ${catsStore.state.currentCat.name} wirklich endgültig löschen?`,
+    header: 'Datensatz löschen',
+
+    accept: () => {
+      deleteCat()
+      toast.add({
+        severity: 'success',
+        summary: 'Datensatz gelöscht',
+        detail: `Du hast den Datensatz von ${catName} gelöscht`,
+        life: 3000
+      })
+      optionsMenuOpen.value = false
+    },
+    reject: () => {}
+  })
 }
 
+const deleteCat = async () => {
+  const { data, error } = await supabase
+    .from('cats')
+    .delete()
+    .eq('id', catsStore.state.currentCat.id)
+    .select()
+    .single()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    setTimeout(() => {
+      router.push('/')
+    }, 2000)
+  }
+}
 const stateEdit = reactive({
   food_info: false,
   health_info: false,
