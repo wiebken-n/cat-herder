@@ -179,13 +179,6 @@
             :minFractionDigits="1"
             :maxFractionDigits="2"
           />
-
-          <!-- <PrimeInputText
-              id="input-cat-name"
-              class="input-cat-name input"
-              data-cy="input-cat-name"
-              v-model="catsStore.state.currentCat.weight"
-            /> -->
         </article>
         <article class="input-food-wrapper">
           <div>

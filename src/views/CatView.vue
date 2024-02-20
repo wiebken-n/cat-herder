@@ -19,6 +19,107 @@
             <span v-else>Deine Katze</span>
           </span>
         </h2>
+
+        <PrimeButton
+          class="btn-options"
+          @click="optionsMenuOpen = true"
+          v-if="ownerId === userStore.state.userId"
+          text
+          aria-label="Einstellungen"
+        >
+          <svg class="icon">
+            <use xlink:href="@/assets/icons.svg#gear" fill="currentcolor"></use>
+          </svg>
+        </PrimeButton>
+
+        <div v-else class="space-buffer"></div>
+        <PrimeDialog
+          v-model:visible="optionsMenuOpen"
+          modal
+          :header="`Einstellungen zu ${catsStore.state.currentCat.name}`"
+          :style="{ width: '600px' }"
+          :breakpoints="{ '650px': '500px', '600px': '90vw' }"
+        >
+          <div class="options-dialog">
+            <!-- Namen ändern Geschlecht ändern Alter ändern Datensatz von
+          {{ catsStore.state.currentCat.name }} löschen -->
+
+            <article class="input-name-wrapper">
+              <div>
+                <svg class="icon">
+                  <use xlink:href="@/assets/icons.svg#heart" fill="currentcolor"></use>
+                </svg>
+                <label class="label" for="input-cat-name"> Ändere den Namen</label>
+              </div>
+              <PrimeInputText
+                id="input-cat-name"
+                class="input-cat-name input"
+                data-cy="input-cat-name"
+                v-model="newCatName"
+              />
+            </article>
+            <article class="input-sex-wrapper">
+              <div>
+                <svg class="icon">
+                  <use xlink:href="@/assets/icons.svg#sex" fill="currentcolor"></use>
+                </svg>
+                <label class="label" for="input-cat-sex">Ändere das Geschlecht</label>
+              </div>
+              <PrimeDropdown
+                v-model="newCatSex"
+                :options="resourcesStore.options.sex"
+                optionLabel="content"
+                placeholder="Wähle eine Option aus"
+                id="sex-selection"
+              />
+            </article>
+            <article>
+              <div>
+                <svg class="icon">
+                  <use xlink:href="@/assets/icons.svg#birthday-cake" fill="currentcolor"></use>
+                </svg>
+                <label class="label" for="input-cat-birthday"> Ändere das Geburtsdatum</label>
+              </div>
+              <PrimeCalendar
+                class="input"
+                id="input-cat-birthday"
+                v-model="catBirthdayDate"
+                view="month"
+                dateFormat="mm/yy"
+                showIcon
+              />
+            </article>
+            <div class="options-btn-wrapper">
+              <PrimeButton
+                label="Änderungen speichern"
+                @click="openSaveCatOptionsDialog()"
+              ></PrimeButton>
+
+              <PrimeButton
+                label="Datensatz löschen"
+                @click="openDeleteCatDialog()"
+                text
+              ></PrimeButton>
+            </div>
+          </div>
+        </PrimeDialog>
+        <div class="confimation-wrapper">
+          <PrimeConfirmDialog group="headless">
+            <template #container="{ message, acceptCallback, rejectCallback }">
+              <div class="dialog-container">
+                <h3 class="dialog-header">{{ message.header }}</h3>
+                <div class="dialog-text-container">
+                  <p class="dialog-text">{{ message.message }}</p>
+                </div>
+
+                <div class="button-container">
+                  <PrimeButton :label="message.header" @click="acceptCallback"></PrimeButton>
+                  <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+                </div>
+              </div>
+            </template>
+          </PrimeConfirmDialog>
+        </div>
       </div>
     </header>
 
@@ -530,7 +631,7 @@
             </PrimeButton>
           </div>
 
-          <PrimeConfirmDialog group="headless">
+          <!-- <PrimeConfirmDialog group="headless">
             <template #container="{ message, acceptCallback, rejectCallback }">
               <div class="dialog-container">
                 <h3 class="dialog-header">{{ message.header }}</h3>
@@ -544,7 +645,7 @@
                 </div>
               </div>
             </template>
-          </PrimeConfirmDialog>
+          </PrimeConfirmDialog> -->
         </div>
         <div class="herder-input-container">
           <PrimeDropdown
@@ -590,6 +691,7 @@ const catsStore = useCatsStore()
 const userStore = useUserStore()
 const resourcesStore = useResourcesStore()
 const selectedHerder = ref('none')
+
 catsStore.state.currentCat.id = route.params.id
 
 function imageUrl(catAvatar) {
@@ -611,6 +713,77 @@ const activeCatInfoMenuItem = ref(catsStore.state.currentCatActiveMenuItems.menu
 //   { label: 'Verhalten' },
 //   { label: 'Spiel' }
 // ])
+
+const catBirthdayDate = ref('')
+const newCatName = ref('')
+const newCatSex = ref('')
+
+const optionsMenuOpen = ref(false)
+
+const openSaveCatOptionsDialog = async () => {
+  console.log('edit cat options')
+
+  if (newCatName.value.length > 20 || newCatName.value.length < 1) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Name ungültig',
+      detail: 'Der Name muss zwischen 1 und 20 Zeichen lang sein',
+      life: 3000
+    })
+    return
+  }
+  if (catBirthdayDate.value > new Date()) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Geburtsdatum in der Zukunft',
+      detail: 'Das Geburtsdatum kann nicht in der Zukunft liegen',
+      life: 3000
+    })
+    return
+  }
+
+  confirm.require({
+    group: 'headless',
+    message: `Möchtest du die Änderungen für ${catsStore.state.currentCat.name} speichern?`,
+    header: 'Änderungen Speichern',
+
+    accept: () => {
+      saveCatOptions()
+      toast.add({
+        severity: 'success',
+        summary: 'Angaben geändert',
+        detail: `Du hast die Daten von ${catsStore.state.currentCat.name} geändert`,
+        life: 3000
+      })
+      optionsMenuOpen.value = false
+    },
+    reject: () => {}
+  })
+}
+
+const saveCatOptions = async () => {
+  const { data, error } = await supabase
+    .from('cats')
+    .update({
+      name: newCatName.value,
+      sex: JSON.stringify(newCatSex.value),
+      birthday: catBirthdayDate.value
+    })
+    .eq('id', catsStore.state.currentCat.id)
+
+    .select()
+
+  if (error) {
+    console.log(error)
+    return
+  }
+  if (data) {
+    console.log(data)
+  }
+}
+function openDeleteCatDialog() {
+  console.log('delete cat')
+}
 
 const stateEdit = reactive({
   food_info: false,
@@ -710,11 +883,11 @@ async function editCatInfo(status) {
     return
   }
 
-  if (cat.name.length < 1) {
+  if (cat.name.length > 20) {
     stateEdit[status] = true
     toast.add({
       severity: 'warn',
-      summary: 'Name zu kurz',
+      summary: 'Name zu lang',
       detail: 'Der Name darf maximal 20 Zeichen lang sein',
       life: 3000
     })
@@ -969,6 +1142,10 @@ onBeforeMount(async () => {
   await fetchCatInfos(route.params.id)
   await userStore.fetchHerders()
   await userStore.fetchAllConnections()
+
+  catBirthdayDate.value = new Date(catsStore.state.currentCat.birthday)
+  newCatName.value = catsStore.state.currentCat.name
+  newCatSex.value = catsStore.state.currentCat.sex
 })
 
 onUnmounted(() => {
@@ -1023,10 +1200,63 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* position: relative; */
 }
 .header-text-wrapper > h1 {
   font-size: 1.75rem;
   margin-bottom: 0.125rem;
+}
+.header-text-wrapper > h2 {
+  margin-bottom: 0;
+}
+
+.space-buffer {
+  height: 1rem;
+}
+.btn-options {
+  margin-block: 0.125rem;
+  padding: 0.5rem;
+  border-radius: 90px;
+}
+
+.btn-options svg use {
+  color: var(--old-rose);
+  transition: all 200ms ease-in-out;
+}
+
+.btn-options:hover svg use {
+  color: var(--old-rose-darker);
+}
+.options-dialog {
+  display: grid;
+  gap: 1.5rem;
+  padding-block: 1rem;
+  padding-inline: 0.5rem;
+}
+.options-dialog > article {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.options-dialog article > div {
+  padding-left: 0.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.options-btn-wrapper {
+  display: grid;
+  padding-top: 1.25rem;
+  gap: 1rem;
+}
+.label {
+  font-family: 'Roboto-Regular';
+  font-size: 1.025rem;
+}
+.label-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .menu-wrapper,
