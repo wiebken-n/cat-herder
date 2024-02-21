@@ -5,6 +5,7 @@ import { useUserStore } from '../stores/useUserStore'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
+import { useConfirm } from 'primevue/useconfirm'
 
 const props = defineProps(['session'])
 const { session } = toRefs(props)
@@ -14,7 +15,8 @@ const userStore = useUserStore()
 const router = useRouter()
 
 const toast = useToast()
-const error = ref('')
+const confirm = useConfirm()
+
 const formInfo = reactive({
   summary: '',
   detail: '',
@@ -23,6 +25,9 @@ const formInfo = reactive({
 
 const loading = ref(true)
 
+const deleteDialogOpen = ref(false)
+
+const feedbackText = ref('')
 const showToast = () => {
   toast.add({
     severity: `${formInfo.severity}`,
@@ -32,12 +37,14 @@ const showToast = () => {
   })
 }
 
+// adjusts button text according to loading state
 const btnValue = computed(() => {
   if (userStore.fetchState.loading) {
     return 'In Bearbeitung'
   } else return 'Speichern'
 })
 
+// checks if user name already exists in database (name has to be unique)
 async function checkIfNameExists() {
   const { data, error } = await supabase
     .from('profiles')
@@ -54,7 +61,10 @@ async function checkIfNameExists() {
   }
 }
 
+// checks validity of username-input and saves new name if valid
 async function updateProfile() {
+  // validity checks
+
   if (userStore.state.usernameOld === userStore.state.username) {
     formInfo.detail = 'Du hast den selben Namen angegeben!'
     formInfo.summary = 'Keiner Änderung des Namens'
@@ -99,6 +109,7 @@ async function updateProfile() {
     return
   }
 
+  // updates name in database
   try {
     userStore.fetchState.loading = true
     const { user } = session.value
@@ -131,12 +142,12 @@ async function updateProfile() {
     formInfo.severity = 'success'
     showToast()
     userStore.state.usernameOld = userStore.state.username
-
     userStore.fetchState.loading = false
     formInfo.severity = 'warn'
   }
 }
 
+// signs out user
 async function signOut() {
   try {
     loading.value = true
@@ -149,6 +160,49 @@ async function signOut() {
   }
 }
 
+function deleteUserDialog() {
+  confirm.require({
+    group: 'headless',
+    message: `Möchstest du deinen Account endgültig löschen?`,
+    header: 'Account löschen',
+
+    accept: () => {
+      if (userStore.state.demo_role === true) {
+        toast.add({
+          severity: 'warn',
+          summary: 'Löschen nicht möglich',
+          detail: 'Der Demo-Nutzeraccount kann nicht gelöscht werden.',
+          life: 5000
+        })
+        return
+      }
+      toast.add({
+        severity: 'info',
+        summary: 'Accountlöschung',
+        detail:
+          'Dein Account wird nun gelöscht. Sobald dies erfolgt ist, wirst du per Email informiert!',
+        life: 5000
+      })
+      addDeletionRequest()
+    },
+    reject: () => {}
+  })
+}
+
+const addDeletionRequest = async () => {
+  const { data, error } = await supabase
+    .from('deletion_requests')
+    .insert([{ feedback: feedbackText.value }])
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    setTimeout(() => {
+      signOut()
+    }, 5000)
+  }
+}
 onBeforeMount(() => {
   userStore.getProfile(session)
 })
@@ -185,21 +239,83 @@ onBeforeMount(() => {
         <PrimeButton
           type="submit"
           class="button primary block"
+          :label="btnValue"
           :disabled="userStore.fetchState.loading"
-          ><p>{{ btnValue }}</p></PrimeButton
-        >
+        ></PrimeButton>
 
         <PrimeButton
           class="button block"
           @click="signOut"
           :disabled="userStore.fetchState.loading"
           outlined
-          ><p>Nutzer Abmelden</p></PrimeButton
-        >
+          label="Nutzer Abmelden"
+        ></PrimeButton>
+        <PrimeButton
+          class="button block button-delete-account"
+          @click="deleteDialogOpen = true"
+          :disabled="userStore.fetchState.loading"
+          text
+          label="Account löschen"
+        ></PrimeButton>
       </div>
       <Toast />
-      <h2>{{ error }}</h2>
     </form>
+    <PrimeDialog
+      v-model:visible="deleteDialogOpen"
+      modal
+      header="Account löschen"
+      :style="{ width: '600px' }"
+      :breakpoints="{ '650px': '500px', '600px': '90vw' }"
+    >
+      <div class="delete-dialog-content">
+        <p>
+          <span>
+            Ich bedanke mich dafür, dass du Cat Herder genutzt hast. Wenn du möchtest, kannst du mir
+            im Textfeld unten Feedback hinterlassen.</span
+          >
+          <span> Ich wünsche dir und deinen felinen Freunden alles Gute!</span>
+        </p>
+        <p>
+          Die Löschung des Accounts kann etwas Zeit in Anspruch nehmen - du bekommst eine Nachricht
+          per Email, sobald die Löschung durchgeführt wurde.
+        </p>
+
+        <PrimeTextArea
+          id="feedback"
+          class="input input-area"
+          v-model="feedbackText"
+          rows="4"
+        ></PrimeTextArea>
+        <PrimeButton @click="deleteUserDialog()" label="Account löschen"></PrimeButton>
+        <p class="warning-text">
+          Die Löschung deines Nutzeraccounts ist endgültig - der Account ist nicht
+          wiederherstellbar.
+        </p>
+      </div>
+    </PrimeDialog>
+    <PrimeConfirmDialog group="headless">
+      <template #container="{ message, acceptCallback, rejectCallback }">
+        <div class="dialog-container">
+          <div class="confirm-dialog-container">
+            <h3 class="dialog-header">{{ message.header }}</h3>
+            <div class="dialog-text-container">
+              <p class="dialog-text text-delete">{{ message.message }}</p>
+            </div>
+
+            <div class="button-container">
+              <PrimeButton
+                class="danger-button"
+                severity="warning"
+                label="Account löschen"
+                @click="acceptCallback"
+              ></PrimeButton>
+              <PrimeButton label="Zurück" @click="rejectCallback" outlined></PrimeButton>
+            </div>
+          </div>
+        </div>
+      </template>
+    </PrimeConfirmDialog>
+    <Toast />
   </div>
 </template>
 
@@ -253,24 +369,94 @@ form > * {
 .button {
   width: 100%;
   text-align: center;
-  padding: 0.55rem;
+  padding: 0.75rem;
 }
-p {
-  margin: 0 auto;
-  padding: 0;
+
+.button-delete-account {
+  margin-top: 0.75rem;
 }
 .button-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+.delete-dialog-content {
+  padding-inline: 1rem;
+  display: grid;
+}
+.warning-text {
+  color: var(--alert);
+  padding: 1rem;
+  border: 1px solid var(--alert);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 3rem;
+}
 
+#feedback {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.text-delete {
+  font-size: 1.125rem;
+}
+
+.dialog-container {
+  border-radius: var(--border-radius);
+  display: grid;
+  grid-template-columns: 1;
+  justify-items: center;
+  min-height: max-content;
+  width: 85vw;
+  background-color: var(--card-background);
+  position: relative;
+  padding: 1rem;
+}
+.dialog-container > h3 {
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+.dialog-text-container {
+  width: 100%;
+  padding-inline: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  text-align: left;
+  font-weight: 500;
+}
+.button-container {
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.danger-button {
+  background-color: var(--alert);
+  border-color: var(--alert-dark);
+}
+
+.danger-button:hover {
+  background-color: var(--alert-dark);
+}
 @media screen and (min-width: 600px) {
   header {
     width: 500px;
   }
   form {
     width: 500px;
+  }
+  .dialog-container {
+    width: 500px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .dialog-container {
+    width: 600px;
   }
 }
 </style>

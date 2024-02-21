@@ -115,7 +115,7 @@
                 <div class="button-container">
                   <PrimeButton
                     class="dialog-accept-btn"
-                    :class="{ dangerButton: isDangerButton }"
+                    :class="{ dangerbutton: isDangerButton }"
                     :label="message.header"
                     @click="acceptCallback"
                   ></PrimeButton>
@@ -801,10 +801,6 @@ function openDeleteCatDialog() {
     group: 'headless',
     message: `Möchtest du den Eintrag zu ${catsStore.state.currentCat.name} wirklich endgültig löschen?`,
     header: 'Datensatz löschen',
-    rejectLabel: 'Cancel',
-    acceptLabel: 'Delete',
-    rejectClass: 'p-button-secondary p-button-outlined',
-    acceptClass: 'p-button-danger',
 
     accept: () => {
       deleteCat()
@@ -1305,12 +1301,12 @@ header {
   gap: 1rem;
 }
 
-.dangerButton {
+.dangerbutton {
   background-color: var(--alert);
   border-color: var(--alert-dark);
 }
 
-.dangerButton:hover {
+.dangerbutton:hover {
   background-color: var(--alert-dark);
 }
 .label {

@@ -14,6 +14,7 @@
           id="user-password"
           label="Password"
           v-model.trim="password"
+          autocomplete="on"
         />
         <label :class="{ labelUp: password }" class="float-label_label" for="user-email"
           >Passwort</label
@@ -108,6 +109,11 @@ form {
 }
 form > * {
   width: 100%;
+}
+form p {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 500;
 }
 .input-field {
   width: 100%;

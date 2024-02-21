@@ -1,8 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { onMounted, ref } from 'vue'
-// import UserAccount from '@/components/UserAccount.vue'
-import UserAuth from '@/components/UserAuth.vue'
 import { supabase } from '@/supabase'
 import { useUserStore } from './stores/useUserStore'
 import NavComponent from '@/components/NavComponent.vue'
@@ -14,9 +12,6 @@ const session = ref('')
 const userId = ref('')
 
 onMounted(() => {
-  // console.log('before fetch: ')
-  // console.log(session)
-
   supabase.auth.getSession().then(({ data, error }) => {
     if (error) {
       // console.log(error)
@@ -43,20 +38,9 @@ onMounted(() => {
       <LandingPageView />
     </div>
     <div v-else>
-      <LogoComponent
-        class="logo-component"
-        data-cy="logo-component"
-        v-if="session"
-        :session="session"
-      />
-      <NavComponent
-        class="nav-component"
-        data-cy="nav-component"
-        v-if="session"
-        :session="session"
-      />
-      <RouterView class="routerview" v-if="session" :session="session" />
-      <UserAuth v-else />
+      <LogoComponent class="logo-component" data-cy="logo-component" :session="session" />
+      <NavComponent class="nav-component" data-cy="nav-component" :session="session" />
+      <RouterView class="routerview" :session="session" />
     </div>
   </div>
 </template>
