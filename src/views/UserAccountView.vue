@@ -63,8 +63,16 @@ async function checkIfNameExists() {
 
 // checks validity of username-input and saves new name if valid
 async function updateProfile() {
+  if (userStore.state.demo_role === true) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Namensänderung nicht möglich',
+      detail: 'Der Name des Demo-Nutzeraccounts kann nicht geändert werden.',
+      life: 5000
+    })
+    return
+  }
   // validity checks
-
   if (userStore.state.usernameOld === userStore.state.username) {
     formInfo.detail = 'Du hast den selben Namen angegeben!'
     formInfo.summary = 'Keiner Änderung des Namens'
