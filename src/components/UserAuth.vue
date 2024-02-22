@@ -156,13 +156,13 @@ const resetPassword = async () => {
 }
 
 const checkForDeletionRequest = async (userId) => {
+  router.push('/welcome')
   const { data, error } = await supabase.from('deletion_requests').select().eq('user_id', userId)
   if (error) {
     console.log(error)
   }
   if (data.length > 0) {
     deletionStore.state.deletionActive = true
-    router.push('/welcome')
     signOut()
     return
   } else router.push('/')
