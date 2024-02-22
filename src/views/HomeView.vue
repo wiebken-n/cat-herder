@@ -55,6 +55,7 @@
       <PrimeButton
         label="Füge eine Katze hinzu"
         class="btn-add-cat"
+        id="add-cat-btn"
         data-cy="add-cat-btn"
         @click="router.push('/add-cat')"
         outlined

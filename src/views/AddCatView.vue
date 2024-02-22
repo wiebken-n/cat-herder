@@ -65,6 +65,7 @@
             label="Wähle einen Avatar aus"
             icon="pi pi-external-link"
             @click="pickAvatarVisible = true"
+            data-cy="open-avatar-dialog"
           />
         </article>
 
@@ -95,6 +96,7 @@
             optionLabel="content"
             placeholder="Wähle eine Option aus"
             id="sex-selection"
+            data-cy="select-sex-dropdown"
           />
         </article>
         <article>
@@ -111,6 +113,7 @@
             view="month"
             dateFormat="mm/yy"
             showIcon
+            data-cy="cat-birthday-selection"
           />
         </article>
 
@@ -129,6 +132,7 @@
             optionLabel="content"
             placeholder="Wähle eine Option aus"
             id="catbreed-selection"
+            data-cy="catbreed-selection-dropdown"
           />
         </article>
         <article class="input-inoutdoor-wrapper">
@@ -146,11 +150,17 @@
             optionLabel="content"
             placeholder="Wähle eine Option aus"
             id="input-cat-inoutdoor"
+            data-cy="indoor-outdoor-selection-dropdown"
           />
         </article>
 
         <div class="button-wrapper">
-          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 1">
+          <PrimeButton
+            data-cy="button-right"
+            outlined
+            class="button-nav button-right"
+            @click="activeMenuItem = 1"
+          >
             <span>weiter</span
             ><svg class="icon">
               <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -178,14 +188,8 @@
             suffix=" kg"
             :minFractionDigits="1"
             :maxFractionDigits="2"
+            data-cy="weight-input"
           />
-
-          <!-- <PrimeInputText
-              id="input-cat-name"
-              class="input-cat-name input"
-              data-cy="input-cat-name"
-              v-model="catsStore.state.currentCat.weight"
-            /> -->
         </article>
         <article class="input-food-wrapper">
           <div>
@@ -201,7 +205,8 @@
             :options="resourcesStore.options.foodVarieties"
             optionLabel="content"
             placeholder="Wähle die Futtervariante(n) aus"
-            id="input-cat-inoutdoor"
+            id="input-food-varieties"
+            data-cy="input-food-varieties"
             :maxSelectedLabels="4"
             class="multiselect"
           />
@@ -221,6 +226,7 @@
             optionLabel="content"
             placeholder="Wähle eine Anzahl aus"
             id="feeding-selection"
+            data-cy="feeding-times-selection"
           />
         </article>
         <article>
@@ -241,13 +247,23 @@
         </article>
 
         <div class="button-wrapper">
-          <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 0">
+          <PrimeButton
+            outlined
+            class="button-nav button-left"
+            data-cy="button-left"
+            @click="activeMenuItem = 0"
+          >
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
             </svg>
             <span>zurück</span>
           </PrimeButton>
-          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 2">
+          <PrimeButton
+            outlined
+            class="button-nav button-right"
+            data-cy="button-right"
+            @click="activeMenuItem = 2"
+          >
             <span>weiter</span
             ><svg class="icon">
               <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -274,6 +290,7 @@
             optionLabel="content"
             placeholder="Wähle eine Option aus"
             id="neutered-selection"
+            data-cy="neutered-dropdown"
           />
         </article>
         <article>
@@ -291,6 +308,7 @@
             optionLabel="content"
             placeholder="Wähle eine Option aus"
             id="drugs"
+            data-cy="drug-dropdown"
           />
         </article>
         <article>
@@ -364,13 +382,23 @@
           </div>
         </article>
         <div class="button-wrapper">
-          <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 1">
+          <PrimeButton
+            outlined
+            class="button-nav button-left"
+            data-cy="button-left"
+            @click="activeMenuItem = 1"
+          >
             <svg class="icon">
               <use xlink:href="@/assets/icons.svg#chevrons-left" fill="currentcolor"></use>
             </svg>
             <span>zurück</span>
           </PrimeButton>
-          <PrimeButton outlined class="button-nav button-right" @click="activeMenuItem = 3">
+          <PrimeButton
+            outlined
+            class="button-nav button-right"
+            data-cy="button-right"
+            @click="activeMenuItem = 3"
+          >
             <span>weiter</span
             ><svg class="icon">
               <use xlink:href="@/assets/icons.svg#chevrons-right" fill="currentcolor"></use>
@@ -401,6 +429,7 @@
             placeholder="Wähle passende Optionen aus"
             id="input-cat-personality"
             :maxSelectedLabels="10"
+            data-cy="personality-dropdown"
           />
         </article>
 
@@ -436,6 +465,7 @@
             optionLabel="content"
             placeholder="Wähle passende Optionen aus"
             id="input-cat-playtimes"
+            data-cy="playtimes-dropdown"
           />
         </article>
         <article>
@@ -455,7 +485,12 @@
           ></PrimeTextArea>
         </article>
 
-        <PrimeButton type="submit" class="btn-submit" label="Speichere deine Katze"></PrimeButton>
+        <PrimeButton
+          type="submit"
+          class="btn-submit"
+          data-cy="save-cat-btn"
+          label="Speichere deine Katze"
+        ></PrimeButton>
         <div class="button-wrapper">
           <PrimeButton outlined class="button-nav button-left" @click="activeMenuItem = 2">
             <svg class="icon">

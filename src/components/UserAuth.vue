@@ -5,7 +5,10 @@ import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import SiteLogo from '@/components/SiteLogo.vue'
 import router from '../router'
+import { useDeletionStore } from '../stores/useDeletionStore'
 const toast = useToast()
+
+const deletionStore = useDeletionStore()
 
 const loading = ref(false)
 const email = ref('')
@@ -80,7 +83,7 @@ const handleSignIn = async () => {
     return
   }
   if (data) {
-    router.push('/')
+    checkForDeletionRequest(data.user.id)
   }
 }
 
@@ -151,6 +154,32 @@ const resetPassword = async () => {
     return
   }
 }
+
+const checkForDeletionRequest = async (userId) => {
+  router.push('/welcome')
+  const { data, error } = await supabase.from('deletion_requests').select().eq('user_id', userId)
+  if (error) {
+    console.log(error)
+  }
+  if (data.length > 0) {
+    deletionStore.state.deletionActive = true
+    signOut()
+    return
+  } else router.push('/')
+}
+
+// signs out user
+async function signOut() {
+  try {
+    loading.value = true
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+  } catch (error) {
+    alert(error.message)
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -160,9 +189,6 @@ const resetPassword = async () => {
     <SiteLogo class="logo-component" />
 
     <form class="signup-form" @submit.prevent>
-      <!-- <p class="description">
-        Gib unten deine E-Mail Adresse ein um einen Login-Link zugeschickt zu bekommen
-      </p> -->
       <div class="form-input">
         <span class="p-float-label input-mail">
           <PrimeInputText
@@ -188,6 +214,7 @@ const resetPassword = async () => {
             label="Passwort"
             v-model.trim="password"
             @keyup.enter="handleLoginClick()"
+            autocomplete="on"
           />
           <label :class="{ labelUp: password }" class="float-label_label" for="user-email"
             >Passwort</label

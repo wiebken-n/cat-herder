@@ -1,61 +1,90 @@
 <template>
-  <div v-if="!impressumActive" class="l-content-wrapper">
-    <SiteLogo class="logo-component" />
+  <div class="content-wrapper">
+    <div v-if="!impressumActive" class="l-content-wrapper">
+      <SiteLogo class="logo-component" />
 
-    <div class="intro-text" data-cy="intro-text">
-      <h2>Koordiniere die Betreuung deiner Katzen</h2>
-      <div class="paw-icon-container">
-        <svg class="cat-icon">
-          <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
-        </svg>
+      <div class="intro-text" data-cy="intro-text">
+        <h2>Koordiniere die Betreuung deiner Katzen</h2>
+        <div class="paw-icon-container">
+          <svg class="cat-icon">
+            <use xlink:href="@/assets/icons.svg#cat-sitting" fill="currentcolor"></use>
+          </svg>
+        </div>
+        <h3>einfach und interaktiv</h3>
       </div>
-      <h3>einfach und interaktiv</h3>
-    </div>
 
-    <PrimeButton
-      data-cy="open-login-btn"
-      label="Anmelden"
-      class="btn-open-modal"
-      icon="pi pi-user"
-      @click="visible = true"
-    >
-      <span>Anmelden</span>
-      <svg class="paw-icon">
-        <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
-      </svg>
-    </PrimeButton>
-    <PrimeDialog
-      v-model:visible="visible"
-      modal
-      header="Login"
-      :style="{ width: '500px' }"
-      :breakpoints="{ '1000px': '500px', '600px': '500px', '550px': '90vw' }"
-    >
-      <UserAuth></UserAuth>
-    </PrimeDialog>
-    <div class="impressum-link-wrapper">
-      <button @click="impressumActive = !impressumActive" class="impressum-link">Impressum</button>
+      <PrimeButton
+        data-cy="open-login-btn"
+        label="Anmelden"
+        class="btn-open-modal"
+        icon="pi pi-user"
+        @click="visible = true"
+      >
+        <span>Anmelden</span>
+        <svg class="paw-icon">
+          <use xlink:href="@/assets/icons.svg#pawprint" fill="currentcolor"></use>
+        </svg>
+      </PrimeButton>
+      <PrimeDialog
+        v-model:visible="visible"
+        modal
+        header="Login"
+        :style="{ width: '500px' }"
+        :breakpoints="{ '1000px': '500px', '600px': '500px', '550px': '90vw' }"
+      >
+        <UserAuth></UserAuth>
+      </PrimeDialog>
+      <div class="impressum-link-wrapper">
+        <button @click="impressumActive = !impressumActive" class="impressum-link">
+          Impressum
+        </button>
+      </div>
     </div>
-  </div>
-  <div v-if="impressumActive" class="impressum">
-    <ImpressumView @backToLanding="impressumActive = !impressumActive" fromLanding="true" />
+    <div v-if="impressumActive" class="impressum">
+      <ImpressumView @backToLanding="impressumActive = !impressumActive" fromLanding="true" />
+    </div>
+    <Toast />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import UserAuth from '@/components/UserAuth.vue'
 import SiteLogo from '../components/SiteLogo.vue'
 import ImpressumView from './ImpressumView.vue'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+import { useDeletionStore } from '../stores/useDeletionStore'
+
 const visible = ref(false)
 const impressumActive = ref(false)
 
-// function imageUrl() {
-//   return new URL(`/src/assets/images/catwithhat.webp`, import.meta.url).href
-// }
+const deletionStore = useDeletionStore()
+const toast = useToast()
+
+const throwToastUserDeletion = () => {
+  toast.add({
+    severity: 'warn',
+    summary: 'Account gelöscht',
+    detail: 'Dieser Nutzeraccount wurde gelöscht',
+    life: 7000
+  })
+}
+
+onMounted(() => {
+  // throws infotoast if login with user with pending deletionrequest tries to log in
+  if (deletionStore.state.deletionActive === true) {
+    throwToastUserDeletion()
+    deletionStore.state.deletionActive = false
+  }
+})
 </script>
 
 <style scoped>
+.content-wrapper {
+  margin: 0;
+  padding: 0;
+}
 .l-content-wrapper {
   background-color: var(--card-background);
   display: grid;
