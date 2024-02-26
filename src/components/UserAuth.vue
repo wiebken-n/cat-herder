@@ -157,7 +157,11 @@ const resetPassword = async () => {
 
 const checkForDeletionRequest = async (userId) => {
   router.push('/welcome')
-  const { data, error } = await supabase.from('deletion_requests').select().eq('user_id', userId)
+  const { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', userId)
+    .eq('account_deleted', true)
   if (error) {
     console.log(error)
   }

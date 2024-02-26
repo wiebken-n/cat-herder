@@ -30,11 +30,14 @@
 </template>
 <script setup>
 import { supabase } from '../supabase'
-import { onBeforeMount, ref, toRefs } from 'vue'
+import { onBeforeMount, onMounted, ref, toRefs } from 'vue'
 import { useUserStore } from '../stores/useUserStore'
+import { useDeletionStore } from '../stores/useDeletionStore'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
+
+const deletionStore = useDeletionStore()
 
 const props = defineProps(['session'])
 const { session } = toRefs(props)
@@ -82,8 +85,50 @@ const changePassword = async () => {
   }
 }
 
-onBeforeMount(() => {
+async function signOut() {
+  const { error, data } = await supabase.auth.signOut()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    console.log(data)
+  }
+}
+
+const checkIfUserActive = async () => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', userStore.state.userId)
+    .eq('account_deleted', true)
+
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    // console.log(data)
+    if (data.length > 0) {
+      deletionStore.state.deletionActive = true
+      signOut()
+      router.push('/welcome')
+      setTimeout(() => {
+        toast.add({
+          severity: 'warn',
+          summary: 'Account geschlossen',
+          detail: 'Dieser Account ist inaktiv und wird in Kürze gelöscht werden',
+          life: 5000
+        })
+      }, 1000)
+    }
+  }
+}
+
+onBeforeMount(async () => {
   userStore.getProfile(session)
+})
+
+onMounted(async () => {
+  await checkIfUserActive()
 })
 </script>
 
