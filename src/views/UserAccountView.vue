@@ -206,11 +206,72 @@ const addDeletionRequest = async () => {
     console.log(error)
   }
   if (data) {
+    // console.log(data)
+    await deleteCats()
+    await deleteHerderConnections()
+    await deleteUserConnections()
+    await changeUserData()
     setTimeout(() => {
       signOut()
     }, 5000)
   }
 }
+
+const changeUserData = async () => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ username: userStore.state.username + ' (gelöscht)', account_deleted: true })
+    .eq('id', userStore.state.userId)
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    console.log(data)
+  }
+}
+
+const deleteCats = async () => {
+  const { data, error } = await supabase
+    .from('cats')
+    .delete()
+    .eq('user_id', userStore.state.userId)
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    // console.log(data)
+  }
+}
+
+const deleteHerderConnections = async () => {
+  const { data, error } = await supabase
+    .from('herder_connections')
+    .delete()
+    .eq('herder_id', userStore.state.userId)
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    // console.log(data)
+  }
+}
+
+const deleteUserConnections = async () => {
+  const { data, error } = await supabase
+    .from('user_connections')
+    .delete()
+    .or(`user_active.eq.${userStore.state.userId},user_passive.eq.${userStore.state.userId}`)
+    .select()
+  if (error) {
+    console.log(error)
+  }
+  if (data) {
+    // console.log(data)
+  }
+}
+
 onBeforeMount(() => {
   userStore.getProfile(session)
 })

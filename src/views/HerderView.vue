@@ -190,6 +190,7 @@ async function searchUser() {
     .select()
     .ilike('username', `%${userName.value}%`)
     .neq('id', userStore.state.userId)
+    .neq('account_deleted', true)
 
   if (error) {
     console.log(error)
